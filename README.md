@@ -19,7 +19,7 @@ docker run -it --rm \
   -w /workspace \
   -e DISPLAY=${DISPLAY} \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  claude claude --append-system-prompt "$(cat ${HOME}/.claude/agents/research.md)"
+  ghcr.io/gw0/docker-claude-code:main claude --append-system-prompt "$(cat ${HOME}/.claude/agents/research.md)"
 ```
 
 ## Shell integration
