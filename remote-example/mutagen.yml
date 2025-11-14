@@ -1,0 +1,39 @@
+# Mutagen configuration for remote dev environment
+#
+# Start remote dev environment (via SSH):
+#   DOCKER_HOST=ssh://user@remote mutagen project start
+#   mutagen project list
+#   mutagen project terminate
+#
+# Test restricted-docker-socket:
+#   DOCKER_HOST=tcp://127.0.0.1:2375 docker exec -it dev-container bash
+#   DOCKER_HOST= docker run --rm -it --net host -e DOCKER_HOST=tcp://127.0.0.1:2375 docker:cli docker exec -it dev-container bash
+
+beforeCreate:
+  - docker compose up -d
+
+afterTerminate:
+  - docker compose down
+
+# Mutagen sync (bidirectional workspace file sync)
+sync:
+  defaults:
+    mode: two-way-resolved
+    ignore:
+      vcs: true
+      paths:
+        - "_*"
+  workspace:
+    alpha: "."
+    beta: "docker://dev-container/workspace"
+    flushOnCreate: true
+    configurationBeta:
+      permissions:
+        defaultFileMode: 0644
+        defaultDirectoryMode: 0755
+
+# Mutagen forward (forward restricted remote Docker socket)
+forward:
+  dev-docker-socket:
+    source: "tcp4:127.0.0.1:2375"
+    destination: "docker://dev-docker-proxy:tcp:127.0.0.1:2375"

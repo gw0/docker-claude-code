@@ -1,0 +1,42 @@
+# Docker Compose configuration for local/remote dev environment
+
+# networks:
+#   dev-network:
+#     driver: bridge
+
+volumes:
+  workspace: {}
+  # workspace:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: /home/user/workspace
+
+services:
+  # Development container with build tools
+  dev-container:
+    container_name: dev-container
+    image: golang:1.25-bookworm
+    command: tail -f /dev/null
+    working_dir: /workspace
+    volumes:
+      - workspace:/workspace
+    restart: unless-stopped
+
+  # Docker socket proxy (restrict to only EXEC)
+  dev-docker-proxy:
+    container_name: dev-docker-proxy
+    image: tecnativa/docker-socket-proxy:latest
+    environment:
+      CONTAINERS: 1
+      EXEC: 1
+      POST: 1
+      PING: 1
+      VERSION: 0
+      EVENTS: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "127.0.0.1:2375:2375"
+    restart: unless-stopped

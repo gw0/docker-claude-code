@@ -14,6 +14,8 @@ for agent in ~/.claude/agents/*.md; do
     -w /workspace \
     -e DISPLAY=\${DISPLAY} \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -e DOCKER_HOST=\${DOCKER_HOST} \
+    --net host \
     ${CLAUDE_IMAGE} claude --append-system-prompt \"\$(cat \${HOME}/.claude/agents/${agent}.md)\"
   "
 done

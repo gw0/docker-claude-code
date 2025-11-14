@@ -37,6 +37,55 @@ echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
 source /path/to/claude-aliases.bashrc
 ```
 
+## Remote dev environment
+
+Local Claude will edit files locally and execute docker exec commands in the remote dev environment.
+
+1. Local: Claude container runs locally, edits files in workspace
+2. Mutagen: Syncs workspace files bidirectionally (`local workspace <-> remote workspace`)
+2. Mutagen: Forwards restricted remote Docker socket (`local port -> docker-proxy`)
+3. Remote: Exposes restricted remote Docker socket (`docker-proxy -> remote Docker socket`)
+3. Remote: Claude executes docker exec commands that run in dev-container (`docker exec -> -> dev-container`)
+
+Install dependencies:
+
+```bash
+curl -Lo mutagen.tar.gz https://github.com/mutagen-io/mutagen/releases/download/v0.18.1/mutagen_linux_amd64_v0.18.1.tar.gz
+tar -xzf mutagen.tar.gz -C ~/bin
+```
+
+In your project dir set up a containerized dev environment similar to `remote-example/`.
+
+Start and manage a remote dev environment (via SSH):
+
+```
+cd ~/my-project
+DOCKER_HOST=ssh://user@remote mutagen project start
+mutagen project list
+mutagen project terminate
+```
+
+Run local Claude with remote execution:
+
+```bash
+# with shell integration
+cd ~/my-project
+export DOCKER_HOST=tcp://127.0.0.1:2375
+claude-code
+
+# manually
+cd ~/my-project
+docker run -it --rm \
+  -v ${HOME}/.claude:/home/agent/.claude \
+  -v ${PWD}:/workspace:rslave \
+  -w /workspace \
+  -e DISPLAY=${DISPLAY} \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -e DOCKER_HOST=tcp://127.0.0.1:2375 \
+  --net host \
+  ghcr.io/gw0/docker-claude-code:main claude --append-system-prompt "$(cat ${HOME}/.claude/agents/code.md)"
+```
+
 ## Available specialized agents
 
 | Agent | Description |
