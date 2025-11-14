@@ -8,7 +8,7 @@
 FROM oven/bun:1.3-debian
 
 ##
-# APT packages
+# DEB packages
 ##
 WORKDIR /tmp
 ARG DEBIAN_FRONTEND=noninteractive
@@ -53,6 +53,12 @@ RUN apt-get update -qq \
     xsel \
     # system
     unattended-upgrades \
+ && curl -sSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list \
+ && apt-get update -qq \
+ && apt-get install -y --no-install-recommends \
+    # docker cli
+    docker-ce-cli \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
     # configure installed
@@ -78,7 +84,7 @@ RUN . /etc/os-release \
     # install claude
  && bun install -g @anthropic-ai/claude-code@${CLAUDE_VERSION} \
     # install git-delta
- && curl -Lo git-delta.deb https://github.com/dandavison/delta/releases/download/${GITDELTA_VERSION}/git-delta_${GITDELTA_VERSION}_amd64.deb \
+ && curl -sSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GITDELTA_VERSION}/git-delta_${GITDELTA_VERSION}_amd64.deb \
  && dpkg -i git-delta.deb \
     # print versions
  && claude --version \
