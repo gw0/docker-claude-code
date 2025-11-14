@@ -10,33 +10,31 @@ docker build --build-arg CLAUDE_VERSION=2.0.37 -t claude .
 
 ## Usage
 
-### Claude Code with agent
-
 ```bash
+# with shell integration
+cd ~/my-project
+claude-code
+# or:
+claude-review "Please review latest changes"
+
+# manually
+cd ~/my-project
 docker run -it --rm \
   -v ${HOME}/.claude:/home/agent/.claude \
   -v ${PWD}:/workspace:rslave \
   -w /workspace \
   -e DISPLAY=${DISPLAY} \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  ghcr.io/gw0/docker-claude-code:main claude --append-system-prompt "$(cat ${HOME}/.claude/agents/research.md)"
+  ghcr.io/gw0/docker-claude-code:main claude --append-system-prompt "$(cat ${HOME}/.claude/agents/code.md)"
 ```
 
 ## Shell integration
 
-Add to `~/.bashrc` and restart shell:
+Add to `~/.bashrc` with correct path:
 
 ```bash
+echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
 source /path/to/claude-aliases.bashrc
-```
-
-Usage:
-
-```bash
-cd ~/my-project
-claude-code
-# or
-claude-review "Review recent changes"
 ```
 
 ## Available specialized agents
