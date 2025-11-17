@@ -21,7 +21,7 @@ services:
     command: tail -f /dev/null
     working_dir: /workspace
     volumes:
-      - workspace:/workspace
+      - workspace:/workspace:rslave
     restart: unless-stopped
 
   # Docker socket proxy (restrict to only EXEC)

@@ -62,6 +62,9 @@ Start and manage a remote dev environment (via SSH):
 cd ~/my-project
 DOCKER_HOST=ssh://user@remote mutagen project start
 mutagen project list
+
+# management:
+mutagen project resume
 mutagen project terminate
 ```
 
@@ -70,7 +73,7 @@ Run local Claude with remote execution:
 ```bash
 # with shell integration
 cd ~/my-project
-export DOCKER_HOST=tcp://127.0.0.1:2375
+export DEV_DOCKER_HOST=tcp://127.0.0.1:2375
 claude-code
 
 # manually
