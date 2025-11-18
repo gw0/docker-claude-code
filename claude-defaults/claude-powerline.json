@@ -1,0 +1,48 @@
+{
+  "theme": "dark",
+  "display": {
+    "style": "minimal",
+    "charset": "text",
+    "colorCompatibility": "ansi256",
+    "lines": [
+      {
+        "segments": {
+          "directory": {
+            "enabled": true
+          },
+          "git": {
+            "enabled": true
+          },
+          "model": {
+            "enabled": false
+          },
+          "session": {
+            "enabled": true,
+            "type": "cost"
+          },
+          "today": {
+            "enabled": false
+          },
+          "block": {
+            "enabled": true,
+            "type": "cost",
+            "burnType": "none"
+          },
+          "version": {
+            "enabled": false
+          },
+          "tmux": {
+            "enabled": false
+          },
+          "context": {
+            "enabled": true,
+            "showPercentageOnly": true
+          },
+          "metrics": {
+            "enabled": false
+          }
+        }
+      }
+    ]
+  }
+}

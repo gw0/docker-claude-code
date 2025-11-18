@@ -75,14 +75,18 @@ RUN apt-get update -qq \
 # NPM packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.0.37
+ARG CLAUDE_VERSION=2.0.42
+# https://github.com/Owloops/claude-powerline/releases
+ARG CLAUDE_POWERLINE=1.9.19
 # https://github.com/dandavison/delta/releases
 ARG GITDELTA_VERSION=0.18.2
 
 ENV BUN_INSTALL=/usr/local/bun
-RUN . /etc/os-release \
+RUN bun install -g \
     # install claude
- && bun install -g @anthropic-ai/claude-code@${CLAUDE_VERSION} \
+    @anthropic-ai/claude-code@${CLAUDE_VERSION} \
+    # install
+    @owloops/claude-powerline@${CLAUDE_POWERLINE} \
     # install git-delta
  && curl -sSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GITDELTA_VERSION}/git-delta_${GITDELTA_VERSION}_amd64.deb \
  && dpkg -i git-delta.deb \
