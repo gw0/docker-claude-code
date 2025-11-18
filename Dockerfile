@@ -85,7 +85,7 @@ ENV BUN_INSTALL=/usr/local/bun
 RUN bun install -g \
     # install claude
     @anthropic-ai/claude-code@${CLAUDE_VERSION} \
-    # install
+    # install claude-powerline
     @owloops/claude-powerline@${CLAUDE_POWERLINE} \
     # install git-delta
  && curl -sSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GITDELTA_VERSION}/git-delta_${GITDELTA_VERSION}_amd64.deb \
