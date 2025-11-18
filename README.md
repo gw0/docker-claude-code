@@ -13,9 +13,12 @@ docker build --build-arg CLAUDE_VERSION=2.0.37 -t claude .
 ```bash
 # with shell integration
 cd ~/my-project
-claude-code
+claude-basic
 # or:
 claude-review "Please review latest changes"
+
+# switch from subscription to API usage
+ANTHROPIC_API_KEY=$(cat ~/.claude/anthropic_api_key.key) claude-basic
 
 # manually
 cd ~/my-project
