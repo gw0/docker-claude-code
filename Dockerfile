@@ -75,7 +75,7 @@ RUN apt-get update -qq \
 # NPM packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.0.42
+ARG CLAUDE_VERSION=2.0.49
 # https://github.com/Owloops/claude-powerline/releases
 ARG CLAUDE_POWERLINE_VERSION=1.9.19
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
