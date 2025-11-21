@@ -5,7 +5,9 @@ Docker environment for running Claude Code with isolated AI agents.
 ## Build
 
 ```bash
-docker build --build-arg CLAUDE_VERSION=2.0.37 -t claude .
+docker build -t claude .
+# or pull latest:
+docker pull ghcr.io/gw0/docker-claude-code:main
 ```
 
 ## Usage
@@ -13,12 +15,12 @@ docker build --build-arg CLAUDE_VERSION=2.0.37 -t claude .
 ```bash
 # with shell integration
 cd ~/my-project
-claude-basic
+claude
 # or:
-claude-review "Please review latest changes"
+claude "Please review latest changes"
 
 # switch from subscription to API usage
-ANTHROPIC_API_KEY=$(cat ~/.claude/anthropic_api_key.key) claude-basic
+(ANTHROPIC_API_KEY=$(cat ~/.claude/anthropic_api_key.key); claude)
 
 # manually
 cd ~/my-project
@@ -28,7 +30,7 @@ docker run -it --rm \
   -w /workspace \
   -e DISPLAY=${DISPLAY} \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  ghcr.io/gw0/docker-claude-code:main claude --append-system-prompt "$(cat ${HOME}/.claude/agents/code.md)"
+  ghcr.io/gw0/docker-claude-code:main claude
 ```
 
 ## Shell integration
@@ -89,22 +91,8 @@ docker run -it --rm \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DOCKER_HOST=tcp://127.0.0.1:2375 \
   --net host \
-  ghcr.io/gw0/docker-claude-code:main claude --append-system-prompt "$(cat ${HOME}/.claude/agents/code.md)"
+  ghcr.io/gw0/docker-claude-code:main claude
 ```
-
-## Available specialized agents
-
-| Agent | Description |
-|-------|-------------|
-| `code` | Code writer/developer |
-| `debug` | Code debugger |
-| `docs` | Documentation writer/maintainer |
-| `plan2` | Solution planner/architect |
-| `refactor` | Code refactorer |
-| `research` | Researcher/advisor |
-| `review` | Code reviewer |
-| `test` | Test runner and validator |
-| `security` | Security auditor |
 
 ## License
 
