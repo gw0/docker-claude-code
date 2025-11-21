@@ -1,6 +1,7 @@
 {
   "defaultMode": "plan",
   "alwaysThinkingEnabled": true,
+  "spinnerTipsEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "claude-powerline"
