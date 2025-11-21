@@ -43,12 +43,14 @@ RUN apt-get update -qq \
     socat \
     tsocks \
     # dev utils
+    gh \
     git \
     make \
     man-db \
     htop \
     time \
     python3-pip \
+    ripgrep \
     # clipboard
     xsel \
     # system
