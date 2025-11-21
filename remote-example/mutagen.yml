@@ -13,7 +13,7 @@ beforeCreate:
   - docker compose up -d
 
 afterTerminate:
-  - docker compose down
+  - docker compose down --remove-orphans
 
 # Mutagen sync (bidirectional workspace file sync)
 sync:
@@ -35,5 +35,5 @@ sync:
 # Mutagen forward (forward restricted remote Docker socket)
 forward:
   dev-docker-socket:
-    source: "tcp4:127.0.0.1:2375"
-    destination: "docker://dev-docker-proxy:tcp:127.0.0.1:2375"
+    source: "tcp:localhost:2375"
+    destination: "docker://dev-docker-proxy:tcp:localhost:2375"
