@@ -113,13 +113,13 @@ RUN userdel -r bun \
     # create non-root user
  && groupadd -g ${USER_GID} ${USER} \
  && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
-    # create mountable dirs
- && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude \
+    # setup dirs
+ && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-defaults \
+ && superclaude install --target /home/${USER}/.claude-defaults/commands/sc/ \
  && chown -R ${USER}:${USER} /usr/local/bun /workspace /home/${USER}
 
 COPY scripts/* /usr/local/bin/
 COPY claude-defaults/ /home/${USER}/.claude-defaults
-RUN superclaude install --target ~/.claude-defaults/
 
 # Customize shell interface
 ENV EDITOR=vim

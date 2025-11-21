@@ -7,6 +7,7 @@ alias claude="docker run -it --rm \
   -v \${HOME}/.claude:/home/agent/.claude \
   -v \${PWD}:/workspace:rslave \
   -w /workspace \
+  -e FORCE_DEFAULTS=\${FORCE_DEFAULTS} \
   -e ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY} \
   -e DISPLAY=\${DISPLAY} \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
