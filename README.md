@@ -1,6 +1,6 @@
 # Containerized Claude Code and AI agents
 
-Docker environment for running Claude Code with isolated AI agents.
+Docker environment for running Claude Code with isolated AI agents and SuperClaude integration.
 
 ## Build
 
@@ -32,6 +32,10 @@ docker run -it --rm \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   ghcr.io/gw0/docker-claude-code:main claude
 ```
+
+Check SuperClaude commands to follow a structured workflow:
+
+- https://github.com/SuperClaude-Org/SuperClaude_Framework
 
 ## Shell integration
 
