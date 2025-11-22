@@ -125,7 +125,8 @@ COPY claude-defaults/ /home/${USER}/.claude-defaults
 ENV EDITOR=vim
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
  && echo '# Initialize claude (gw0)' >> /etc/bash.bashrc \
- && echo '[[ -z "$(ls -A ~/.claude)" || "${FORCE_DEFAULTS}" =~ ^[1YyTt]$ ]] && cp -vR ~/.claude-defaults/* ~/.claude' >> /etc/bash.bashrc \
+ && echo '[[ -z "$(ls -A ~/.claude)" || "${FORCE_DEFAULTS:-}" =~ ^[1YyTt]$ ]] && cp -vR ~/.claude-defaults/* ~/.claude' >> /etc/bash.bashrc \
+ && echo '[[ "${FORCE_RESET_SESSIONS:-}" =~ ^[1YyTt]$ ]] && rm -vrf ~/.claude/{debug,plans,projects,session-env,shell-snapshots,todos}' >> /etc/bash.bashrc \
  && echo 'export CLAUDE_CONFIG_DIR=~/.claude' >> /etc/bash.bashrc \
  && echo 'export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1' >> /etc/bash.bashrc \
  # (same as DISABLE_AUTOUPDATER, DISABLE_BUG_COMMAND, DISABLE_ERROR_REPORTING, and DISABLE_TELEMETRY)
