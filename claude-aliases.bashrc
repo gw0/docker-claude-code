@@ -15,8 +15,5 @@ alias claude="docker run -it --rm \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DOCKER_HOST=\${DEV_DOCKER_HOST} \
   --net host \
-  --cap-drop ALL \
-  --security-opt apparmor=unconfined \
-  --security-opt seccomp=unconfined \
   \${CLAUDE_IMAGE} claude
 "

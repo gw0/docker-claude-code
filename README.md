@@ -19,13 +19,6 @@ echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
 source /path/to/claude-aliases.bashrc
 ```
 
-For additional sandbox allow usage of unprivileged user namespaces from bubblewrap:
-
-```bash
-echo 'kernel.unprivileged_userns_clone=1' | sudo tee /etc/sysctl.d/50-bubblewrap.conf
-sudo sysctl -w kernel.unprivileged_userns_clone=1
-```
-
 ## Usage
 
 ```bash
