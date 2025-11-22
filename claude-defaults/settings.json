@@ -5,5 +5,11 @@
   "statusLine": {
     "type": "command",
     "command": "claude-powerline"
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "enableWeakerNestedSandbox": false
   }
 }

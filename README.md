@@ -10,6 +10,22 @@ docker build -t claude .
 docker pull ghcr.io/gw0/docker-claude-code:main
 ```
 
+## Install
+
+For shell integration update `~/.bashrc` (replace `/path/to`):
+
+```bash
+echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
+source /path/to/claude-aliases.bashrc
+```
+
+For additional sandbox allow usage of unprivileged user namespaces from bubblewrap:
+
+```bash
+echo 'kernel.unprivileged_userns_clone=1' | sudo tee /etc/sysctl.d/50-bubblewrap.conf
+sudo sysctl -w kernel.unprivileged_userns_clone=1
+```
+
 ## Usage
 
 ```bash
@@ -36,15 +52,6 @@ docker run -it --rm \
 Check SuperClaude commands to follow a structured workflow:
 
 - https://github.com/SuperClaude-Org/SuperClaude_Framework
-
-## Shell integration
-
-Add to `~/.bashrc` with correct path:
-
-```bash
-echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
-source /path/to/claude-aliases.bashrc
-```
 
 ## Remote dev environment
 

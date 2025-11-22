@@ -53,6 +53,8 @@ RUN apt-get update -qq \
     ripgrep \
     # clipboard
     xsel \
+    # sandbox
+    bubblewrap \
     # system
     unattended-upgrades \
  && curl -sSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
