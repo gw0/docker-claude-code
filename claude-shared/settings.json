@@ -1,9 +1,20 @@
 {
+  "alwaysThinkingEnabled": false,
   "defaultMode": "plan",
-  "alwaysThinkingEnabled": true,
+  "permissions": {
+    "defaultMode": "plan"
+  },
   "spinnerTipsEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "claude-powerline"
-  }
+  },
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1",
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "ENABLE_BACKGROUND_TASKS": "1"
+  },
+  "companyAnnouncements": [""]
 }
