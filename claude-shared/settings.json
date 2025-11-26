@@ -1,5 +1,5 @@
 {
-  "alwaysThinkingEnabled": false,
+  "alwaysThinkingEnabled": true,
   "defaultMode": "plan",
   "permissions": {
     "defaultMode": "plan"

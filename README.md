@@ -12,11 +12,13 @@ docker pull ghcr.io/gw0/docker-claude-code:main
 
 ## Install
 
-For shell integration update `~/.bashrc` (replace `/path/to`):
+For shell integration update `~/.bashrc` (provide profile names, replace `/path/to`):
 
 ```bash
+echo "CLAUDE_PROFILES='claude1 claude2 claudeapi'" >> ~/.bashrc
 echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
-source /path/to/claude-aliases.bashrc
+
+source ~/.bashrc
 ```
 
 ## Usage
@@ -24,25 +26,23 @@ source /path/to/claude-aliases.bashrc
 ```bash
 # with shell integration
 cd ~/my-project
-claude
+claude1
 # or:
-claude "Please review latest changes"
-
-# switch from subscription to API usage
-(ANTHROPIC_API_KEY=$(cat ~/.claude/anthropic_api_key.key); claude)
+claude2 "Please review latest changes"
 
 # manually
 cd ~/my-project
 docker run -it --rm \
-  -v ${HOME}/.claude:/home/agent/.claude \
-  -v ${PWD}:/workspace:rslave \
-  -w /workspace \
-  -e DISPLAY=${DISPLAY} \
+  -v ${HOME}/.claude-claude1:/home/agent/.claude \
+  -e DISPLAY=${DISPLAY:-} \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
+  --cap-drop ALL \
+  -v ${PWD}:/workspace/$(basename ${PWD}):rslave \
+  -w /workspace/$(basename ${PWD}) \
   ghcr.io/gw0/docker-claude-code:main claude
 ```
 
-Check SuperClaude commands to follow a structured workflow:
+SuperClaude integration adds commands for a structured workflow:
 
 - https://github.com/SuperClaude-Org/SuperClaude_Framework
 
@@ -82,19 +82,20 @@ Run local Claude with remote execution:
 ```bash
 # with shell integration
 cd ~/my-project
-export DEV_DOCKER_HOST=tcp://127.0.0.1:2375
-claude-code
+export DOCKER_HOST=tcp://127.0.0.1:2375
+claude1
 
 # manually
 cd ~/my-project
 docker run -it --rm \
-  -v ${HOME}/.claude:/home/agent/.claude \
-  -v ${PWD}:/workspace:rslave \
-  -w /workspace \
-  -e DISPLAY=${DISPLAY} \
+  -v ${HOME}/.claude-claude1:/home/agent/.claude \
+  -e DISPLAY=${DISPLAY:-} \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DOCKER_HOST=tcp://127.0.0.1:2375 \
   --net host \
+  --cap-drop ALL \
+  -v ${PWD}:/workspace/$(basename ${PWD}):rslave \
+  -w /workspace/$(basename ${PWD}) \
   ghcr.io/gw0/docker-claude-code:main claude
 ```
 
