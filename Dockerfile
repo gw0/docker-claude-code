@@ -114,26 +114,15 @@ RUN userdel -r bun \
  && groupadd -g ${USER_GID} ${USER} \
  && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
     # setup dirs
- && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-defaults \
- && superclaude install --target /home/${USER}/.claude-defaults/commands/sc/ \
- && chown -R ${USER}:${USER} /usr/local/bun /workspace /home/${USER}
+ && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-shared \
+ && superclaude install --target /home/${USER}/.claude-shared/commands/sc/
 
 COPY scripts/* /usr/local/bin/
-COPY claude-defaults/ /home/${USER}/.claude-defaults
+COPY claude-shared/ /home/${USER}/.claude-shared
 
 # Customize shell interface
 ENV EDITOR=vim
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
- && echo '# Initialize claude (gw0)' >> /etc/bash.bashrc \
- && echo '[[ -z "$(ls -A ~/.claude)" || "${FORCE_DEFAULTS:-}" =~ ^[1YyTt]$ ]] && cp -vR ~/.claude-defaults/* ~/.claude' >> /etc/bash.bashrc \
- && echo '[[ "${FORCE_RESET_SESSIONS:-}" =~ ^[1YyTt]$ ]] && rm -vrf ~/.claude/{debug,plans,projects,session-env,shell-snapshots,todos}' >> /etc/bash.bashrc \
- && echo 'export CLAUDE_CONFIG_DIR=~/.claude' >> /etc/bash.bashrc \
- && echo 'export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1' >> /etc/bash.bashrc \
- # (same as DISABLE_AUTOUPDATER, DISABLE_BUG_COMMAND, DISABLE_ERROR_REPORTING, and DISABLE_TELEMETRY)
- && echo 'export CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1' >> /etc/bash.bashrc \
- && echo 'export DISABLE_NON_ESSENTIAL_MODEL_CALLS=1' >> /etc/bash.bashrc \
- && echo 'export ENABLE_BACKGROUND_TASKS=1' >> /etc/bash.bashrc \
- && echo '# Shell customization (gw0)' >> /etc/bash.bashrc \
+RUN echo '# Shell customization (gw0)' >> /etc/bash.bashrc \
  && echo 'source /usr/share/bash-completion/bash_completion' >> /etc/bash.bashrc \
  && echo 'git config --global --add safe.directory "${PWD}"' >> /etc/bash.bashrc \
  && echo 'alias ll="ls --color=auto -lA"' >> /etc/bash.bashrc \
@@ -149,8 +138,11 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
  && echo 'set mouse=' >> /etc/vim/vimrc.local \
  && echo 'set ttymouse=' >> /etc/vim/vimrc.local \
  && echo 'set paste' >> /etc/vim/vimrc.local \
- && echo 'set pastetoggle=<F2>' >> /etc/vim/vimrc.local
+ && echo 'set pastetoggle=<F2>' >> /etc/vim/vimrc.local \
+ && chmod +x /usr/local/bin/docker-entrypoint.sh \
+ && chown -R ${USER}:${USER} /usr/local/bun /workspace /home/${USER}
 
 USER ${USER}:${USER}
 WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["/bin/bash"]
