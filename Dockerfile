@@ -1,11 +1,11 @@
 # Dockerfile for containerized Claude Code
 #
-#   docker build --progress=plain --build-arg CLAUDE_VERSION=2.0.37 -t claude .
+#   docker build --progress=plain --build-arg CLAUDE_VERSION=2.0.71 -t claude .
 #   docker run -it --rm -v ${HOME}/.claude:/home/agent/.claude -v ${PWD}:/workspace:rslave -w /workspace -e DISPLAY=${DISPLAY} -v /tmp/.X11-unix:/tmp/.X11-unix claude claude
 #
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3-debian
+FROM oven/bun:1.3.4-debian
 
 ##
 # DEB packages
@@ -79,9 +79,9 @@ RUN apt-get update -qq \
 # NPM packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.0.54
+ARG CLAUDE_VERSION=2.0.71
 # https://github.com/Owloops/claude-powerline/releases
-ARG CLAUDE_POWERLINE_VERSION=1.9.19
+ARG CLAUDE_POWERLINE_VERSION=1.13.1
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 ARG SUPERCLAUDE_VERSION=4.1.9
 # https://github.com/dandavison/delta/releases
