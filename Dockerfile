@@ -30,6 +30,7 @@ RUN apt-get update -qq \
     procps \
     psmisc \
     screen \
+    tree \
     vim \
     yq \
     # network utils
@@ -79,9 +80,9 @@ RUN apt-get update -qq \
 # NPM packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.0.71
+ARG CLAUDE_VERSION=2.0.77
 # https://github.com/Owloops/claude-powerline/releases
-ARG CLAUDE_POWERLINE_VERSION=1.13.1
+ARG CLAUDE_POWERLINE_VERSION=1.13.2
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 ARG SUPERCLAUDE_VERSION=4.1.9
 # https://github.com/dandavison/delta/releases
