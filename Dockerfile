@@ -44,6 +44,7 @@ RUN apt-get update -qq \
     socat \
     tsocks \
     # dev utils
+    file \
     gh \
     git \
     make \
