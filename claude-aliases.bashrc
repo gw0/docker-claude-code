@@ -18,8 +18,9 @@ for profile in ${CLAUDE_PROFILES}; do
     --net host \
     -v \${PWD}:/workspace/\$(basename \${PWD}):rslave \
     -w /workspace/\$(basename \${PWD}) \
-    \${CLAUDE_IMAGE} claude
+    \${CLAUDE_IMAGE} claude \
   "
+  alias ${profile}-yolo="${profile} --dangerously-skip-permissions"
 done
 
 CLAUDE_ADVISOR_PROFILE="claude2"
@@ -33,5 +34,5 @@ alias claude-advisor="DOCKER_HOST=unix:///run/docker.sock docker run -it --rm \
   --net host \
   -v \${PWD}:/workspace/\$(basename \${PWD}):rslave \
   -w /workspace/\$(basename \${PWD}) \
-  \${CLAUDE_IMAGE} claude
+  \${CLAUDE_IMAGE} claude \
 "
