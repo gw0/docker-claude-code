@@ -44,5 +44,10 @@
         }
       }
     ]
+  },
+  "budget": {
+    "session": { "amount": 6.0 },
+    "today": { "amount": 25.0 },
+    "block": { "amount": 12.0 }
   }
 }
