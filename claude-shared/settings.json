@@ -1,6 +1,7 @@
 {
   "alwaysThinkingEnabled": true,
   "defaultMode": "plan",
+  "model": "sonnet",
   "permissions": {
     "defaultMode": "plan"
   },
