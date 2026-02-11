@@ -46,6 +46,10 @@ SuperClaude integration adds commands for a structured workflow:
 
 - https://github.com/SuperClaude-Org/SuperClaude_Framework
 
+Claude Skills integration adds 87 specialized development skills:
+
+- https://github.com/Jeffallan/claude-skills
+
 ## Remote dev environment
 
 Local Claude will edit files locally and execute docker exec commands in the remote dev environment.
