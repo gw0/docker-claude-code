@@ -21,18 +21,6 @@ for profile in ${CLAUDE_PROFILES}; do
     \${CLAUDE_IMAGE} claude \
   "
   alias ${profile}-yolo="${profile} --dangerously-skip-permissions"
+  alias ${profile}-advisor="${profile} --append-system-prompt-file \"/home/agent/.claude-shared/prompts/advisor.md\""
 done
 
-CLAUDE_ADVISOR_PROFILE="claude2"
-alias claude-advisor="DOCKER_HOST=unix:///run/docker.sock docker run -it --rm \
-  -v \${HOME}/.claude-${CLAUDE_ADVISOR_PROFILE}:/home/agent/.claude \
-  -e ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY:-} \
-  -e FORCE_RESET_SESSIONS=\${FORCE_RESET_SESSIONS:-} \
-  -e DISPLAY=\${DISPLAY:-} \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DOCKER_HOST=\${DOCKER_HOST:-} \
-  --net host \
-  -v \${PWD}:/workspace/\$(basename \${PWD}):rslave \
-  -w /workspace/\$(basename \${PWD}) \
-  \${CLAUDE_IMAGE} claude \
-"
