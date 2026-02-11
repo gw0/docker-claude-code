@@ -78,14 +78,12 @@ RUN apt-get update -qq \
  && ln -s /tmp /var/tmp
 
 ##
-# NPM packages
+# NodeJS/Python packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.1.34
+ARG CLAUDE_VERSION=2.1.39
 # https://github.com/Owloops/claude-powerline/releases
 ARG CLAUDE_POWERLINE_VERSION=1.16.1
-# https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
-ARG SUPERCLAUDE_VERSION=4.2.0
 # https://github.com/dandavison/delta/releases
 ARG GITDELTA_VERSION=0.18.2
 
@@ -95,15 +93,11 @@ RUN bun install -g \
     @anthropic-ai/claude-code@${CLAUDE_VERSION} \
     # install claude-powerline
     @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
-    # install superclaude
- && pip3 install \
-    superclaude==${SUPERCLAUDE_VERSION} \
     # install git-delta
  && curl -sSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GITDELTA_VERSION}/git-delta_${GITDELTA_VERSION}_amd64.deb \
  && dpkg -i git-delta.deb \
     # print versions
  && claude --version \
- && superclaude --version \
  && delta --version
 
 ##
@@ -118,13 +112,36 @@ RUN userdel -r bun \
  && groupadd -g ${USER_GID} ${USER} \
  && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
     # setup dirs
- && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-shared \
- && superclaude install --target /home/${USER}/.claude-shared/commands/sc/
+ && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-shared/commands/ /home/${USER}/.claude-shared/skills/
+
+##
+# Claude plugins
+##
+
+# https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
+ARG SUPERCLAUDE_VERSION=4.2.0
+# https://github.com/Jeffallan/claude-skills/releases
+ARG CLAUDE_SKILLS_VERSION=0.4.7
+
+    # install superclaude
+RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
+ && tar --wildcards -xzf superclaude.tar.gz SuperClaude_Framework-*/plugins/superclaude/ \
+ && mv SuperClaude_Framework-*/plugins/superclaude/commands/ /home/${USER}/.claude-shared/commands/sc/ \
+ && mv SuperClaude_Framework-*/plugins/superclaude/skills/ /home/${USER}/.claude-shared/skills/sc/ \
+ && rm -rf superclaude.tar.gz SuperClaude_Framework-* \
+    # install claude-skills
+ && curl -sSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
+ && tar --wildcards -xzf claude-skills.tar.gz claude-skills-*/commands/ claude-skills-*/skills/ \
+ && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/commands/cs/ \
+ && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/skills/cs/ \
+ && rm -rf claude-skills.tar.gz claude-skills-*
 
 COPY scripts/* /usr/local/bin/
 COPY claude-shared/ /home/${USER}/.claude-shared
 
+##
 # Customize shell interface
+##
 ENV EDITOR=vim
 RUN echo '# Shell customization (gw0)' >> /etc/bash.bashrc \
  && echo 'source /usr/share/bash-completion/bash_completion' >> /etc/bash.bashrc \
