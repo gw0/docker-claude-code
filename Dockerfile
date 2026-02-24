@@ -81,9 +81,9 @@ RUN apt-get update -qq \
 # NodeJS/Python packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.1.39
+ARG CLAUDE_VERSION=2.1.52
 # https://github.com/Owloops/claude-powerline/releases
-ARG CLAUDE_POWERLINE_VERSION=1.16.1
+ARG CLAUDE_POWERLINE_VERSION=1.17.2
 # https://github.com/dandavison/delta/releases
 ARG GITDELTA_VERSION=0.18.2
 
@@ -121,7 +121,7 @@ RUN userdel -r bun \
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 ARG SUPERCLAUDE_VERSION=4.2.0
 # https://github.com/Jeffallan/claude-skills/releases
-ARG CLAUDE_SKILLS_VERSION=0.4.7
+ARG CLAUDE_SKILLS_VERSION=0.4.8
 
     # install superclaude
 RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
