@@ -27,15 +27,17 @@ source ~/.bashrc
 # with shell integration
 cd ~/my-project
 claude1
-# or:
-claude2 "Please review latest changes"
+
+# or advisor/no-file-access mode:
+claude2-advisor
+
+# or yolo/dangerously-skip-permissions mode:
+claudeapi-yolo "Please review latest changes and fix issues"
 
 # manually
 cd ~/my-project
 docker run -it --rm \
   -v ${HOME}/.claude-claude1:/home/agent/.claude \
-  -e DISPLAY=${DISPLAY:-} \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
   --cap-drop ALL \
   -v ${PWD}:/workspace/$(basename ${PWD}):rslave \
   -w /workspace/$(basename ${PWD}) \
@@ -93,8 +95,6 @@ claude1
 cd ~/my-project
 docker run -it --rm \
   -v ${HOME}/.claude-claude1:/home/agent/.claude \
-  -e DISPLAY=${DISPLAY:-} \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DOCKER_HOST=tcp://127.0.0.1:2375 \
   --net host \
   --cap-drop ALL \
@@ -105,6 +105,6 @@ docker run -it --rm \
 
 ## License
 
-Copyright &copy; 2025 *gw0* [<http://gw.tnode.com/>] &lt;<gw.2025@ena.one>&gt;
+Copyright &copy; 2025-2026 *gw0* [<http://gw.tnode.com/>] &lt;<gw.2026@ena.one>&gt;
 
 All code is licensed under the GNU Affero General Public License 3.0+ (`AGPL-3.0-or-later`). Note that it is mandatory to make all modifications and complete source code publicly available to any user.
