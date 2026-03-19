@@ -3,7 +3,49 @@
   "defaultMode": "plan",
   "model": "sonnet",
   "permissions": {
-    "defaultMode": "plan"
+    "defaultMode": "plan",
+    "allow": [
+      "Bash(date*)",
+      "Bash(ls*)",
+      "Bash(mkdir*)",
+      "Bash(wc*)",
+      "Bash(sort*)",
+      "Bash(tr*)",
+      "Bash(cat*)",
+      "Bash(head*)",
+      "Bash(tail*)",
+      "Bash(grep*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git tag*)",
+      "Bash(git add*)",
+      "Bash(git commit*)"
+    ],
+    "deny": [
+      "Read(~/.**)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Bash(curl * | bash)",
+      "Bash(curl * | sh)",
+      "Bash(wget * | bash)",
+      "Bash(wget * | sh)",
+      "Bash(ssh *)",
+      "Bash(scp *)",
+      "Bash(nc *)",
+      "Bash(rm -rf*)",
+      "Bash(sudo *)",
+      "Bash(chmod 777*)",
+      "Bash(* > /dev/*)",
+      "Bash(cat ~/.**)",
+      "Bash(cat * ~/.**)",
+      "Bash(head ~/.**)",
+      "Bash(head * ~/.**)",
+      "Bash(tail ~/.**)",
+      "Bash(tail * ~/.**)",
+      "Bash(grep ~/.**)",
+      "Bash(grep * ~/.**)"
+    ]
   },
   "spinnerTipsEnabled": false,
   "statusLine": {
@@ -14,8 +56,10 @@
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1",
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
-    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-    "ENABLE_BACKGROUND_TASKS": "1"
+    "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "0",
+    "CLAUDE_CODE_PLAN_MODE_REQUIRED": "1",
+    "DISABLE_AUTOUPDATER": "1",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
   },
   "companyAnnouncements": [""]
 }
