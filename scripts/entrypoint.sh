@@ -7,15 +7,27 @@
 export CLAUDE_CONFIG_DIR=~/.claude
 ln -fsr .claude/.claude.json ~/.claude.json
 ln -fsr .claude/.claude.json.backup ~/.claude.json.backup
+mkdir -p ~/.claude/plugins/marketplaces
 
 # Force reset sessions
-[[ "${FORCE_RESET_SESSIONS:-}" =~ ^[1YyTt]$ ]] && rm -vrf ~/.claude/{debug,file-history,memory,plans,projects,session-env,shell-snapshots,todos}
+if [[ "${FORCE_RESET_SESSIONS:-}" =~ ^[1YyTt]$ ]]; then
+  rm -vrf ~/.claude/{cache,debug,file-history,memory,paste-cache,plans,projects,session-env,sessions,shell-snapshots,tasks,todos}
+fi
 
 # Remove dangling symlinks in claude dir
 find ~/.claude -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -vf {} \;
+find ~/.claude/plugins/marketplaces -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -vf {} \;
 
 # Force recreate symlinks in claude dir
 ln -fsr -t ~/.claude ~/.claude-shared/*
+ln -fsr -t ~/.claude/plugins/marketplaces ~/.claude-shared/plugins-marketplaces/*
+
+# Setup local plugins
+claude plugins marketplace add ~/.claude/plugins/marketplaces/local >/dev/null
+echo "${ENABLE_PLUGINS:-}"
+for plugin in ${ENABLE_PLUGINS:-sc}; do
+  claude plugins enable "${plugin}@local" >/dev/null
+done
 
 # Skip security scans if non-interactive
 for arg in "$@"; do

@@ -11,6 +11,7 @@ for profile in ${CLAUDE_PROFILES}; do
   alias ${profile}="DOCKER_HOST=unix:///run/docker.sock docker run -it --rm \
     -v \${HOME}/.claude-${profile}:/home/agent/.claude \
     -e ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY:-} \
+    -e ENABLE_PLUGINS=\${ENABLE_PLUGINS:-} \
     -e FORCE_RESET_SESSIONS=\${FORCE_RESET_SESSIONS:-} \
     -e SKIP_SECURITY_SCAN=\${SKIP_SECURITY_SCAN:-} \
     -e DOCKER_HOST=\${DOCKER_HOST:-} \

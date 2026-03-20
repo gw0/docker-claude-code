@@ -115,7 +115,7 @@ RUN userdel -r bun \
  && groupadd -g ${USER_GID} ${USER} \
  && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
     # setup dirs
- && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-shared/commands/ /home/${USER}/.claude-shared/skills/
+ && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin
 
 ##
 # Claude plugins
@@ -128,16 +128,32 @@ ARG CLAUDE_SKILLS_VERSION=0.4.10
 
     # install superclaude
 RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
- && tar --wildcards -xzf superclaude.tar.gz SuperClaude_Framework-*/plugins/superclaude/ \
- && mv SuperClaude_Framework-*/plugins/superclaude/commands/ /home/${USER}/.claude-shared/commands/sc/ \
- && mv SuperClaude_Framework-*/plugins/superclaude/skills/ /home/${USER}/.claude-shared/skills/sc/ \
+ && tar --wildcards -xzf superclaude.tar.gz \
+      'SuperClaude_Framework-*/plugins/superclaude/commands/' \
+      'SuperClaude_Framework-*/plugins/superclaude/skills/' \
+      'SuperClaude_Framework-*/plugins/superclaude/agents/' \
+ && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/.claude-plugin \
+ && echo '{"name":"sc","description":"SuperClaude Framework (https://github.com/SuperClaude-Org/SuperClaude_Framework)"}' > /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/.claude-plugin/plugin.json \
+ && mv SuperClaude_Framework-*/plugins/superclaude/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/commands/ \
+ && mv SuperClaude_Framework-*/plugins/superclaude/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/skills/ \
+ && mv SuperClaude_Framework-*/plugins/superclaude/agents/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/agents/ \
  && rm -rf superclaude.tar.gz SuperClaude_Framework-* \
     # install claude-skills
  && curl -sSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
- && tar --wildcards -xzf claude-skills.tar.gz claude-skills-*/commands/ claude-skills-*/skills/ \
- && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/commands/cs/ \
- && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/skills/cs/ \
- && rm -rf claude-skills.tar.gz claude-skills-*
+ && tar --wildcards -xzf claude-skills.tar.gz \
+      claude-skills-*/commands/ \
+      claude-skills-*/skills/ \
+ && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/.claude-plugin \
+ && echo '{"name":"cs","description":"Claude Skills (https://github.com/Jeffallan/claude-skills)"}' > /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/.claude-plugin/plugin.json \
+ && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
+ && mv claude-skills-*/skills/   /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
+ && rm -rf claude-skills.tar.gz claude-skills-* \
+    # generate local marketplace.json from all installed plugin.json files
+ && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
+      name:"local",description:"Local plugins",owner:{name:"local"}, \
+      plugins:[.[]|{name:.name,description:.description,source:("./plugins/"+.name)}]}' \
+      /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/*/.claude-plugin/plugin.json \
+      > /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin/marketplace.json
 
 COPY scripts/* /usr/local/bin/
 COPY claude-shared/ /home/${USER}/.claude-shared
