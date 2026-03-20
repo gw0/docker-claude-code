@@ -30,6 +30,7 @@ RUN apt-get update -qq \
     procps \
     psmisc \
     screen \
+    tmux \
     tree \
     vim \
     yq \
@@ -55,8 +56,6 @@ RUN apt-get update -qq \
     python3-cbor2 \
     ripgrep \
     xxd \
-    # clipboard
-    xsel \
     # system
     unattended-upgrades \
  && curl -sSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
@@ -80,10 +79,12 @@ RUN apt-get update -qq \
 ##
 # NodeJS/Python packages
 ##
-# https://www.npmjs.com/package/@anthropic-ai/claude-code?activeTab=versions
-ARG CLAUDE_VERSION=2.1.78
+# https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
+ARG CLAUDE_VERSION=2.1.80
 # https://github.com/Owloops/claude-powerline/releases
 ARG CLAUDE_POWERLINE_VERSION=1.20.1
+# https://github.com/affaan-m/agentshield/releases
+ARG AGENTSHIELD_VERSION=1.3.0
 # https://github.com/dandavison/delta/releases
 ARG GITDELTA_VERSION=0.18.2
 
@@ -93,6 +94,8 @@ RUN bun install -g \
     @anthropic-ai/claude-code@${CLAUDE_VERSION} \
     # install claude-powerline
     @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
+    # install ecc-agentshield
+    ecc-agentshield@${AGENTSHIELD_VERSION} \
     # install git-delta
  && curl -sSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GITDELTA_VERSION}/git-delta_${GITDELTA_VERSION}_amd64.deb \
  && dpkg -i git-delta.deb \
