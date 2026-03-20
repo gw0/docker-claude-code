@@ -15,11 +15,12 @@ for profile in ${CLAUDE_PROFILES}; do
     -e DOCKER_HOST=\${DOCKER_HOST:-} \
     --net host \
     --cap-drop ALL \
+    --security-opt=no-new-privileges:true \
     -v \${PWD}:/workspace/\$(basename \${PWD}):rslave \
     -w /workspace/\$(basename \${PWD}) \
     \${CLAUDE_IMAGE} claude \
   "
-  alias ${profile}-yolo="${profile} --dangerously-skip-permissions"
+  alias ${profile}-yolo="${profile} --allow-dangerously-skip-permissions"
   alias ${profile}-advisor="${profile} --append-system-prompt-file \"/home/agent/.claude-shared/prompts/advisor.md\""
 done
 
