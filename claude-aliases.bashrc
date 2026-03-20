@@ -12,6 +12,7 @@ for profile in ${CLAUDE_PROFILES}; do
     -v \${HOME}/.claude-${profile}:/home/agent/.claude \
     -e ANTHROPIC_API_KEY=\${ANTHROPIC_API_KEY:-} \
     -e FORCE_RESET_SESSIONS=\${FORCE_RESET_SESSIONS:-} \
+    -e SKIP_SECURITY_SCAN=\${SKIP_SECURITY_SCAN:-} \
     -e DOCKER_HOST=\${DOCKER_HOST:-} \
     --net host \
     --cap-drop ALL \
