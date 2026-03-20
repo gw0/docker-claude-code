@@ -125,6 +125,10 @@ RUN userdel -r bun \
 ARG SUPERCLAUDE_VERSION=4.2.0
 # https://github.com/Jeffallan/claude-skills/releases
 ARG CLAUDE_SKILLS_VERSION=0.4.10
+# https://github.com/sickn33/antigravity-awesome-skills/releases
+ARG AAS_VERSION=8.3.0
+
+COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
     # install superclaude
 RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
@@ -148,6 +152,16 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
  && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
  && mv claude-skills-*/skills/   /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
  && rm -rf claude-skills.tar.gz claude-skills-* \
+    # install antigravity-awesome-skills (split into editorial bundles)
+ && curl -sSLo aas.tar.gz https://github.com/sickn33/antigravity-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
+ && tar --wildcards -xzf aas.tar.gz \
+      'antigravity-awesome-skills-*/skills/' \
+      'antigravity-awesome-skills-*/docs/users/bundles.md' \
+ && python3 /tmp/install-aas-bundles.py \
+      antigravity-awesome-skills-*/skills/ \
+      antigravity-awesome-skills-*/docs/users/bundles.md \
+      /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
+ && rm -rf aas.tar.gz antigravity-awesome-skills-* /tmp/install-aas-bundles.py \
     # generate local marketplace.json from all installed plugin.json files
  && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
       name:"local",description:"Local plugins",owner:{name:"local"}, \

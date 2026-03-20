@@ -38,19 +38,32 @@ claudeapi-yolo "Please review latest changes and fix issues"
 cd ~/my-project
 docker run -it --rm \
   -v ${HOME}/.claude-claude1:/home/agent/.claude \
-  --cap-drop ALL \
   -v ${PWD}:/workspace/$(basename ${PWD}):rslave \
   -w /workspace/$(basename ${PWD}) \
   ghcr.io/gw0/docker-claude-code:main claude
 ```
 
-SuperClaude integration adds commands for a structured workflow:
+## Plugins
 
-- https://github.com/SuperClaude-Org/SuperClaude_Framework
+Many skills and plugins are re-packaged and pre-installed in the image and available via Claude Code's native plugin system. Use `/plugin` and `/reload-plugins` inside Claude Code to enable or disable them interactively.
 
-Claude Skills integration adds 87 specialized development skills:
+| Plugin | Source | Content |
+|--------|--------|---------|
+| `sc` | [SuperClaude Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 39 commands, 25 agents, 1 skill |
+| `cs` | [claude-skills](https://github.com/Jeffallan/claude-skills) | ~5 commands, 90 skills |
+| `aas-essentials` | [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) | 5 essential skills |
+| `aas-security-engineer` | antigravity | 7 security skills |
+| `aas-web-wizard` | antigravity | 7 web skills |
+| `aas-python` | antigravity | 7 Python skills |
+| `aas-devops` | antigravity | 7 DevOps skills |
+| `aas-full` | antigravity | all 1,273+ skills |
+| *(33 more aas-* bundles)* | antigravity | 5-8 skills each |
 
-- https://github.com/Jeffallan/claude-skills
+Set `ENABLE_PLUGINS` to a space-separated list of plugin names to select which plugins are enabled at startup (default: `sc cs`):
+
+```bash
+ENABLE_PLUGINS="sc cs aas-web-wizard" claude1
+```
 
 ## Remote dev environment
 
