@@ -11,9 +11,11 @@
   "packageRules": [
     {
       "description": "Group all updates into one weekly PR",
-      "matchPackagePatterns": [".*"],
       "groupName": "all deps",
-      "groupSlug": "all-deps"
+      "groupSlug": "all-deps",
+      "matchPackageNames": [
+        "/.*/"
+      ]
     }
   ],
   "customManagers": [
