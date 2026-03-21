@@ -31,8 +31,8 @@ claude1
 # or advisor/no-file-access mode:
 claude2-advisor
 
-# or yolo/dangerously-skip-permissions mode:
-claudeapi-yolo "Please review latest changes and fix issues"
+# or yolo/dangerously-skip-permissions mode with prompt:
+claudeapi-yolo -p "Please review latest changes and fix issues"
 
 # manually
 cd ~/my-project
@@ -62,8 +62,7 @@ Many skills and plugins are re-packaged and pre-installed in the image and avail
 Set `ENABLE_PLUGINS` to a space-separated list of plugin names to select which plugins are enabled at startup (default: `sc`):
 
 ```bash
-export ENABLE_PLUGINS="sc cs aas-web-wizard"
-claude1
+ENABLE_PLUGINS="aas-essentials aas-web-wizard" claude1
 ```
 
 ## Remote dev environment
@@ -102,8 +101,7 @@ Run local Claude with remote execution:
 ```bash
 # with shell integration
 cd ~/my-project
-export DOCKER_HOST=tcp://127.0.0.1:2375
-claude1
+DOCKER_HOST=tcp://127.0.0.1:2375 claude1
 
 # manually
 cd ~/my-project
