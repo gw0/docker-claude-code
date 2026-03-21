@@ -4,7 +4,7 @@ Run Claude Code in an isolated Docker container with per-profile state, set of p
 
 - **Security isolation**: Non-root user, all capabilities dropped, startup security scans (AgentShield + unicode)
 - **Multi-profile support**: Isolated `~/.claude-<profile>` state per profile, switch accounts without re-login
-- **Plugins and skills**: SuperClaude, claude-skills, and 33+ antigravity-awesome-skills bundles pre-installed
+- **Plugins and skills**: SuperClaude, claude-skills, codemap, and 33+ antigravity-awesome-skills bundles pre-installed
 - **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding for remote execution
 - **Pass-through CLI**: All extra arguments forwarded directly to `claude`
 
@@ -65,6 +65,7 @@ Plugins and skills come pre-installed in the image and managed via Claude Code's
 |--------|--------|---------|
 | `sc` | [SuperClaude Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 39 commands, 25 agents, 1 skill |
 | `cs` | [claude-skills](https://github.com/Jeffallan/claude-skills) | ~5 commands, 90 skills |
+| `codemap` | [codemap](https://github.com/AZidan/codemap) | 1 skill (structural codebase indexing, 60-80% token reduction) |
 | `aas-full` | [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) | all 1,273+ skills |
 | `aas-essentials` | antigravity | 5 skills |
 | `aas-security-engineer` | antigravity | 7 skills |
@@ -94,7 +95,7 @@ Plugins and skills come pre-installed in the image and managed via Claude Code's
 | `aas-oss-maintainer` | antigravity | 7 skills |
 | `aas-skill-author` | antigravity | 6 skills |
 
-Enable plugins at startup with the `ENABLE_PLUGINS` env var (default: `sc`):
+Enable plugins at startup with the `ENABLE_PLUGINS` env var (default: `sc codemap`):
 
 ```bash
 ENABLE_PLUGINS="aas-essentials aas-web-wizard" claude1
@@ -105,7 +106,7 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" claude1
 - `ANTHROPIC_API_KEY` — Anthropic API key passed into the container
 - `CLAUDE_IMAGE` — Docker image to use (default: `ghcr.io/gw0/docker-claude-code:main`)
 - `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `claude1 claude2 claudeapi`)
-- `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc`)
+- `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)
 - `FORCE_RESET_SESSIONS` — Set to `1` to wipe sessions/cache on container start
 - `SKIP_SECURITY_SCAN` — Set to `1` to skip AgentShield and unicode scans
 - `DOCKER_HOST` — Docker socket URL, e.g. for remote dev environments
