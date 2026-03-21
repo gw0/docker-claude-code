@@ -1,4 +1,4 @@
-# Containerized Claude Code and AI agents
+# Containerized Claude Code with multi-profile support
 
 Run Claude Code in an isolated Docker container with per-profile state, set of pre-installed plugins and skills, and support for remote dev environments. A single shell alias is all it takes.
 
@@ -65,13 +65,34 @@ Plugins and skills come pre-installed in the image and managed via Claude Code's
 |--------|--------|---------|
 | `sc` | [SuperClaude Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 39 commands, 25 agents, 1 skill |
 | `cs` | [claude-skills](https://github.com/Jeffallan/claude-skills) | ~5 commands, 90 skills |
-| `aas-essentials` | [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) | 5 essential skills |
-| `aas-security-engineer` | antigravity | 7 security skills |
-| `aas-web-wizard` | antigravity | 7 web skills |
-| `aas-python` | antigravity | 7 Python skills |
-| `aas-devops` | antigravity | 7 DevOps skills |
-| `aas-full` | antigravity | all 1,273+ skills |
-| *(33 more aas-* bundles)* | antigravity | 5-8 skills each |
+| `aas-full` | [antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) | all 1,273+ skills |
+| `aas-essentials` | antigravity | 5 skills |
+| `aas-security-engineer` | antigravity | 7 skills |
+| `aas-security-developer` | antigravity | 6 skills |
+| `aas-web-wizard` | antigravity | 7 skills |
+| `aas-web-designer` | antigravity | 6 skills |
+| `aas-full-stack-developer` | antigravity | 6 skills |
+| `aas-agent-architect` | antigravity | 6 skills |
+| `aas-llm-application-developer` | antigravity | 5 skills |
+| `aas-indie-game-dev` | antigravity | 6 skills |
+| `aas-python-pro` | antigravity | 7 skills |
+| `aas-typescript-javascript` | antigravity | 5 skills |
+| `aas-systems-programming` | antigravity | 5 skills |
+| `aas-startup-founder` | antigravity | 6 skills |
+| `aas-business-analyst` | antigravity | 5 skills |
+| `aas-marketing-growth` | antigravity | 6 skills |
+| `aas-devops-cloud` | antigravity | 7 skills |
+| `aas-observability-monitoring` | antigravity | 6 skills |
+| `aas-data-analytics` | antigravity | 6 skills |
+| `aas-data-engineering` | antigravity | 5 skills |
+| `aas-creative-director` | antigravity | 6 skills |
+| `aas-qa-testing` | antigravity | 7 skills |
+| `aas-mobile-developer` | antigravity | 5 skills |
+| `aas-integration-apis` | antigravity | 5 skills |
+| `aas-architecture-design` | antigravity | 5 skills |
+| `aas-ddd-evented-architecture` | antigravity | 8 skills |
+| `aas-oss-maintainer` | antigravity | 7 skills |
+| `aas-skill-author` | antigravity | 6 skills |
 
 Enable plugins at startup with the `ENABLE_PLUGINS` env var (default: `sc`):
 
