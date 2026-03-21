@@ -127,6 +127,8 @@ ARG SUPERCLAUDE_VERSION=4.2.0
 ARG CLAUDE_SKILLS_VERSION=0.4.10
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 ARG AAS_VERSION=8.3.0
+# https://github.com/AZidan/codemap
+ARG CODEMAP_VERSION=d287058621acdf22ff4167f3ab72ce9014c2051a
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
@@ -162,6 +164,14 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
       antigravity-awesome-skills-*/docs/users/bundles.md \
       /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
  && rm -rf aas.tar.gz antigravity-awesome-skills-* /tmp/install-aas-bundles.py \
+    # install codemap (CLI + plugin)
+ && curl -sSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
+ && tar -xzf codemap.tar.gz \
+ && pip install "$(ls -d codemap-*/)[languages]" \
+ && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap \
+ && mv codemap-*/plugin/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
+ && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
+ && rm -rf codemap.tar.gz codemap-*/ \
     # generate local marketplace.json from all installed plugin.json files
  && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
       name:"local",description:"Local plugins",owner:{name:"local"}, \
