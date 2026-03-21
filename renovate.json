@@ -1,0 +1,39 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  "enabledManagers": ["dockerfile", "github-actions", "custom.regex"],
+  "dockerfile": {
+    "managerFilePatterns": ["^Dockerfile$"]
+  },
+  "dependencyDashboardTitle": "Renovate Dashboard",
+  "timezone": "UTC",
+  "schedule": ["before 4am on Monday"],
+  "packageRules": [
+    {
+      "description": "Group all Dockerfile dependency updates into one weekly PR",
+      "matchFileNames": ["Dockerfile"],
+      "groupName": "dockerfile deps",
+      "groupSlug": "dockerfile-deps"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Dockerfile ARG version pins with renovate annotations",
+      "managerFilePatterns": ["^Dockerfile$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?\\nARG [A-Z_]+=(?<currentValue>\\S+)"
+      ]
+    },
+    {
+      "customType": "regex",
+      "description": "Dockerfile ARG commit hash pins (git-refs)",
+      "managerFilePatterns": ["^Dockerfile$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) packageName=(?<packageName>\\S+)(?: currentValue=(?<currentValue>\\S+))?\\nARG [A-Z_]+=(?<currentDigest>[a-f0-9]{40})"
+      ],
+      "currentValueTemplate": "HEAD",
+      "versioningTemplate": "git"
+    }
+  ]
+}

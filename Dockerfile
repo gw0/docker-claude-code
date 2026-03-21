@@ -80,12 +80,16 @@ RUN apt-get update -qq \
 # NodeJS/Python packages
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
+# renovate: datasource=npm depName=@anthropic-ai/claude-code
 ARG CLAUDE_VERSION=2.1.80
 # https://github.com/Owloops/claude-powerline/releases
+# renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.20.1
 # https://github.com/affaan-m/agentshield/releases
+# renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.3.0
 # https://github.com/dandavison/delta/releases
+# renovate: datasource=github-releases depName=dandavison/delta
 ARG GITDELTA_VERSION=0.18.2
 
 ENV BUN_INSTALL=/usr/local/bun
@@ -122,12 +126,16 @@ RUN userdel -r bun \
 ##
 
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
+# renovate: datasource=github-releases depName=SuperClaude-Org/SuperClaude_Framework
 ARG SUPERCLAUDE_VERSION=4.2.0
 # https://github.com/Jeffallan/claude-skills/releases
+# renovate: datasource=github-releases depName=Jeffallan/claude-skills
 ARG CLAUDE_SKILLS_VERSION=0.4.10
 # https://github.com/sickn33/antigravity-awesome-skills/releases
+# renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
 ARG AAS_VERSION=8.3.0
 # https://github.com/AZidan/codemap
+# renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=d287058621acdf22ff4167f3ab72ce9014c2051a
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
