@@ -3,24 +3,33 @@
   "extends": ["config:best-practices"],
   "enabledManagers": ["dockerfile", "github-actions", "custom.regex"],
   "dockerfile": {
-    "managerFilePatterns": ["^Dockerfile$"]
+    "managerFilePatterns": ["/^[Dd]ocker[Ff]ile[^/]*$/"]
+  },
+  "github-actions": {
+    "managerFilePatterns": ["/^\\.github/(?:workflows|actions)/.+\\.ya?ml$/"]
   },
   "dependencyDashboardTitle": "Renovate Dashboard",
   "timezone": "UTC",
   "schedule": ["before 4am on Monday"],
   "packageRules": [
     {
-      "description": "Group all Dockerfile dependency updates into one weekly PR",
-      "matchFileNames": ["Dockerfile"],
+      "description": "Group all Dockerfile updates into one PR",
+      "matchFileNames": ["[Dd]ocker[Ff]ile*"],
       "groupName": "dockerfile deps",
       "groupSlug": "dockerfile-deps"
+    },
+    {
+      "description": "Group all CI/CD updates into one PR",
+      "matchFileNames": [".github/**"],
+      "groupName": "ci/cd deps",
+      "groupSlug": "cicd-deps"
     }
   ],
   "customManagers": [
     {
       "customType": "regex",
       "description": "Dockerfile ARG version pins with renovate annotations",
-      "managerFilePatterns": ["^Dockerfile$"],
+      "managerFilePatterns": ["/^[Dd]ocker[Ff]ile[^/]*$/"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?\\nARG [A-Z_]+=(?<currentValue>\\S+)"
       ]
@@ -28,11 +37,11 @@
     {
       "customType": "regex",
       "description": "Dockerfile ARG commit hash pins (git-refs)",
-      "managerFilePatterns": ["^Dockerfile$"],
+      "managerFilePatterns": ["/^[Dd]ocker[Ff]ile[^/]*$/"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) packageName=(?<packageName>\\S+)(?: currentValue=(?<currentValue>\\S+))?\\nARG [A-Z_]+=(?<currentDigest>[a-f0-9]{40})"
       ],
-      "currentValueTemplate": "HEAD",
+      "currentValueTemplate": "main",
       "versioningTemplate": "git"
     }
   ]
