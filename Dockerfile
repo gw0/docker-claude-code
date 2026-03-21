@@ -5,7 +5,7 @@
 #
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.7-debian
+FROM oven/bun:1.3.10-debian@sha256:367842b35abbdf23f39e23c71f3a08eee940ff2679a14e08a5afcf4a1436cd89
 
 ##
 # DEB packages
@@ -90,7 +90,7 @@ ARG CLAUDE_POWERLINE_VERSION=1.20.1
 ARG AGENTSHIELD_VERSION=1.3.0
 # https://github.com/dandavison/delta/releases
 # renovate: datasource=github-releases depName=dandavison/delta
-ARG GITDELTA_VERSION=0.18.2
+ARG GITDELTA_VERSION=0.19.0
 
 ENV BUN_INSTALL=/usr/local/bun
 RUN bun install -g \
@@ -133,7 +133,7 @@ ARG SUPERCLAUDE_VERSION=4.2.0
 ARG CLAUDE_SKILLS_VERSION=0.4.10
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=8.3.0
+ARG AAS_VERSION=8.5.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=d287058621acdf22ff4167f3ab72ce9014c2051a
