@@ -10,10 +10,10 @@
   "schedule": ["before 4am on Monday"],
   "packageRules": [
     {
-      "description": "Group all Dockerfile dependency updates into one weekly PR",
-      "matchFileNames": ["Dockerfile"],
-      "groupName": "dockerfile deps",
-      "groupSlug": "dockerfile-deps"
+      "description": "Group all updates into one weekly PR",
+      "matchPackagePatterns": [".*"],
+      "groupName": "all deps",
+      "groupSlug": "all-deps"
     }
   ],
   "customManagers": [

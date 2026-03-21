@@ -1,0 +1,28 @@
+name: renovate
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # Monday 04:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Renovate
+        uses: renovatebot/github-action@v46.1.5
+        env:
+          RENOVATE_GIT_AUTHOR: "gw0-bot <gw0-bot@users.noreply.github.com>"
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+        with:
+          token: ${{ secrets.RENOVATE_TOKEN }}
