@@ -90,7 +90,7 @@ ARG CLAUDE_POWERLINE_VERSION=1.20.1
 ARG AGENTSHIELD_VERSION=1.4.0
 # https://github.com/dandavison/delta/releases
 # renovate: datasource=github-releases depName=dandavison/delta
-ARG GIT_DELTA_VERSION=0.19.0
+ARG GIT_DELTA_VERSION=0.19.1
 
 ENV BUN_INSTALL=/usr/local/bun
 RUN bun install -g \
@@ -127,13 +127,13 @@ RUN userdel -r bun \
 
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 # renovate: datasource=github-releases depName=SuperClaude-Org/SuperClaude_Framework
-ARG SUPERCLAUDE_VERSION=4.2.0
+ARG SUPERCLAUDE_VERSION=4.3.0
 # https://github.com/Jeffallan/claude-skills/releases
 # renovate: datasource=github-releases depName=Jeffallan/claude-skills
-ARG CLAUDE_SKILLS_VERSION=0.4.10
+ARG CLAUDE_SKILLS_VERSION=0.4.11
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=8.5.0
+ARG AAS_VERSION=8.7.1
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=d287058621acdf22ff4167f3ab72ce9014c2051a
