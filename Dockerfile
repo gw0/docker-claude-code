@@ -133,7 +133,7 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.11
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=8.7.1
+ARG AAS_VERSION=9.1.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=d287058621acdf22ff4167f3ab72ce9014c2051a
