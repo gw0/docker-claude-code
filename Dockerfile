@@ -81,16 +81,16 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.81
+ARG CLAUDE_VERSION=2.1.84
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.20.1
+ARG CLAUDE_POWERLINE_VERSION=1.21.1
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.4.0
 # https://github.com/dandavison/delta/releases
 # renovate: datasource=github-releases depName=dandavison/delta
-ARG GIT_DELTA_VERSION=0.19.1
+ARG GIT_DELTA_VERSION=0.19.2
 
 ENV BUN_INSTALL=/usr/local/bun
 RUN bun install -g \
@@ -133,10 +133,10 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.11
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=8.7.1
+ARG AAS_VERSION=8.10.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
-ARG CODEMAP_VERSION=d287058621acdf22ff4167f3ab72ce9014c2051a
+ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
