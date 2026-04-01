@@ -13,26 +13,10 @@
           "git": {
             "enabled": true
           },
-          "model": {
-            "enabled": false
-          },
-          "session": {
-            "enabled": true,
-            "type": "cost"
-          },
-          "today": {
-            "enabled": false
-          },
           "block": {
             "enabled": true,
             "type": "cost",
             "burnType": "none"
-          },
-          "version": {
-            "enabled": false
-          },
-          "tmux": {
-            "enabled": false
           },
           "context": {
             "enabled": true,
@@ -44,6 +28,25 @@
             "prefix": ""
           },
           "metrics": {
+            "enabled": false
+          },
+          "model": {
+            "enabled": false
+          },
+          "session": {
+            "enabled": false,
+            "type": "cost"
+          },
+          "sessionId": {
+            "enabled": false
+          },
+          "tmux": {
+            "enabled": false
+          },
+          "today": {
+            "enabled": false
+          },
+          "version": {
             "enabled": false
           }
         }
