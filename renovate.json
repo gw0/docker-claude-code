@@ -10,6 +10,7 @@
   },
   "dependencyDashboardTitle": "Renovate Dashboard",
   "timezone": "UTC",
+  "rebaseWhen": "behind-base-branch",
   "schedule": ["before 4am on Monday"],
   "packageRules": [
     {
