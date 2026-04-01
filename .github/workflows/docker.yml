@@ -7,9 +7,9 @@ on:
       - 'main'
     tags:
       - 'v*'
-  pull_request:
-    branches:
-      - 'main'
+  #pull_request:
+  #  branches:
+  #    - 'main'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -53,6 +53,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Prune old ghcr.io/gw0/docker-claude-code:pr-*
         uses: vlaurin/action-ghcr-prune@0cf7d39f88546edd31965acba78cdcb0be14d641 # v0.6.0
@@ -61,7 +63,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           organization: gw0
           container: docker-claude-code
-          keep-younger-than: 15 # days
+          keep-younger-than: 7 # days
           keep-last: 2
           prune-untagged: true
           prune-tags-regexes: ^pr-
