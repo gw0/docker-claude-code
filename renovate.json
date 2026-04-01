@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
+  "dependencyDashboardTitle": "Renovate Dashboard",
+  "rebaseWhen": "behind-base-branch",
+  "timezone": "UTC",
   "enabledManagers": ["dockerfile", "github-actions", "custom.regex"],
   "dockerfile": {
     "managerFilePatterns": ["/^[Dd]ocker[Ff]ile[^/]*$/"]
@@ -8,9 +11,6 @@
   "github-actions": {
     "managerFilePatterns": ["/^\\.github/(?:workflows|actions)/.+\\.ya?ml$/"]
   },
-  "dependencyDashboardTitle": "Renovate Dashboard",
-  "timezone": "UTC",
-  "schedule": ["before 4am on Monday"],
   "packageRules": [
     {
       "description": "Group all Dockerfile updates into one PR",
@@ -23,6 +23,10 @@
       "matchFileNames": [".github/**"],
       "groupName": "ci/cd deps",
       "groupSlug": "cicd-deps"
+    },
+    {
+      "matchPackageNames": ["@anthropic-ai/claude-code"],
+      "minimumReleaseAge": "0 days"
     }
   ],
   "customManagers": [
