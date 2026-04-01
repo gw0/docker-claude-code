@@ -7,6 +7,10 @@
 export CLAUDE_CONFIG_DIR=~/.claude
 mkdir -p ~/.claude/plugins/marketplaces
 
+# Initialize audit log (owner write-only to obscure access)
+touch ~/.claude/audit-log.jsonl
+chmod 200 ~/.claude/audit-log.jsonl
+
 # Force reset sessions
 if [[ "${FORCE_RESET_SESSIONS:-}" =~ ^[1YyTt]$ ]]; then
   rm -vrf ~/.claude/{cache,debug,file-history,memory,paste-cache,plans,projects,session-env,sessions,shell-snapshots,tasks,todos}

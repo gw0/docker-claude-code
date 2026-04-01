@@ -66,5 +66,32 @@
     "DISABLE_AUTOUPDATER": "1",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
   },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [{
+          "type": "command",
+          "command": "jq --arg ts \"$(date -u +%FT%TZ)\" -c '{ts:$ts,session:.session_id,event:\"SessionStart\",cwd:.cwd}' >> ~/.claude/audit-log.jsonl"
+        }]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [{
+          "type": "command",
+          "command": "jq --arg ts \"$(date -u +%FT%TZ)\" -c '{ts:$ts,session:.session_id,event:\"PreToolUse\",tool:.tool_name,input:.tool_input}' >> ~/.claude/audit-log.jsonl"
+        }]
+      }
+    ],
+    "ConfigChange": [
+      {
+        "hooks": [{
+          "type": "command",
+          "command": "jq --arg ts \"$(date -u +%FT%TZ)\" -c '{ts:$ts,session:.session_id,event:\"ConfigChange\",file:.file_path}' >> ~/.claude/audit-log.jsonl"
+        }]
+      }
+    ]
+  },
   "companyAnnouncements": [""]
 }
