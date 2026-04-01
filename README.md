@@ -1,4 +1,4 @@
-# Containerized Claude Code with multi-profile support
+# docker-claude-code - Containerized Claude Code
 
 Run Claude Code in an isolated Docker container with per-profile state, set of pre-installed plugins and skills, and support for remote dev environments. A single shell alias is all it takes.
 
@@ -12,7 +12,7 @@ Run Claude Code in an isolated Docker container with per-profile state, set of p
 ## Build
 
 ```bash
-docker build -t claude .
+docker build -t docker-claude-code .
 # or pull latest:
 docker pull ghcr.io/gw0/docker-claude-code:main
 ```
