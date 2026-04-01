@@ -5,8 +5,6 @@
 
 # Initialize claude env
 export CLAUDE_CONFIG_DIR=~/.claude
-ln -fsr .claude/.claude.json ~/.claude.json
-ln -fsr .claude/.claude.json.backup ~/.claude.json.backup
 mkdir -p ~/.claude/plugins/marketplaces
 
 # Force reset sessions

@@ -119,7 +119,12 @@ RUN userdel -r bun \
  && groupadd -g ${USER_GID} ${USER} \
  && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
     # setup dirs
- && mkdir -p /usr/local/bun /workspace /home/${USER}/.claude /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin
+ && mkdir -p /usr/local/bun /workspace \
+    # setup claude dirs and symlinks
+ && mkdir -p /etc/claude-code /home/${USER}/.claude /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
+ && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
+ && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
+ && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d
 
 ##
 # Claude plugins
