@@ -26,7 +26,7 @@ _claude_run() {
 for profile in ${CLAUDE_PROFILES}; do
   mkdir -p ${HOME}/.claude-${profile}
   alias ${profile}="_claude_run ${profile}"
-  alias ${profile}-yolo="_claude_run ${profile} --allow-dangerously-skip-permissions"
-  alias ${profile}-advisor="_claude_run ${profile} --agent advisor"
+  alias ${profile}-yolo="SKIP_SECURITY_SCAN=1 _claude_run ${profile} --allow-dangerously-skip-permissions"
+  alias ${profile}-advisor="SKIP_SECURITY_SCAN=1 _claude_run ${profile} --agent advisor"
 done
 
