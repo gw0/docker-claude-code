@@ -1,5 +1,5 @@
 #!/bin/bash
-# Bash aliases for containerized Claude Code
+# Bash aliases for claude-cage
 #
 #   echo 'source /path/to/claude-aliases.bashrc' >> ~/.bashrc
 
@@ -9,7 +9,8 @@ CLAUDE_PROFILES=${CLAUDE_PROFILES:-cc1 cc2 ccapi}
 _claude_run() {
   local profile="$1"; shift
   DOCKER_HOST=unix:///run/docker.sock docker run -it --rm \
-    -v "${HOME}/.claude-${profile}:/home/agent/.claude" \
+    -u "$(id -u):$(id -g)" \
+    -e HOME=/home/agent \
     -e ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
     -e CLAUDE_PROFILE="${profile}" \
     -e ENABLE_PLUGINS="${ENABLE_PLUGINS:-}" \
@@ -19,13 +20,14 @@ _claude_run() {
     --net host \
     --cap-drop ALL \
     --security-opt=no-new-privileges:true \
-    -v "${PWD}:/workspace/$(basename ${PWD}):rslave" \
-    -w "/workspace/$(basename ${PWD})" \
+    -v "${HOME}/.claude-${profile}:/home/agent/.claude" \
+    -v "${PWD}:${PWD}:rslave" \
+    -w "${PWD}" \
     ${CLAUDE_IMAGE} claude "$@"
 }
 
 for profile in ${CLAUDE_PROFILES}; do
-  mkdir -p ${HOME}/.claude-${profile}
+  mkdir -vp ${HOME}/.claude-${profile}
   alias ${profile}="_claude_run ${profile}"
   alias ${profile}-yolo="SKIP_SECURITY_SCAN=1 _claude_run ${profile} --allow-dangerously-skip-permissions"
   alias ${profile}-advisor="SKIP_SECURITY_SCAN=1 _claude_run ${profile} --agent advisor"

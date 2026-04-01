@@ -1,7 +1,7 @@
-# Dockerfile for containerized Claude Code
+# Dockerfile for claude-cage
 #
-#   docker build --progress=plain -t claude .
-#   docker run -it --rm -v ${HOME}/.claude:/home/agent/.claude -v ${PWD}:/workspace:rslave -w /workspace claude claude
+#   docker build --progress=plain -t claude-cage .
+#   docker run -it --rm -v ${HOME}/.claude:/home/agent/.claude -v ${PWD}:${PWD}:rslave -w ${PWD} claude-cage claude
 #
 # syntax=docker/dockerfile:1
 
@@ -117,14 +117,7 @@ ARG USER_GID=1000
 RUN userdel -r bun \
     # create non-root user
  && groupadd -g ${USER_GID} ${USER} \
- && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
-    # setup dirs
- && mkdir -p /usr/local/bun /workspace \
-    # setup claude dirs and symlinks
- && mkdir -p /etc/claude-code /home/${USER}/.claude /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
- && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
- && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
- && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d
+ && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER}
 
 ##
 # Claude plugins
@@ -186,6 +179,7 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
  && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
  && rm -rf codemap.tar.gz codemap-*/ \
     # generate local marketplace.json from all installed plugin.json files
+ && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
  && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
       name:"local",description:"Local plugins",owner:{name:"local"}, \
       plugins:[.[]|{name:.name,description:.description,source:("./plugins/"+.name)}]}' \
@@ -199,6 +193,7 @@ COPY claude-shared/ /home/${USER}/.claude-shared
 # Customize shell interface
 ##
 ENV EDITOR=vim
+ENV HOME=/home/agent
 RUN echo '# Shell customization (gw0)' >> /etc/bash.bashrc \
  && echo 'source /usr/share/bash-completion/bash_completion' >> /etc/bash.bashrc \
  && echo 'git config --global --add safe.directory "${PWD}"' >> /etc/bash.bashrc \
@@ -217,9 +212,14 @@ RUN echo '# Shell customization (gw0)' >> /etc/bash.bashrc \
  && echo 'set paste' >> /etc/vim/vimrc.local \
  && echo 'set pastetoggle=<F2>' >> /etc/vim/vimrc.local \
  && chmod +x /usr/local/bin/*.sh \
- && chown -R ${USER}:${USER} /usr/local/bun /workspace /home/${USER}
+    # setup claude dirs and symlinks
+ && mkdir -p /etc/claude-code /home/${USER}/.claude \
+ && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
+ && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
+ && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
+ && chown -R ${USER}:${USER} /home/${USER} \
+ && chmod 777 /home/${USER}
 
 USER ${USER}:${USER}
-WORKDIR /workspace
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/bin/bash"]
