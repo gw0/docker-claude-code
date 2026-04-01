@@ -49,6 +49,7 @@
   },
   "promptSuggestionEnabled": false,
   "respectGitignore": true,
+  "showClearContextOnPlanAccept": true,
   "spinnerTipsEnabled": false,
   "statusLine": {
     "type": "command",
@@ -59,7 +60,9 @@
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1",
     "CLAUDE_CODE_ENABLE_TELEMETRY": "0",
+    "CLAUDE_CODE_NO_FLICKER": "1",
     "CLAUDE_CODE_PLAN_MODE_REQUIRED": "1",
+    "CLAUDE_CODE_SUBPROCESS_ENV_SCRUB": "1",
     "DISABLE_AUTOUPDATER": "1",
     "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1"
   },
