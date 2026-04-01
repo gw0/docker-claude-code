@@ -38,6 +38,11 @@
             "enabled": true,
             "showPercentageOnly": true
           },
+          "env": {
+            "enabled": true,
+            "variable": "CLAUDE_PROFILE",
+            "prefix": ""
+          },
           "metrics": {
             "enabled": false
           }
