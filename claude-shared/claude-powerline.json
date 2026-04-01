@@ -2,13 +2,15 @@
   "theme": "dark",
   "display": {
     "style": "minimal",
+    "autoWrap": false,
     "charset": "text",
     "colorCompatibility": "ansi256",
     "lines": [
       {
         "segments": {
           "directory": {
-            "enabled": true
+            "enabled": true,
+            "style": "basename"
           },
           "git": {
             "enabled": true
@@ -20,7 +22,8 @@
           },
           "context": {
             "enabled": true,
-            "showPercentageOnly": true
+            "showPercentageOnly": true,
+            "percentageMode": "used"
           },
           "env": {
             "enabled": true,

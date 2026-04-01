@@ -53,7 +53,7 @@
   "spinnerTipsEnabled": false,
   "statusLine": {
     "type": "command",
-    "command": "claude-powerline"
+    "command": "claude-powerline | sed 's/ left)/)/'"
   },
   "voiceEnabled": false,
   "env": {
