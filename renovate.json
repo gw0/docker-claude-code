@@ -15,9 +15,11 @@
   "packageRules": [
     {
       "description": "Group all dependency updates into one PR",
-      "matchPackagePatterns": ["*"],
       "groupName": "all dependencies",
-      "groupSlug": "all-deps"
+      "groupSlug": "all-deps",
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "matchPackageNames": ["@anthropic-ai/claude-code"],
