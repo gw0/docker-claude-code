@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
   "dependencyDashboardTitle": "Renovate Dashboard",
+  "dependencyDashboardApproval": true,
   "rebaseWhen": "behind-base-branch",
   "timezone": "UTC",
   "enabledManagers": ["dockerfile", "github-actions", "custom.regex"],
@@ -13,16 +14,10 @@
   },
   "packageRules": [
     {
-      "description": "Group all Dockerfile updates into one PR",
-      "matchFileNames": ["[Dd]ocker[Ff]ile*"],
-      "groupName": "dockerfile deps",
-      "groupSlug": "dockerfile-deps"
-    },
-    {
-      "description": "Group all CI/CD updates into one PR",
-      "matchFileNames": [".github/**"],
-      "groupName": "ci/cd deps",
-      "groupSlug": "cicd-deps"
+      "description": "Group all dependency updates into one PR",
+      "matchPackagePatterns": ["*"],
+      "groupName": "all dependencies",
+      "groupSlug": "all-deps"
     },
     {
       "matchPackageNames": ["@anthropic-ai/claude-code"],
