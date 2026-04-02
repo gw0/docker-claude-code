@@ -78,7 +78,7 @@ RUN apt-get update -qq \
  && ln -s /tmp /var/tmp
 
 ##
-# NodeJS/Python packages
+# Claude tools
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
@@ -107,6 +107,54 @@ RUN bun install -g \
     # print versions
  && claude --version \
  && delta --version
+
+##
+# Lint/fmt tools
+##
+# https://github.com/reteps/dockerfmt/releases
+# renovate: datasource=github-releases depName=reteps/dockerfmt
+ARG DOCKERFMT_VERSION=0.3.9
+# https://github.com/mvdan/sh/releases
+# renovate: datasource=github-releases depName=mvdan/sh
+ARG SHFMT_VERSION=3.13.0
+# https://github.com/koalaman/shellcheck/releases
+# renovate: datasource=github-releases depName=koalaman/shellcheck
+ARG SHELLCHECK_VERSION=0.11.0
+# https://github.com/google/yamlfmt/releases
+# renovate: datasource=github-releases depName=google/yamlfmt
+ARG YAMLFMT_VERSION=0.21.0
+# https://www.npmjs.com/package/markdownlint-cli2
+# renovate: datasource=npm depName=markdownlint-cli2
+ARG MARKDOWNLINT_VERSION=0.22.0
+
+RUN : \
+    # install dockerfmt
+    && curl -sSLo dockerfmt.tar.gz \
+         https://github.com/reteps/dockerfmt/releases/download/v${DOCKERFMT_VERSION}/dockerfmt-v${DOCKERFMT_VERSION}-linux-amd64.tar.gz \
+    && tar -xzf dockerfmt.tar.gz dockerfmt \
+    && mv dockerfmt /usr/local/bin/ \
+    && rm dockerfmt.tar.gz \
+    # install shfmt
+    && curl -sSLo /usr/local/bin/shfmt https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64 \
+    && chmod +x /usr/local/bin/shfmt \
+    # install shellcheck
+    && curl -sSLo shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
+    && tar -xf shellcheck.tar.xz shellcheck-v${SHELLCHECK_VERSION}/shellcheck \
+    && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/local/bin/ \
+    && rm -rf shellcheck.tar.xz shellcheck-v${SHELLCHECK_VERSION}/ \
+    # install yamlfmt
+    && curl -sSLo yamlfmt.tar.gz https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz \
+    && tar -xzf yamlfmt.tar.gz yamlfmt \
+    && mv yamlfmt /usr/local/bin/ \
+    && rm yamlfmt.tar.gz \
+    # install markdownlint-cli2
+    && bun install -g markdownlint-cli2@${MARKDOWNLINT_VERSION} \
+    # print versions
+    && shfmt --version \
+    && yamlfmt --version \
+    && dockerfmt version \
+    && shellcheck --version \
+    && markdownlint-cli2 .nonexistent
 
 ##
 # User configuration
