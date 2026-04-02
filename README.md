@@ -63,7 +63,7 @@ docker run -it --rm \
 Plugins and skills come pre-installed in the image and managed via Claude Code's native plugin system (use `/plugin` and `/reload-plugins` to enable them on-demand, resets on restart).
 
 | Plugin | Source | Content |
-|--------|--------|---------|
+| ------ | ------ | ------- |
 | `sc` | [SuperClaude Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 39 commands, 25 agents, 1 skill |
 | `cs` | [claude-skills](https://github.com/Jeffallan/claude-skills) | ~5 commands, 90 skills |
 | `codemap` | [codemap](https://github.com/AZidan/codemap) | 1 skill (structural codebase indexing, 60-80% token reduction) |
@@ -133,7 +133,7 @@ In your project dir set up a containerized dev environment similar to `remote-ex
 
 Start and manage a remote dev environment (via SSH):
 
-```
+```bash
 cd ~/my-project
 DOCKER_HOST=ssh://user@remote mutagen project start
 mutagen project list

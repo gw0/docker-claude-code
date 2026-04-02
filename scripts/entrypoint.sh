@@ -5,12 +5,14 @@
 if ! getent passwd "$(id -u)" &>/dev/null; then
   export NSS_WRAPPER_PASSWD=/tmp/passwd
   export NSS_WRAPPER_GROUP=/tmp/group
-  echo "agent:x:$(id -u):$(id -g):agent:/home/agent:/bin/bash" >${NSS_WRAPPER_PASSWD}
-  echo "agent:x:$(id -g):" >${NSS_WRAPPER_GROUP}
-  export LD_PRELOAD=$(ls -1 /usr/lib/*/libnss_wrapper.so | head -1)
+  echo "agent:x:$(id -u):$(id -g):agent:/home/agent:/bin/bash" >"${NSS_WRAPPER_PASSWD}"
+  echo "agent:x:$(id -g):" >"${NSS_WRAPPER_GROUP}"
+  LD_PRELOAD=$(echo /usr/lib/*/libnss_wrapper.so)
+  export LD_PRELOAD
 fi
 
 # Source .bashrc
+# shellcheck disable=SC1090
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 
 # Initialize claude env
@@ -42,8 +44,12 @@ done
 
 # Skip security scans if non-interactive
 for arg in "$@"; do
-  case "$arg" in
-    -p|--print|-h|--help|-v|--version|agents|auth|doctor|install|mcp|plugin|plugins|setup-token|update|upgrade) SKIP_SECURITY_SCAN=1; break ;;
+  case "${arg}" in
+  -p | --print | -h | --help | -v | --version | agents | auth | doctor | install | mcp | plugin | plugins | setup-token | update | upgrade)
+    SKIP_SECURITY_SCAN=1
+    break
+    ;;
+  *) ;;
   esac
 done
 unset arg

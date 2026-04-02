@@ -1,9 +1,9 @@
 name: renovate
 
 on:
-  schedule:
-    - cron: '0 4 * * *'  # Daily 04:00 UTC
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *' # daily 04:00 UTC
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
