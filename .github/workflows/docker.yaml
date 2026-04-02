@@ -60,7 +60,7 @@ jobs:
           output: trivy-results.sarif
           exit-code: "0"
           ignore-unfixed: true
-          #severity: CRITICAL,HIGH
+          severity: CRITICAL,HIGH
 
       - name: Upload Trivy SARIF
         uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4
