@@ -39,4 +39,5 @@ fmt:
 	git ls-files -- '*.md' \
 	    | xargs -r markdownlint-cli2 --fix --no-globs >/dev/null || ((errors++)); \
 	\
-	exit $$errors
+	echo "Done (errors: $${errors})"; \
+	exit $${errors}
