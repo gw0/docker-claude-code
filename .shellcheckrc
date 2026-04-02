@@ -1,0 +1,4 @@
+# shellcheck config
+shell=bash
+enable=all
+disable=SC2312 # invoke command separately
