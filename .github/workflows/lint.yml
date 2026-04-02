@@ -7,12 +7,19 @@ on:
   pull_request:
 
 jobs:
-  fmt:
+  lint:
     runs-on: ubuntu-latest
-    container: ghcr.io/gw0/claude-cage:main
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
       - name: Run fmt
-        run: make fmt
-      - name: Check for uncommitted changes
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            ghcr.io/gw0/claude-cage:main \
+            make fmt
+
+      - name: Error on uncommitted changes
         run: git diff --exit-code
