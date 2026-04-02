@@ -9,9 +9,9 @@ on:
 jobs:
   fmt:
     runs-on: ubuntu-latest
-    container: ghcr.io/gw0/claude-cage:main
+    container: ghcr.io/gw0/claude-cage:main@sha256:ee3893dd0418b8a185358f5e71b8cc06be0eeebef9d9d12eb8ce293e753e4155
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Run fmt
         run: make fmt
       - name: Check for uncommitted changes
