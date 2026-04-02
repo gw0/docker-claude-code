@@ -15,7 +15,7 @@
   "packageRules": [
     {
       "description": "Group all dependency updates into one PR",
-      "matchPackagePatterns": ["*"],
+      "matchPackageNames": ["*"],
       "groupName": "all dependencies",
       "groupSlug": "all-deps"
     },
