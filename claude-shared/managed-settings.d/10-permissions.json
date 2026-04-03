@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "defaultMode": "plan",
+    "allow": [
+      "Bash(date*)", "Bash(ls*)", "Bash(mkdir*)", "Bash(wc*)",
+      "Bash(sort*)", "Bash(tr*)", "Bash(cat*)", "Bash(head*)",
+      "Bash(tail*)", "Bash(grep*)",
+      "Bash(git status*)", "Bash(git log*)", "Bash(git diff*)",
+      "Bash(git tag*)", "Bash(git add*)", "Bash(git commit*)"
+    ],
+    "deny": [
+      "Read(~/.**)", "Read(**/.env)", "Read(**/.env.*)",
+      "Bash(curl * | bash)", "Bash(curl * | sh)",
+      "Bash(wget * | bash)", "Bash(wget * | sh)",
+      "Bash(ssh *)", "Bash(scp *)", "Bash(nc *)",
+      "Bash(rm -rf*)", "Bash(sudo *)", "Bash(chmod 777*)",
+      "Bash(* > /dev/*)",
+      "Bash(cat ~/.**)", "Bash(cat * ~/.**)",
+      "Bash(head ~/.**)", "Bash(head * ~/.**)",
+      "Bash(tail ~/.**)", "Bash(tail * ~/.**)",
+      "Bash(grep ~/.**)", "Bash(grep * ~/.**)"
+    ]
+  }
+}

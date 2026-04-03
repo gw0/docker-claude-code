@@ -34,13 +34,16 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
 3. **`scripts/entrypoint.sh`** — Container init chain: maps arbitrary UID/GID via NSS wrapper → initializes `~/.claude` → sets up audit log → symlinks shared config from image → enables plugins (default: `sc codemap`) → runs security scans (AgentShield + unicode detection) → execs `claude` with all arguments.
 
 4. **`claude-shared/`** — Shared config copied into the image:
-   - `managed-settings.d/00-defaults.json`: Default Claude settings (plan mode, sonnet model, tool allow/deny lists, audit-logging hooks)
+   - `managed-settings.d/10-core.json`: Model, UI prefs, env vars
+   - `managed-settings.d/10-permissions.json`: Tool allow/deny lists and default plan mode
+   - `managed-settings.d/10-hooks-audit-log.json`: Audit-logging hooks (SessionStart, PreToolUse, ConfigChange → `~/.claude/audit-log.jsonl`)
+   - `managed-settings.d/20-hooks-rtk.json`: RTK token compression hook (disable via `DISABLE_RTK=1`)
    - `agents/advisor.md`: Read-only advisory agent (WebFetch/WebSearch only)
    - `claude-powerline.json`: Prompt theme with cost/context display
 
 ### Permission Model
 
-`managed-settings.d/00-defaults.json` enforces plan mode by default with a tool allowlist (date, ls, mkdir, git status/log/diff/add/commit, etc.) and denylist (rm -rf, sudo, piped curl|bash, ssh, chmod 777). This file is symlinked at runtime via entrypoint.
+`managed-settings.d/10-permissions.json` enforces plan mode by default with a tool allowlist (date, ls, mkdir, git status/log/diff/add/commit, etc.) and denylist (rm -rf, sudo, piped curl|bash, ssh, chmod 777). These files are symlinked at runtime via entrypoint.
 
 ### Plugin System
 
