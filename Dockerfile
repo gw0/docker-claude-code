@@ -60,7 +60,7 @@ RUN apt-get update -qq \
         # system
         libnss-wrapper \
         unattended-upgrades \
-    && curl -sSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
+    && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list \
     && apt-get update -qq \
     && apt-get install -y --no-install-recommends \
@@ -103,7 +103,7 @@ RUN bun install -g \
     # install ecc-agentshield
     ecc-agentshield@${AGENTSHIELD_VERSION} \
     # install git-delta
-    && curl -sSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
+    && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
     && dpkg -i git-delta.deb \
     # print versions
     && claude --version \
@@ -130,21 +130,21 @@ ARG MARKDOWNLINT_VERSION=0.22.0
 
 RUN : \
     # install dockerfmt
-    && curl -sSLo dockerfmt.tar.gz \
+    && curl -fsSLo dockerfmt.tar.gz \
         https://github.com/reteps/dockerfmt/releases/download/v${DOCKERFMT_VERSION}/dockerfmt-v${DOCKERFMT_VERSION}-linux-amd64.tar.gz \
     && tar -xzf dockerfmt.tar.gz dockerfmt \
     && mv dockerfmt /usr/local/bin/ \
     && rm dockerfmt.tar.gz \
     # install shfmt
-    && curl -sSLo /usr/local/bin/shfmt https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64 \
+    && curl -fsSLo /usr/local/bin/shfmt https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64 \
     && chmod +x /usr/local/bin/shfmt \
     # install shellcheck
-    && curl -sSLo shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
+    && curl -fsSLo shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
     && tar -xf shellcheck.tar.xz shellcheck-v${SHELLCHECK_VERSION}/shellcheck \
     && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/local/bin/ \
     && rm -rf shellcheck.tar.xz shellcheck-v${SHELLCHECK_VERSION}/ \
     # install yamlfmt
-    && curl -sSLo yamlfmt.tar.gz https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz \
+    && curl -fsSLo yamlfmt.tar.gz https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz \
     && tar -xzf yamlfmt.tar.gz yamlfmt \
     && mv yamlfmt /usr/local/bin/ \
     && rm yamlfmt.tar.gz \
@@ -192,7 +192,7 @@ ARG RTK_VERSION=0.34.3
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
 # install superclaude
-RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
+RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
     && tar --wildcards -xzf superclaude.tar.gz \
         'SuperClaude_Framework-*/plugins/superclaude/commands/' \
         'SuperClaude_Framework-*/plugins/superclaude/skills/' \
@@ -204,7 +204,7 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
     && mv SuperClaude_Framework-*/plugins/superclaude/agents/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/agents/ \
     && rm -rf superclaude.tar.gz SuperClaude_Framework-* \
     # install claude-skills
-    && curl -sSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
+    && curl -fsSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
     && tar --wildcards -xzf claude-skills.tar.gz \
         claude-skills-*/commands/ \
         claude-skills-*/skills/ \
@@ -214,7 +214,7 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
     && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
     && rm -rf claude-skills.tar.gz claude-skills-* \
     # install antigravity-awesome-skills (split into editorial bundles)
-    && curl -sSLo aas.tar.gz https://github.com/sickn33/antigravity-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
+    && curl -fsSLo aas.tar.gz https://github.com/sickn33/antigravity-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
         'antigravity-awesome-skills-*/skills/' \
         'antigravity-awesome-skills-*/docs/users/bundles.md' \
@@ -224,7 +224,7 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
         /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
     && rm -rf aas.tar.gz antigravity-awesome-skills-* /tmp/install-aas-bundles.py \
     # install codemap (CLI + plugin)
-    && curl -sSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
+    && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
     && tar -xzf codemap.tar.gz \
     && pip install "$(ls -d codemap-*/)[languages]" \
     && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap \
@@ -232,11 +232,11 @@ RUN curl -sSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude
     && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
     && rm -rf codemap.tar.gz codemap-*/ \
     # install rtk (CLI + PreToolUse hook)
-    && curl -sSLo rtk.tar.gz "https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz" \
+    && curl -fsSLo rtk.tar.gz "https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz" \
     && tar -xzf rtk.tar.gz rtk \
     && mv rtk /usr/local/bin/ \
     && rm rtk.tar.gz \
-    && curl -sSLo rtk-src.tar.gz "https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz" \
+    && curl -fsSLo rtk-src.tar.gz "https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz" \
     && mkdir -p /home/${USER}/.claude-shared/hooks \
     && tar --wildcards -xzf rtk-src.tar.gz 'rtk-*/hooks/claude/rtk-rewrite.sh' \
     && mv rtk-*/hooks/claude/rtk-rewrite.sh /home/${USER}/.claude-shared/hooks/ \
