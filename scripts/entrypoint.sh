@@ -15,9 +15,9 @@ fi
 # shellcheck disable=SC1090
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 
-# Initialize claude env
+# Initialize dirs
 export CLAUDE_CONFIG_DIR=~/.claude
-mkdir -p ~/.claude/plugins/marketplaces
+mkdir -p ~/.claude/plugins/marketplaces/ ~/.claude/.gh-config/
 
 # Initialize audit log (owner write-only to obscure access)
 touch ~/.claude/audit-log.jsonl
@@ -69,5 +69,15 @@ if [[ ! "${DISABLE_SECURITY_SCAN:-}" =~ ^[1YyTt]$ ]]; then
     echo "WARNING: Hidden Unicode characters detected in project files!"
   fi
 fi
+
+# Startup notice
+gh_user=$(gh config get -h github.com user 2>/dev/null)
+git_author_name=$(git config --global author.name 2>/dev/null || git config --global user.name 2>/dev/null)
+git_author_email=$(git config --global author.email 2>/dev/null || git config --global user.email 2>/dev/null)
+git_committer_name=$(git config --global committer.name 2>/dev/null || git config --global user.name 2>/dev/null)
+git_committer_email=$(git config --global committer.email 2>/dev/null || git config --global user.email 2>/dev/null)
+[[ "${git_author_name}" == "${git_committer_name}" && "${git_author_email}" == "${git_committer_email}" ]] && unset git_committer_name git_committer_email
+echo "# Profile: ${CLAUDE_PROFILE:-(unknown)} | GitHub: ${gh_user:-(none)} | Git: ${git_author_name:-(none)} <${git_author_email}>${git_committer_name:+, ${git_committer_name} <${git_committer_email}>}"
+echo
 
 exec "$@"

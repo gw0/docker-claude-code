@@ -277,10 +277,12 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
     && chmod +x /usr/local/bin/*.sh \
     # setup claude dirs and symlinks
-    && mkdir -p /etc/claude-code /home/${USER}/.claude \
+    && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
     && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
     && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
     && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
+    && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
+    && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
     && chown -R ${USER}:${USER} /home/${USER} \
     && chmod 777 /home/${USER}
 

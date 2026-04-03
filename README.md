@@ -3,7 +3,7 @@
 Run Claude Code in an isolated Docker container with per-profile state, security hardening, a set of pre-installed plugins and skills, and support for remote dev environments. A single shell alias is all it takes.
 
 - **Security isolation**: AI agent sandbox via non-root user, all capabilities dropped, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`
-- **Multi-profile support**: Per-profile auth state and history in `~/.claude-<profile>`, separate work and personal accounts, mix subscription and API key billing, optimized token usage
+- **Multi-profile support**: Per-profile persistent auth state and sessions in `~/.claude-<profile>`, separate work and personal accounts, mix subscription and API key billing, optimized token usage
 - **Plugins and skills**: SuperClaude, claude-skills, codemap, and 33+ antigravity-awesome-skills bundles pre-installed
 - **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding for remote execution
 - **Minimal by design**: A shell alias script and a Dockerfile, no dependencies beyond Docker, easy to read and modify
@@ -104,7 +104,7 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
 
 ## Env variables
 
-- `ANTHROPIC_API_KEY` — Anthropic API key passed into the container, can override a subscription profile with API key billing
+- `ANTHROPIC_API_KEY` — Use Anthropic API key billing, can temporarily override a subscription profile
 - `CLAUDE_IMAGE` — Docker image to use (default: `ghcr.io/gw0/docker-claude-code:main`)
 - `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccapi`)
 - `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)
@@ -112,6 +112,26 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
 - `DISABLE_SECURITY_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
 - `DISABLE_RTK` — Set to `1` to disable [RTK](https://github.com/rtk-ai/rtk) token compression
 - `DOCKER_HOST` — Docker socket URL, e.g. for remote dev environments
+
+## Git/GitHub integration
+
+Create a separate GitHub bot user with classic PAT. First-time setup (run via `docker exec -it ...` or use "!" prefix inside Claude):
+
+```bash
+# Git-only integration
+git config --global user.name "Your Bot"
+git config --global user.email "you-bot@users.noreply.github.com"
+
+# Git/GitHub integration
+echo "YOUR_BOT_GITHUB_PAT" | gh auth login --with-token
+gh auth setup-git
+git config --global user.name "$(gh api user --jq '.name // .login')"
+git config --global user.email "$(gh api user --jq '.email // "\(.login)@users.noreply.github.com"')"
+git config --global author.name "Your Name"
+git config --global author.email "you@users.noreply.github.com"
+```
+
+Git config and GitHub CLI auth persist in the per-profile persistent dir.
 
 ## Remote dev environment
 
