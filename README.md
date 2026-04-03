@@ -1,4 +1,4 @@
-# docker-claude-code - Claude Code Container Sandbox
+# docker-claude-code - Dockerized Claude Code Sandbox
 
 Run Claude Code in an isolated Docker container with per-profile state, security hardening, a set of pre-installed plugins and skills, and support for remote dev environments. A single shell alias is all it takes.
 
@@ -19,12 +19,13 @@ docker pull ghcr.io/gw0/docker-claude-code:main
 
 ## Install
 
-For shell integration update `~/.bashrc` (provide profile names, replace `/path/to`):
+Download the aliases file, customize your profile names (`CLAUDE_PROFILES`), and source it in `~/.bashrc`:
 
 ```bash
-echo "CLAUDE_PROFILES='cc1 ccpersonal claudeapi'" >> ~/.bashrc
-echo "source /path/to/claude-aliases.bashrc" >> ~/.bashrc
+curl -fsSLo ~/.claude-aliases.bashrc https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-aliases.bashrc
 
+echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.bashrc
+echo 'source ~/.claude-aliases.bashrc' >> ~/.bashrc
 source ~/.bashrc
 ```
 
