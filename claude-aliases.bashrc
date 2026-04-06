@@ -8,7 +8,7 @@ CLAUDE_PROFILES=${CLAUDE_PROFILES:-cc1 cc2 ccapi}
 
 _claude_run() {
   local profile="$1"; shift
-  DOCKER_HOST=unix:///run/docker.sock docker run -it --rm \
+  docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
     -e ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
@@ -17,8 +17,7 @@ _claude_run() {
     -e FORCE_RESET_SESSIONS="${FORCE_RESET_SESSIONS:-}" \
     -e DISABLE_SECURITY_SCAN="${DISABLE_SECURITY_SCAN:-}" \
     -e DISABLE_RTK="${DISABLE_RTK:-}" \
-    -e DOCKER_HOST="${DOCKER_HOST:-}" \
-    --net host \
+    ${DOCKER_EXTRA_ARGS:-} \
     --cap-drop ALL \
     --security-opt=no-new-privileges:true \
     -v "${HOME}/.claude-${profile}:/home/agent/.claude" \

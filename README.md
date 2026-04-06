@@ -112,7 +112,7 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
 - `FORCE_RESET_SESSIONS` — Set to `1` to wipe sessions/cache on container start
 - `DISABLE_SECURITY_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
 - `DISABLE_RTK` — Set to `1` to disable [RTK](https://github.com/rtk-ai/rtk) token compression
-- `DOCKER_HOST` — Docker socket URL, e.g. for remote dev environments
+- `DOCKER_EXTRA_ARGS` — Extra arguments passed to `docker run` (e.g. `-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host` for remote dev environment)
 
 ## Git/GitHub integration
 
@@ -138,7 +138,7 @@ Git config and GitHub CLI auth persist in the per-profile persistent dir.
 
 Claude runs locally, edits files in the local workspace, but executes commands in the remote dev environment via Docker socket forwarding.
 
-1. Local: Claude container runs locally, edits files in workspace, has access to local port (set as `DOCKER_HOST`)
+1. Local: Claude container runs locally, edits files in workspace, has access to forwarded local port
 2. Mutagen: Syncs workspace files bidirectionally (`local workspace <-> remote workspace`)
 3. Mutagen: Forwards local connections to remote restricted Docker socket (`local port -> remote dev-docker-proxy`)
 4. Remote: Restrict that only EXEC commands get to remote Docker socket (`remote dev-docker-proxy -> remote Docker socket`)
@@ -170,7 +170,7 @@ Run local Claude with remote execution:
 ```bash
 # with shell integration
 cd ~/my-project
-DOCKER_HOST=tcp://127.0.0.1:2375 cc1
+DOCKER_EXTRA_ARGS="-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host" cc1
 ```
 
 ## License
