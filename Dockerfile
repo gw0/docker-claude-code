@@ -83,10 +83,10 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.91
+ARG CLAUDE_VERSION=2.1.96
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.21.2
+ARG CLAUDE_POWERLINE_VERSION=1.23.5
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.4.0
@@ -114,10 +114,10 @@ RUN bun install -g \
 ##
 # https://github.com/reteps/dockerfmt/releases
 # renovate: datasource=github-releases depName=reteps/dockerfmt
-ARG DOCKERFMT_VERSION=0.3.9
+ARG DOCKERFMT_VERSION=0.5.2
 # https://github.com/mvdan/sh/releases
 # renovate: datasource=github-releases depName=mvdan/sh
-ARG SHFMT_VERSION=3.13.0
+ARG SHFMT_VERSION=3.13.1
 # https://github.com/koalaman/shellcheck/releases
 # renovate: datasource=github-releases depName=koalaman/shellcheck
 ARG SHELLCHECK_VERSION=0.11.0
@@ -181,13 +181,13 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.11
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=9.4.0
+ARG AAS_VERSION=9.9.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.34.3
+ARG RTK_VERSION=0.35.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
