@@ -1,6 +1,9 @@
 #!/bin/bash
 # Bash aliases for docker-claude-code
 #
+# Configure profiles and pin to a version tag:
+#   echo 'export CLAUDE_IMAGE=ghcr.io/gw0/docker-claude-code:v0.5.0' >> ~/.bashrc
+#   echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.bashrc
 #   echo 'source /path/to/claude-aliases.bashrc' >> ~/.bashrc
 
 CLAUDE_IMAGE=${CLAUDE_IMAGE:-ghcr.io/gw0/docker-claude-code:main}
@@ -11,6 +14,8 @@ _claude_run() {
   local script_dir="${BASH_SOURCE[0]:-$0}"; script_dir="${script_dir%/*}"
   local vol_opts=":rslave"
   [[ "$(uname)" == "Darwin" ]] && vol_opts=""
+
+  # Run container (DOCKER_EXTRA_ARGS for user-controlled extra arguments)
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
@@ -30,8 +35,9 @@ _claude_run() {
     ${CLAUDE_IMAGE} claude "$@"
 }
 
+# Set up per-profile aliases
 for profile in ${CLAUDE_PROFILES}; do
-  mkdir -vp ${HOME}/.claude-${profile}
+  mkdir -vp "${HOME}/.claude-${profile}"
   alias ${profile}="_claude_run ${profile}"
   alias ${profile}-yolo="DISABLE_SECURITY_SCAN=1 _claude_run ${profile} --allow-dangerously-skip-permissions"
   alias ${profile}-advisor="DISABLE_SECURITY_SCAN=1 _claude_run ${profile} --permission-mode default --agent advisor"

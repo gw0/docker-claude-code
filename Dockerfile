@@ -284,6 +284,7 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
     && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
     && chown -R ${USER}:${USER} /home/${USER} \
+    # allow to run with any UID/GID as user with writable home
     && chmod 777 /home/${USER}
 
 USER ${USER}:${USER}

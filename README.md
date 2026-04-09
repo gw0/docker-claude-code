@@ -121,7 +121,7 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
 - `FORCE_RESET_SESSIONS` — Set to `1` to wipe sessions/cache on container start
 - `DISABLE_SECURITY_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
 - `DISABLE_RTK` — Set to `1` to disable [RTK](https://github.com/rtk-ai/rtk) token compression
-- `DOCKER_EXTRA_ARGS` — Extra arguments passed to `docker run` (e.g. `-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host` for remote dev environment)
+- `DOCKER_EXTRA_ARGS` — User-controlled extra arguments passed to `docker run` (e.g. `-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host` for remote dev environment)
 
 ## Git/GitHub integration
 
