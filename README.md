@@ -19,13 +19,15 @@ docker pull ghcr.io/gw0/docker-claude-code:main
 
 ## Install
 
-Download the aliases file, customize your profile names (`CLAUDE_PROFILES`), and source it in `~/.bashrc`:
+Download the shell alias script and hardened seccomp, customize your profile names (`CLAUDE_PROFILES`), and source it in `~/.bashrc`:
 
 ```bash
-curl -fsSLo ~/.claude-aliases.bashrc https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-aliases.bashrc
+mkdir -p ~/.config/docker-claude-code
+curl -fsSLo ~/.config/docker-claude-code/claude-aliases.bashrc https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-aliases.bashrc
+curl -fsSLo ~/.config/docker-claude-code/claude-seccomp.json https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-seccomp.json
 
 echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.bashrc
-echo 'source ~/.claude-aliases.bashrc' >> ~/.bashrc
+echo 'source ~/.config/docker-claude-code/claude-aliases.bashrc' >> ~/.bashrc
 source ~/.bashrc
 ```
 
