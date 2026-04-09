@@ -61,12 +61,16 @@ if [[ ! "${DISABLE_SECURITY_SCAN:-}" =~ ^[1YyTt]$ ]]; then
     agentshield scan --path .claude/ --format terminal || true
   fi
   # Suspicious overrides in project .claude/
-  if [[ -d ".claude" ]] && rg -qn 'enableAllProjectMcpServers|ANTHROPIC_BASE_URL' .claude/ 2>/dev/null; then
+  if [[ -d ".claude" ]] && rg -qn 'enableAllProjectMcpServers|ANTHROPIC_BASE_URL|CLAUDE_BASE_URL' .claude/ 2>/dev/null; then
     echo "WARNING: Suspicious overrides detected in project .claude/!"
   fi
-  # Hidden unicode scan (zero-width, bidi overrides)
-  if rg -qlP '[\x{200B}\x{200C}\x{200D}\x{2060}\x{FEFF}\x{202A}-\x{202E}]' . 2>/dev/null; then
+  # Hidden unicode scan (zero-width, bidi overrides/isolates, soft hyphen, interlinear annotation)
+  if rg -qlP '[\x{00AD}\x{200B}\x{200C}\x{200D}\x{2060}\x{FEFF}\x{202A}-\x{202E}\x{2066}-\x{2069}\x{FFF9}-\x{FFFB}]' . 2>/dev/null; then
     echo "WARNING: Hidden Unicode characters detected in project files!"
+  fi
+  # Unicode tag block and variation selectors (invisible LLM prompt injection / stealth payload encoding)
+  if rg -qlP '[\x{FE00}-\x{FE0F}\x{E0000}-\x{E007F}\x{E0100}-\x{E01EF}]' . 2>/dev/null; then
+    echo "WARNING: Unicode tag or variation selector characters detected — possible invisible prompt injection!"
   fi
 fi
 
