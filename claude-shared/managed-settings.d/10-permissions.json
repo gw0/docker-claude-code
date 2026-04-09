@@ -11,15 +11,18 @@
     ],
     "deny": [
       "Read(~/.**)", "Read(**/.env)", "Read(**/.env.*)",
-      "Bash(curl * | bash)", "Bash(curl * | sh)",
-      "Bash(wget * | bash)", "Bash(wget * | sh)",
-      "Bash(ssh *)", "Bash(scp *)", "Bash(nc *)",
-      "Bash(rm -rf*)", "Bash(sudo *)", "Bash(chmod 777*)",
+      "Bash(cat ~/.**)", "Bash(cat * ~/.**)", "Bash(cat **/.env)", "Bash(cat * **/.env)", "Bash(cat **/.env.*)", "Bash(cat * **/.env.*)",
+      "Bash(head ~/.**)", "Bash(head * ~/.**)", "Bash(head **/.env)", "Bash(head * **/.env)", "Bash(head **/.env.*)", "Bash(head * **/.env.*)",
+      "Bash(tail ~/.**)", "Bash(tail * ~/.**)", "Bash(tail **/.env)", "Bash(tail * **/.env)", "Bash(tail **/.env.*)", "Bash(tail * **/.env.*)",
+      "Bash(grep ~/.**)", "Bash(grep * ~/.**)", "Bash(grep **/.env)", "Bash(grep * **/.env)", "Bash(grep **/.env.*)", "Bash(grep * **/.env.*)",
       "Bash(* > /dev/*)",
-      "Bash(cat ~/.**)", "Bash(cat * ~/.**)",
-      "Bash(head ~/.**)", "Bash(head * ~/.**)",
-      "Bash(tail ~/.**)", "Bash(tail * ~/.**)",
-      "Bash(grep ~/.**)", "Bash(grep * ~/.**)"
+      "Bash(rm -rf*)", "Bash(sudo *)", "Bash(chmod 777*)",
+      "Bash(export ANTHROPIC_BASE_URL=*)", "Bash(export CLAUDE_BASE_URL=*)",
+      "Bash(export http_proxy=*)", "Bash(export https_proxy=*)",
+      "Bash(ssh *)", "Bash(scp *)", "Bash(nc *)",
+      "Bash(curl * | bash)", "Bash(curl * | sh)", "Bash(curl * | python*)", "Bash(curl * | node*)", "Bash(curl * | perl*)",
+      "Bash(wget * | bash)", "Bash(wget * | sh)", "Bash(wget * | python*)", "Bash(wget * | node*)", "Bash(wget * | perl*)",
+      "Bash(bash <(curl*))", "Bash(eval $(curl*))", "Bash(eval \"$(curl*)\")", "Bash(source <(curl*))", "Bash(. <(curl*))"
     ]
   }
 }
