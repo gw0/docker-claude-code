@@ -9,6 +9,8 @@ CLAUDE_PROFILES=${CLAUDE_PROFILES:-cc1 cc2 ccapi}
 _claude_run() {
   local profile="$1"; shift
   local script_dir="${BASH_SOURCE[0]:-$0}"; script_dir="${script_dir%/*}"
+  local vol_opts=":rslave"
+  [[ "$(uname)" == "Darwin" ]] && vol_opts=""
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
@@ -23,7 +25,7 @@ _claude_run() {
     --security-opt=no-new-privileges:true \
     --security-opt seccomp=${script_dir}/claude-seccomp.json \
     -v "${HOME}/.claude-${profile}:/home/agent/.claude" \
-    -v "${PWD}:${PWD}:rslave" \
+    -v "${PWD}:${PWD}${vol_opts}" \
     -w "${PWD}" \
     ${CLAUDE_IMAGE} claude "$@"
 }

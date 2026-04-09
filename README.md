@@ -2,7 +2,7 @@
 
 Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed skills and remote dev support. A simple shell alias is all it takes.
 
-- **Drop-in replacement**: Works exactly like `claude` — same arguments, same workflow, just run `cc1` instead of `claude`.
+- **Drop-in replacement**: Works exactly like `claude` — same arguments, same workflow, just run `cc1` instead of `claude`, Linux and MacOS support.
 - **Secure sandbox**: Non-root user, all capabilities dropped, hardened seccomp profile, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
 - **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
 - **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
@@ -20,16 +20,22 @@ docker pull ghcr.io/gw0/docker-claude-code:main
 
 ## Install
 
-Download the shell alias script and hardened seccomp, customize your profile names (`CLAUDE_PROFILES`), and source it in `~/.bashrc`:
+Download the shell alias script and hardened seccomp, customize profile names (`CLAUDE_PROFILES`), and source it in your shell:
 
 ```bash
 mkdir -p ~/.config/docker-claude-code
 curl -fsSLo ~/.config/docker-claude-code/claude-aliases.bashrc https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-aliases.bashrc
 curl -fsSLo ~/.config/docker-claude-code/claude-seccomp.json https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-seccomp.json
 
+# Linux (bash):
 echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.bashrc
 echo 'source ~/.config/docker-claude-code/claude-aliases.bashrc' >> ~/.bashrc
 source ~/.bashrc
+
+# macOS (zsh):
+echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.zshrc
+echo 'source ~/.config/docker-claude-code/claude-aliases.bashrc' >> ~/.zshrc
+source ~/.zshrc
 ```
 
 ## Usage
