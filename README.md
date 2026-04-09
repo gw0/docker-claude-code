@@ -1,13 +1,14 @@
 # docker-claude-code - Dockerized Claude Code Sandbox
 
-Run Claude Code in an isolated Docker container with per-profile state, security hardening, a set of pre-installed plugins and skills, and support for remote dev environments. A single shell alias is all it takes.
+Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed skills and remote dev support. A simple shell alias is all it takes.
 
-- **Security isolation**: AI agent sandbox via non-root user, all capabilities dropped, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`
-- **Multi-profile support**: Per-profile persistent auth state and sessions in `~/.claude-<profile>`, separate work and personal accounts, mix subscription and API key billing, optimized token usage
-- **Plugins and skills**: SuperClaude, claude-skills, codemap, and 33+ antigravity-awesome-skills bundles pre-installed
-- **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding for remote execution
-- **Minimal by design**: A shell alias script and a Dockerfile, no dependencies beyond Docker, easy to read and modify
-- **Pass-through CLI**: All extra arguments forwarded directly to `claude`
+- **Drop-in replacement**: Works exactly like `claude` — same arguments, same workflow, just run `cc1` instead of `claude`.
+- **Secure sandbox**: Non-root user, all capabilities dropped, hardened seccomp profile, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
+- **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
+- **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
+- **Plugins and skills**: SuperClaude, claude-skills, codemap, and 33+ antigravity-awesome-skills bundles pre-installed, enabled on demand via `/plugin`.
+- **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding allow executing commands in a remote dev environment.
+- **Minimal and auditable**: ~200 lines of shell + Dockerfile, no dependencies beyond Docker, small enough to read and modify — don't trust us, ask your AI to audit it.
 
 ## Build
 
@@ -55,9 +56,9 @@ ccapi-yolo -p "Please review latest changes and fix issues"
 # or manually (expert):
 cd ~/my-project
 docker run -it --rm \
-  -v ${HOME}/.claude-cc1:/home/agent/.claude \
-  -v ${PWD}:/workspace/$(basename ${PWD}):rslave \
-  -w /workspace/$(basename ${PWD}) \
+  -v "${HOME}/.claude-cc1:/home/agent/.claude" \
+  -v "${PWD}:${PWD}" \
+  -w "${PWD}" \
   ghcr.io/gw0/docker-claude-code:main claude
 ```
 
@@ -121,11 +122,11 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
 Create a separate GitHub bot user with classic PAT. First-time setup (run via `docker exec -it ...` or use "!" prefix inside Claude):
 
 ```bash
-# Git-only integration
+# Git-only integration:
 git config --global user.name "Your Bot"
 git config --global user.email "you-bot@users.noreply.github.com"
 
-# Git/GitHub integration
+# Git/GitHub integration:
 echo "YOUR_BOT_GITHUB_PAT" | gh auth login --with-token
 gh auth setup-git
 git config --global user.name "$(gh api user --jq '.name // .login')"
@@ -143,7 +144,7 @@ Claude runs locally, edits files in the local workspace, but executes commands i
 1. Local: Claude container runs locally, edits files in workspace, has access to forwarded local port
 2. Mutagen: Syncs workspace files bidirectionally (`local workspace <-> remote workspace`)
 3. Mutagen: Forwards local connections to remote restricted Docker socket (`local port -> remote dev-docker-proxy`)
-4. Remote: Restrict that only EXEC commands get to remote Docker socket (`remote dev-docker-proxy -> remote Docker socket`)
+4. Remote: Restrict so that only EXEC commands get to remote Docker socket (`remote dev-docker-proxy -> remote Docker socket`)
 5. Remote: Claude executes docker exec commands that run in remote dev-container (`docker exec -> ... -> dev-container`)
 
 Install dependencies:
@@ -153,7 +154,7 @@ curl -Lo mutagen.tar.gz https://github.com/mutagen-io/mutagen/releases/download/
 tar -xzf mutagen.tar.gz -C ~/bin
 ```
 
-In your project dir set up a containerized dev environment similar to `remote-example/`.
+In your project dir, set up a containerized dev environment similar to `remote-example/`.
 
 Start and manage a remote dev environment (via SSH):
 
@@ -170,7 +171,7 @@ mutagen project terminate
 Run local Claude with remote execution:
 
 ```bash
-# with shell integration
+# with shell integration:
 cd ~/my-project
 DOCKER_EXTRA_ARGS="-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host" cc1
 ```
