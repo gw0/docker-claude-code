@@ -32,17 +32,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine metadata ghcr.io/gw0/docker-claude-code
+      - name: Login to docker.io
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Determine metadata
         id: meta
         uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6
         with:
           images: |
             ghcr.io/gw0/docker-claude-code
+            docker.io/gw000/docker-claude-code
           labels: |
             org.opencontainers.image.title=gw0/docker-claude-code
-            org.opencontainers.image.description=Containerized Claude Code Docker image
+            org.opencontainers.image.description=${{ github.event.repository.description }}
 
-      - name: Build and push ghcr.io/gw0/docker-claude-code
+      - name: Build and push
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7
         with:
           file: Dockerfile
@@ -67,6 +75,15 @@ jobs:
         if: always()
         with:
           sarif_file: trivy-results.sarif
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: gw000/docker-claude-code
+          readme-filepath: ./README.md
+          short-description: ${{ github.event.repository.description }}
 
       - name: Prune old ghcr.io/gw0/docker-claude-code:pr-*
         uses: vlaurin/action-ghcr-prune@0cf7d39f88546edd31965acba78cdcb0be14d641 # v0.6.0

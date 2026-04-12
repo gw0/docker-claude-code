@@ -1,6 +1,8 @@
 # docker-claude-code - Dockerized Claude Code Sandbox
 
-Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed skills and remote dev support. A simple shell alias is all it takes.
+[GitHub](https://github.com/gw0/docker-claude-code) · [GHCR](https://github.com/gw0/docker-claude-code/pkgs/container/docker-claude-code) · [Docker Hub](https://hub.docker.com/r/gw000/docker-claude-code)
+
+Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed plugin/skill bundles and remote dev support. Drop-in replacement for `claude` — a simple shell alias is all it takes.
 
 - **Drop-in replacement**: Works exactly like `claude` — same arguments, same workflow, just run `cc1` instead of `claude`, Linux and MacOS support.
 - **Secure sandbox**: Non-root user, all capabilities dropped, hardened seccomp profile, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
@@ -16,6 +18,7 @@ Run **Claude Code in an isolated Docker container** with multi-profile support, 
 docker build -t docker-claude-code .
 # or pull latest:
 docker pull ghcr.io/gw0/docker-claude-code:main
+docker pull gw000/docker-claude-code:main
 ```
 
 ## Install
@@ -184,6 +187,4 @@ DOCKER_EXTRA_ARGS="-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host" cc1
 
 ## License
 
-Copyright &copy; 2025-2026 *gw0* [<http://gw.tnode.com/>] &lt;<gw.2026@ena.one>&gt;
-
-All code is licensed under the GNU Affero General Public License 3.0+ (`AGPL-3.0-or-later`). All modifications and complete source code must be made publicly available to any user.
+Copyright &copy; 2025-2026 [gw0](https://gw.tnode.com/) &lt;<gw.2026@ena.one>&gt;. Licensed under [AGPL-3.0-or-later](https://www.gnu.org/licenses/agpl-3.0).
