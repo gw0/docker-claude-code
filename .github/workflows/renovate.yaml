@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Renovate
-        uses: renovatebot/github-action@b67590ea780158ccd13192c22a3655a5231f869d # v46.1.8
+        uses: renovatebot/github-action@f66d8679fcfcfa051abde6e7a623007173bf5164 # v46.1.12
         env:
           RENOVATE_GIT_AUTHOR: "gw0-bot <gw0-bot@users.noreply.github.com>"
           RENOVATE_REPOSITORIES: ${{ github.repository }}

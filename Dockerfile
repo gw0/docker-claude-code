@@ -5,7 +5,7 @@
 #
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.11-slim@sha256:478281fdd196871c7e51ba6a820b7803a8ae97042ec86cdbc2e1c6b6626442d9
+FROM oven/bun:1.3.13-slim@sha256:7e8ed3961db1cdedf17d516dda87948cfedbd294f53bf16462e5b57ed3fff0f1
 
 ##
 # DEB packages
@@ -83,10 +83,10 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.96
+ARG CLAUDE_VERSION=2.1.123
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.23.5
+ARG CLAUDE_POWERLINE_VERSION=1.25.2
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.4.0
@@ -126,7 +126,7 @@ ARG SHELLCHECK_VERSION=0.11.0
 ARG YAMLFMT_VERSION=0.21.0
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
-ARG MARKDOWNLINT_VERSION=0.22.0
+ARG MARKDOWNLINT_VERSION=0.22.1
 
 RUN : \
     # install dockerfmt
@@ -178,16 +178,16 @@ RUN userdel -r bun \
 ARG SUPERCLAUDE_VERSION=4.3.0
 # https://github.com/Jeffallan/claude-skills/releases
 # renovate: datasource=github-releases depName=Jeffallan/claude-skills
-ARG CLAUDE_SKILLS_VERSION=0.4.11
+ARG CLAUDE_SKILLS_VERSION=0.4.13
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=9.9.0
+ARG AAS_VERSION=9.13.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.35.0
+ARG RTK_VERSION=0.38.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
