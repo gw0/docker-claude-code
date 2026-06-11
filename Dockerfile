@@ -83,10 +83,10 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.150
+ARG CLAUDE_VERSION=2.1.173
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.26.0
+ARG CLAUDE_POWERLINE_VERSION=1.27.0
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.4.0
@@ -187,7 +187,7 @@ ARG AAS_VERSION=10.10.0
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.40.0
+ARG RTK_VERSION=0.42.3
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
