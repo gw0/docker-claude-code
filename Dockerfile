@@ -83,7 +83,7 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.173
+ARG CLAUDE_VERSION=2.1.183
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.27.0
@@ -181,13 +181,13 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.15
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=12.5.0
+ARG AAS_VERSION=12.9.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.42.3
+ARG RTK_VERSION=0.42.4
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
