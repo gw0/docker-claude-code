@@ -83,7 +83,7 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.183
+ARG CLAUDE_VERSION=2.1.201
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.27.0
@@ -114,7 +114,7 @@ RUN bun install -g \
 ##
 # https://github.com/reteps/dockerfmt/releases
 # renovate: datasource=github-releases depName=reteps/dockerfmt
-ARG DOCKERFMT_VERSION=0.5.2
+ARG DOCKERFMT_VERSION=0.5.4
 # https://github.com/mvdan/sh/releases
 # renovate: datasource=github-releases depName=mvdan/sh
 ARG SHFMT_VERSION=3.13.1
@@ -126,7 +126,7 @@ ARG SHELLCHECK_VERSION=0.11.0
 ARG YAMLFMT_VERSION=0.21.0
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
-ARG MARKDOWNLINT_VERSION=0.22.1
+ARG MARKDOWNLINT_VERSION=0.23.0
 
 RUN : \
     # install dockerfmt
@@ -181,13 +181,13 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.15
 # https://github.com/sickn33/antigravity-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
-ARG AAS_VERSION=12.9.0
+ARG AAS_VERSION=12.10.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.42.4
+ARG RTK_VERSION=0.43.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
