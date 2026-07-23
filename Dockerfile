@@ -83,10 +83,10 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.201
+ARG CLAUDE_VERSION=2.1.218
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.27.0
+ARG CLAUDE_POWERLINE_VERSION=1.28.0
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.4.0
@@ -126,7 +126,7 @@ ARG SHELLCHECK_VERSION=0.11.0
 ARG YAMLFMT_VERSION=0.21.0
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
-ARG MARKDOWNLINT_VERSION=0.23.0
+ARG MARKDOWNLINT_VERSION=0.23.1
 
 RUN : \
     # install dockerfmt
