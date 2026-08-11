@@ -7,7 +7,12 @@
       "Bash(sort*)", "Bash(tr*)", "Bash(cat*)", "Bash(head*)",
       "Bash(tail*)", "Bash(grep*)",
       "Bash(git status*)", "Bash(git log*)", "Bash(git diff*)",
-      "Bash(git tag*)", "Bash(git add*)", "Bash(git commit*)"
+      "Bash(git tag*)", "Bash(git add*)", "Bash(git commit*)",
+      "Bash(rtk date*)", "Bash(rtk ls*)", "Bash(rtk mkdir*)", "Bash(rtk wc*)",
+      "Bash(rtk sort*)", "Bash(rtk tr*)", "Bash(rtk cat*)", "Bash(rtk head*)",
+      "Bash(rtk tail*)", "Bash(rtk grep*)",
+      "Bash(rtk git status*)", "Bash(rtk git log*)", "Bash(rtk git diff*)",
+      "Bash(rtk git tag*)", "Bash(rtk git add*)", "Bash(rtk git commit*)"
     ],
     "deny": [
       "Read(~/.**)", "Read(**/.env)", "Read(**/.env.*)",
@@ -15,6 +20,10 @@
       "Bash(head ~/.**)", "Bash(head * ~/.**)", "Bash(head **/.env)", "Bash(head * **/.env)", "Bash(head **/.env.*)", "Bash(head * **/.env.*)",
       "Bash(tail ~/.**)", "Bash(tail * ~/.**)", "Bash(tail **/.env)", "Bash(tail * **/.env)", "Bash(tail **/.env.*)", "Bash(tail * **/.env.*)",
       "Bash(grep ~/.**)", "Bash(grep * ~/.**)", "Bash(grep **/.env)", "Bash(grep * **/.env)", "Bash(grep **/.env.*)", "Bash(grep * **/.env.*)",
+      "Bash(rtk cat ~/.**)", "Bash(rtk cat * ~/.**)", "Bash(rtk cat **/.env)", "Bash(rtk cat * **/.env)", "Bash(rtk cat **/.env.*)", "Bash(rtk cat * **/.env.*)",
+      "Bash(rtk head ~/.**)", "Bash(rtk head * ~/.**)", "Bash(rtk head **/.env)", "Bash(rtk head * **/.env)", "Bash(rtk head **/.env.*)", "Bash(rtk head * **/.env.*)",
+      "Bash(rtk tail ~/.**)", "Bash(rtk tail * ~/.**)", "Bash(rtk tail **/.env)", "Bash(rtk tail * **/.env)", "Bash(rtk tail **/.env.*)", "Bash(rtk tail * **/.env.*)",
+      "Bash(rtk grep ~/.**)", "Bash(rtk grep * ~/.**)", "Bash(rtk grep **/.env)", "Bash(rtk grep * **/.env)", "Bash(rtk grep **/.env.*)", "Bash(rtk grep * **/.env.*)",
       "Bash(* > /dev/*)",
       "Bash(rm -rf*)", "Bash(sudo *)", "Bash(chmod 777*)",
       "Bash(export ANTHROPIC_BASE_URL=*)", "Bash(export CLAUDE_BASE_URL=*)",
