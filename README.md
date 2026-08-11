@@ -118,6 +118,7 @@ ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
 ## Env variables
 
 - `ANTHROPIC_API_KEY` — Use Anthropic API key billing, can temporarily override a subscription profile
+- `CLAUDE_CODE_OAUTH_TOKEN` — Use Claude Pro/Max/Team subscription, alternative to persisted login
 - `CLAUDE_IMAGE` — Docker image to use (default: `ghcr.io/gw0/docker-claude-code:main`)
 - `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccapi`)
 - `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)

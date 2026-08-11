@@ -20,6 +20,7 @@ _claude_run() {
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
     -e ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
+    -e CLAUDE_CODE_OAUTH_TOKEN="${CLAUDE_CODE_OAUTH_TOKEN:-}" \
     -e CLAUDE_PROFILE="${profile}" \
     -e ENABLE_PLUGINS="${ENABLE_PLUGINS:-}" \
     -e FORCE_RESET_SESSIONS="${FORCE_RESET_SESSIONS:-}" \
