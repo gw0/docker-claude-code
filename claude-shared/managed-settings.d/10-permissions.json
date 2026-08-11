@@ -24,5 +24,8 @@
       "Bash(wget * | bash)", "Bash(wget * | sh)", "Bash(wget * | python*)", "Bash(wget * | node*)", "Bash(wget * | perl*)",
       "Bash(bash <(curl*))", "Bash(eval $(curl*))", "Bash(eval \"$(curl*)\")", "Bash(source <(curl*))", "Bash(. <(curl*))"
     ]
+  },
+  "sandbox": {
+    "enabled": false
   }
 }
