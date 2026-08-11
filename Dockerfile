@@ -179,8 +179,8 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 # https://github.com/Jeffallan/claude-skills/releases
 # renovate: datasource=github-releases depName=Jeffallan/claude-skills
 ARG CLAUDE_SKILLS_VERSION=0.4.15
-# https://github.com/sickn33/antigravity-awesome-skills/releases
-# renovate: datasource=github-releases depName=sickn33/antigravity-awesome-skills
+# https://github.com/sickn33/agentic-awesome-skills/releases
+# renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
 ARG AAS_VERSION=12.10.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
@@ -213,16 +213,16 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
     && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
     && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
     && rm -rf claude-skills.tar.gz claude-skills-* \
-    # install antigravity-awesome-skills (split into editorial bundles)
-    && curl -fsSLo aas.tar.gz https://github.com/sickn33/antigravity-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
+    # install agentic-awesome-skills (split into editorial bundles)
+    && curl -fsSLo aas.tar.gz https://github.com/sickn33/agentic-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
-        'antigravity-awesome-skills-*/skills/' \
-        'antigravity-awesome-skills-*/docs/users/bundles.md' \
+        'agentic-awesome-skills-*/skills/' \
+        'agentic-awesome-skills-*/docs/users/bundles.md' \
     && python3 /tmp/install-aas-bundles.py \
-        antigravity-awesome-skills-*/skills/ \
-        antigravity-awesome-skills-*/docs/users/bundles.md \
+        agentic-awesome-skills-*/skills/ \
+        agentic-awesome-skills-*/docs/users/bundles.md \
         /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
-    && rm -rf aas.tar.gz antigravity-awesome-skills-* /tmp/install-aas-bundles.py \
+    && rm -rf aas.tar.gz agentic-awesome-skills-* /tmp/install-aas-bundles.py \
     # install codemap (CLI + plugin)
     && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
     && tar -xzf codemap.tar.gz \

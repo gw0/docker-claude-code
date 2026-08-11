@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Split antigravity-awesome-skills by editorial bundles.md as per-bundle plugin dirs."""
+"""Split agentic-awesome-skills by editorial bundles.md as per-bundle plugin dirs."""
 import json, os, re, shutil, sys
 
 
@@ -56,7 +56,7 @@ def main():
         label = slug.removeprefix("aas-").replace("-", " ").title()
         write_plugin(
             os.path.join(output_dir, slug), slug,
-            f"Antigravity {label} skills bundle (https://github.com/sickn33/antigravity-awesome-skills)",
+            f"AAS {label} skills bundle (https://github.com/sickn33/agentic-awesome-skills)",
             skills_src, skill_names,
         )
         print(f"  {slug}: {len(skill_names)} skills")
@@ -67,7 +67,7 @@ def main():
     )
     write_plugin(
         os.path.join(output_dir, "aas-full"), "aas-full",
-        "Antigravity full skills library (https://github.com/sickn33/antigravity-awesome-skills/)",
+        "AAS full skills library (https://github.com/sickn33/agentic-awesome-skills/)",
         skills_src, all_skills,
     )
     print(f"  aas-full: {len(all_skills)} skills")
