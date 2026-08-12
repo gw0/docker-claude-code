@@ -58,6 +58,7 @@ RUN apt-get update -qq \
         ripgrep \
         xxd \
         # system
+        bubblewrap \
         libnss-wrapper \
         unattended-upgrades \
     && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \

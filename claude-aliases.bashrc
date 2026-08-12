@@ -26,13 +26,14 @@ _claude_run() {
     -e FORCE_RESET_SESSIONS="${FORCE_RESET_SESSIONS:-}" \
     -e DISABLE_SECURITY_SCAN="${DISABLE_SECURITY_SCAN:-}" \
     -e DISABLE_RTK="${DISABLE_RTK:-}" \
-    ${DOCKER_EXTRA_ARGS:-} \
     --cap-drop ALL \
-    --security-opt=no-new-privileges:true \
+    --security-opt no-new-privileges=true \
+    --security-opt apparmor=unconfined \
     --security-opt seccomp=${script_dir}/claude-seccomp.json \
     -v "${HOME}/.claude-${profile}:/home/agent/.claude" \
     -v "${PWD}:${PWD}${vol_opts}" \
     -w "${PWD}" \
+    ${DOCKER_EXTRA_ARGS:-} \
     ${CLAUDE_IMAGE} claude "$@"
 }
 
