@@ -5,7 +5,7 @@
 Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed plugin/skill bundles and remote dev support. Drop-in replacement for `claude` — a simple shell alias is all it takes.
 
 - **Drop-in replacement**: Works exactly like `claude` — same arguments, same workflow, just run `cc1` instead of `claude`, Linux and MacOS support.
-- **Secure sandbox**: Non-root user, all capabilities dropped, hardened seccomp profile, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
+- **Secure sandbox**: Non-root user, all capabilities dropped, hardened seccomp profile, sandboxed Bash tool in nested bubblewrap, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
 - **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
 - **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
 - **Plugins and skills**: SuperClaude, claude-skills, codemap, and 33+ agentic-awesome-skills bundles pre-installed, enabled on demand via `/plugin`.
