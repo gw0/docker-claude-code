@@ -15,7 +15,7 @@
       "Bash(rtk git tag*)", "Bash(rtk git add*)", "Bash(rtk git commit*)"
     ],
     "deny": [
-      "Read(~/.**)", "Read(**/.env)", "Read(**/.env.*)",
+      "Read(~/.*)", "Read(**/.env)", "Read(**/.env.*)",
       "Bash(cat ~/.**)", "Bash(cat * ~/.**)", "Bash(cat **/.env)", "Bash(cat * **/.env)", "Bash(cat **/.env.*)", "Bash(cat * **/.env.*)",
       "Bash(head ~/.**)", "Bash(head * ~/.**)", "Bash(head **/.env)", "Bash(head * **/.env)", "Bash(head **/.env.*)", "Bash(head * **/.env.*)",
       "Bash(tail ~/.**)", "Bash(tail * ~/.**)", "Bash(tail **/.env)", "Bash(tail * **/.env)", "Bash(tail **/.env.*)", "Bash(tail * **/.env.*)",
@@ -35,6 +35,9 @@
     ]
   },
   "sandbox": {
-    "enabled": false
+    "enabled": true,
+    "enableWeakerNestedSandbox": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false
   }
 }

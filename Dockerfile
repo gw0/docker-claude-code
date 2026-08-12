@@ -282,6 +282,7 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
     && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
     && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
+    && ln -fsr /home/${USER}/.claude/.bashrc /home/${USER}/.bashrc \
     && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
     && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
     && chown -R ${USER}:${USER} /home/${USER} \
