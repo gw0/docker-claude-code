@@ -60,13 +60,9 @@ RUN apt-get update -qq \
         # system
         bubblewrap \
         libnss-wrapper \
+        podman \
+        podman-docker \
         unattended-upgrades \
-    && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list \
-    && apt-get update -qq \
-    && apt-get install -y --no-install-recommends \
-        # docker cli
-        docker-ce-cli \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     # configure installed
