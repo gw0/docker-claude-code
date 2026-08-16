@@ -11,8 +11,11 @@
 # Format and lint all code (shfmt, shellcheck, dockerfmt, yamlfmt, markdownlint-cli2)
 make fmt
 
-# Build the Docker image (ask user to run)
+# Build image (ask user to run)
 make build
+
+# Smoke test (ask user to run)
+make test
 ```
 
 CI enforces formatting: `lint.yaml` runs `make fmt` inside the image and fails if `git diff` shows changes. Always run `make fmt` before committing.

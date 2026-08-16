@@ -3,10 +3,14 @@
 CLAUDE_IMAGE ?= ghcr.io/gw0/docker-claude-code:main
 
 SHELL := /bin/bash
-.PHONY: build fmt
+.PHONY: fmt build test
 
 build:
 	docker build --progress=plain -t $(CLAUDE_IMAGE) .
+
+test: build
+	docker run --rm $(CLAUDE_IMAGE) claude --version
+	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash -ic ". ./claude-aliases.bashrc && cc1-yolo --version"' /dev/null
 
 fmt:
 	@errors=0; \
