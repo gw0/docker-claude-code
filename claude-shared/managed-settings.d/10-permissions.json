@@ -15,7 +15,13 @@
       "Bash(rtk git tag*)", "Bash(rtk git add*)", "Bash(rtk git commit*)"
     ],
     "deny": [
-      "Read(~/.*)", "Read(**/.env)", "Read(**/.env.*)",
+      "Read(~/.claude/.*)", "Read(~/.claude/*.key*)", "Read(~/.claude/session-env/*)",
+      "Read(~/.ssh/*)", "Read(~/.config/gh/*)", "Read(~/.docker/*)",
+      "Read(~/.aws/*)", "Read(~/.azure/*)", "Read(~/.config/gcloud/*)", "Read(~/.kube/*)",
+      "Read(~/.gnupg/*)", "Read(~/.password-store/*)", "Read(~/.vault-token)",
+      "Read(~/.netrc)", "Read(~/.git-credentials)", "Read(~/.npmrc)", "Read(~/.pypirc)", "Read(~/.my.cnf)",
+      "Read(~/.*_history)",
+      "Read(**/*credentials*)", "Read(**/.env)", "Read(**/.env.*)", "Read(**/*.key)", "Read(**/*.pem)",
       "Bash(cat ~/.**)", "Bash(cat * ~/.**)", "Bash(cat **/.env)", "Bash(cat * **/.env)", "Bash(cat **/.env.*)", "Bash(cat * **/.env.*)",
       "Bash(head ~/.**)", "Bash(head * ~/.**)", "Bash(head **/.env)", "Bash(head * **/.env)", "Bash(head **/.env.*)", "Bash(head * **/.env.*)",
       "Bash(tail ~/.**)", "Bash(tail * ~/.**)", "Bash(tail **/.env)", "Bash(tail * **/.env)", "Bash(tail **/.env.*)", "Bash(tail * **/.env.*)",
@@ -26,7 +32,7 @@
       "Bash(rtk grep ~/.**)", "Bash(rtk grep * ~/.**)", "Bash(rtk grep **/.env)", "Bash(rtk grep * **/.env)", "Bash(rtk grep **/.env.*)", "Bash(rtk grep * **/.env.*)",
       "Bash(* > /dev/*)",
       "Bash(rm -rf*)", "Bash(sudo *)", "Bash(chmod 777*)",
-      "Bash(export ANTHROPIC_BASE_URL=*)", "Bash(export CLAUDE_CODE_OAUTH_TOKEN=*)", "Bash(export CLAUDE_BASE_URL=*)",
+      "Bash(export ANTHROPIC_BASE_URL=*)", "Bash(export CLAUDE_BASE_URL=*)",
       "Bash(export http_proxy=*)", "Bash(export https_proxy=*)",
       "Bash(ssh *)", "Bash(scp *)", "Bash(nc *)",
       "Bash(curl * | bash)", "Bash(curl * | sh)", "Bash(curl * | python*)", "Bash(curl * | node*)", "Bash(curl * | perl*)",

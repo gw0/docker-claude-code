@@ -134,7 +134,7 @@ Create a separate GitHub bot user with classic PAT. First-time setup (run via `d
 ```bash
 # Git-only integration:
 git config --global user.name "Your Bot"
-git config --global user.email "you-bot@users.noreply.github.com"
+git config --global user.email "your-bot@users.noreply.github.com"
 
 # Git/GitHub integration:
 echo "YOUR_BOT_GITHUB_PAT" | gh auth login --with-token
@@ -142,7 +142,7 @@ gh auth setup-git
 git config --global user.name "$(gh api user --jq '.name // .login')"
 git config --global user.email "$(gh api user --jq '.email // "\(.login)@users.noreply.github.com"')"
 git config --global author.name "Your Name"
-git config --global author.email "you@users.noreply.github.com"
+git config --global author.email "your@users.noreply.github.com"
 ```
 
 Git config and GitHub CLI auth persist in the per-profile persistent dir.
