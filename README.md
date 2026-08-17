@@ -80,34 +80,65 @@ Plugins and skills come pre-installed in the image and managed via Claude Code's
 | `sc` | [SuperClaude Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 39 commands, 25 agents, 1 skill |
 | `cs` | [claude-skills](https://github.com/Jeffallan/claude-skills) | ~5 commands, 90 skills |
 | `codemap` | [codemap](https://github.com/AZidan/codemap) | 1 skill (structural codebase indexing, 60-80% token reduction) |
-| `aas-full` | [agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills) | all 1,583 skills |
+| `aas-full` | [agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills) | all 1,921 skills |
 | `aas-essentials` | agentic | 5 skills |
-| `aas-security-engineer` | agentic | 7 skills |
-| `aas-security-developer` | agentic | 6 skills |
-| `aas-web-wizard` | agentic | 7 skills |
-| `aas-web-designer` | agentic | 6 skills |
-| `aas-full-stack-developer` | agentic | 6 skills |
-| `aas-agent-architect` | agentic | 6 skills |
-| `aas-llm-application-developer` | agentic | 5 skills |
-| `aas-indie-game-dev` | agentic | 6 skills |
+| `aas-security-engineer` | agentic | 8 skills |
+| `aas-security-developer` | agentic | 7 skills |
+| `aas-web-wizard` | agentic | 8 skills |
+| `aas-web-designer` | agentic | 7 skills |
+| `aas-full-stack-developer` | agentic | 8 skills |
+| `aas-agent-architect` | agentic | 7 skills |
+| `aas-llm-application-developer` | agentic | 6 skills |
+| `aas-indie-game-dev` | agentic | 7 skills |
 | `aas-python-pro` | agentic | 7 skills |
 | `aas-typescript-javascript` | agentic | 5 skills |
 | `aas-systems-programming` | agentic | 5 skills |
-| `aas-startup-founder` | agentic | 6 skills |
+| `aas-startup-founder` | agentic | 7 skills |
 | `aas-business-analyst` | agentic | 5 skills |
-| `aas-marketing-growth` | agentic | 6 skills |
-| `aas-devops-cloud` | agentic | 7 skills |
+| `aas-marketing-growth` | agentic | 7 skills |
+| `aas-devops-cloud` | agentic | 8 skills |
 | `aas-observability-monitoring` | agentic | 6 skills |
-| `aas-data-analytics` | agentic | 6 skills |
+| `aas-data-analytics` | agentic | 7 skills |
 | `aas-data-engineering` | agentic | 5 skills |
 | `aas-creative-director` | agentic | 6 skills |
 | `aas-qa-testing` | agentic | 7 skills |
+| `aas-aas-web-app-builder` | agentic | 10 skills |
+| `aas-aas-product-design-studio` | agentic | 10 skills |
+| `aas-aas-security-engineer` | agentic | 10 skills |
+| `aas-aas-secure-app-builder` | agentic | 10 skills |
+| `aas-aas-documents-presentations` | agentic | 9 skills |
+| `aas-aas-data-analytics` | agentic | 10 skills |
+| `aas-aas-agent-mcp-builder` | agentic | 10 skills |
+| `aas-aas-qa-test-automation` | agentic | 10 skills |
+| `aas-aas-devops-cloud` | agentic | 10 skills |
+| `aas-aas-marketing-seo-growth` | agentic | 10 skills |
+| `aas-aas-automation-builder` | agentic | 10 skills |
+| `aas-aas-observability-ir` | agentic | 10 skills |
+| `aas-aas-python-api-builder` | agentic | 10 skills |
+| `aas-aas-mobile-app-builder` | agentic | 10 skills |
 | `aas-mobile-developer` | agentic | 5 skills |
-| `aas-integration-apis` | agentic | 5 skills |
+| `aas-integration-apis` | agentic | 6 skills |
 | `aas-architecture-design` | agentic | 5 skills |
 | `aas-ddd-evented-architecture` | agentic | 8 skills |
-| `aas-oss-maintainer` | agentic | 7 skills |
+| `aas-automation-builder` | agentic | 8 skills |
+| `aas-revops-crm-automation` | agentic | 7 skills |
+| `aas-commerce-payments` | agentic | 6 skills |
+| `aas-odoo-erp` | agentic | 7 skills |
+| `aas-azure-ai-cloud` | agentic | 6 skills |
+| `aas-expo-react-native` | agentic | 7 skills |
+| `aas-apple-platform-design` | agentic | 6 skills |
+| `aas-makepad-builder` | agentic | 6 skills |
+| `aas-seo-specialist` | agentic | 7 skills |
+| `aas-documents-presentations` | agentic | 8 skills |
+| `aas-oss-maintainer` | agentic | 10 skills |
 | `aas-skill-author` | agentic | 6 skills |
+| `aas-aas-accessibility-inclusive-ux` | agentic | 8 skills |
+| `aas-aas-api-platform-builder` | agentic | 10 skills |
+| `aas-aas-saas-launch-revenue` | agentic | 10 skills |
+| `aas-aas-ai-product-evaluation-ops` | agentic | 10 skills |
+| `aas-aas-data-engineering-platform` | agentic | 10 skills |
+| `aas-aas-privacy-compliance-engineering` | agentic | 6 skills |
+| `aas-aas-localization-international-growth` | agentic | 10 skills |
 | `claude-security@claude-plugins-official` | [official marketplace](https://code.claude.com/docs/en/claude-security) | on-demand multi-agent vulnerability scanner |
 | `security-guidance@claude-plugins-official` | [official marketplace](https://code.claude.com/docs/en/security-guidance) | in-session security reminders hook |
 

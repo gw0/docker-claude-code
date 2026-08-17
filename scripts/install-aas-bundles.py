@@ -14,8 +14,8 @@ def parse_bundles(md_path):
     with open(md_path) as f:
         for line in f:
             line = line.rstrip()
-            # Match: ### emoji The "Web Wizard" Pack
-            m = re.match(r'###.*The "(.+?)".*Pack', line)
+            # Match: ### emoji The "Web Wizard" Pack (or "... Plugin", etc.)
+            m = re.match(r'###.*The "(.+?)"', line)
             if m:
                 current = slugify(m.group(1))
                 bundles.setdefault(current, [])

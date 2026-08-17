@@ -31,7 +31,7 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
    - **Claude Tools**: `claude-code`, `claude-powerline`, `agentshield`, `git-delta` via Bun
    - **Lint/Format Tools**: `dockerfmt`, `shfmt`, `shellcheck`, `yamlfmt`, `markdownlint-cli2`
    - **User Setup**: Creates non-root `agent` user (UID 1000)
-   - **Claude Plugins**: SuperClaude, claude-skills, codemap, and 33+ agentic-awesome-skills bundles installed as local plugin marketplace
+   - **Claude Plugins**: SuperClaude, claude-skills, codemap, and 58 agentic-awesome-skills bundles installed as local plugin marketplace
    - **Shell Interface**: Bash customization, aliases, readline config
 
 3. **`scripts/entrypoint.sh`** — Container init chain: maps arbitrary UID/GID via NSS wrapper → initializes `~/.claude` → sets up audit log → symlinks shared config from image → enables plugins (default: `sc codemap`) → runs security scans (AgentShield + unicode detection) → execs `claude` with all arguments.
