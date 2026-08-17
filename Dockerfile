@@ -296,13 +296,13 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
     && chmod +x /usr/local/bin/*.sh \
     # setup claude dirs, persistent storage, and symlinks
-    && mkdir -p /home/${USER}/.claude/home /etc/claude-code /home/${USER}/.config \
+    && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
     && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
     && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
     && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
-    && ln -fsr /home/${USER}/.claude/home/.bashrc /home/${USER}/.bashrc \
-    && ln -fsr /home/${USER}/.claude/home/.gitconfig /home/${USER}/.gitconfig \
-    && ln -fsr /home/${USER}/.claude/home/.gh-config /home/${USER}/.config/gh \
+    && ln -fsr /home/${USER}/.claude/.bashrc /home/${USER}/.bashrc \
+    && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
+    && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
     && chown -R ${USER}:${USER} /home/${USER} \
     # allow to run with any UID/GID as user with writable home
     && chmod 777 /home/${USER}

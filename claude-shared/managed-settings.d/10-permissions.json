@@ -15,7 +15,7 @@
       "Bash(rtk git tag*)", "Bash(rtk git add*)", "Bash(rtk git commit*)"
     ],
     "deny": [
-      "Read(~/.claude/.*)", "Read(~/.claude/*.key*)", "Read(~/.claude/session-env/*)",
+      "Read(~/.claude/.claude.json*)", "Read(~/.claude/.credentials*)", "Read(~/.claude/*.key*)", "Read(~/.claude/*.jsonl)", "Read(~/.claude/session-env/*)",
       "Read(~/.ssh/*)", "Read(~/.config/gh/*)", "Read(~/.docker/*)",
       "Read(~/.aws/*)", "Read(~/.azure/*)", "Read(~/.config/gcloud/*)", "Read(~/.kube/*)",
       "Read(~/.gnupg/*)", "Read(~/.password-store/*)", "Read(~/.vault-token)",
