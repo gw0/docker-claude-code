@@ -189,8 +189,9 @@ ARG RTK_VERSION=0.43.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
-# install superclaude
-RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
+RUN : \
+    # bundle superclaude
+    && curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
     && tar --wildcards -xzf superclaude.tar.gz \
         'SuperClaude_Framework-*/plugins/superclaude/commands/' \
         'SuperClaude_Framework-*/plugins/superclaude/skills/' \
@@ -201,7 +202,7 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
     && mv SuperClaude_Framework-*/plugins/superclaude/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/skills/ \
     && mv SuperClaude_Framework-*/plugins/superclaude/agents/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/agents/ \
     && rm -rf superclaude.tar.gz SuperClaude_Framework-* \
-    # install claude-skills
+    # bundle claude-skills
     && curl -fsSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
     && tar --wildcards -xzf claude-skills.tar.gz \
         claude-skills-*/commands/ \
@@ -211,7 +212,7 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
     && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
     && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
     && rm -rf claude-skills.tar.gz claude-skills-* \
-    # install agentic-awesome-skills (split into editorial bundles)
+    # bundle agentic-awesome-skills (split into editorial bundles)
     && curl -fsSLo aas.tar.gz https://github.com/sickn33/agentic-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
         'agentic-awesome-skills-*/skills/' \
@@ -221,7 +222,7 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
         agentic-awesome-skills-*/docs/users/bundles.md \
         /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
     && rm -rf aas.tar.gz agentic-awesome-skills-* /tmp/install-aas-bundles.py \
-    # install codemap (CLI + plugin)
+    # bundle codemap (CLI + plugin)
     && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
     && tar -xzf codemap.tar.gz \
     && pip install "$(ls -d codemap-*/)[languages]" \
@@ -229,6 +230,13 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
     && mv codemap-*/plugin/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
     && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
     && rm -rf codemap.tar.gz codemap-*/ \
+    # generate local marketplace.json from all bundled plugin.json files
+    && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
+    && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
+      name:"local",description:"Local plugins",owner:{name:"local"}, \
+      plugins:[.[]|{name:.name,description:.description,source:("./plugins/"+.name)}]}' \
+        /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/*/.claude-plugin/plugin.json \
+        >/home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin/marketplace.json \
     # install rtk (CLI + PreToolUse hook)
     && curl -fsSLo rtk.tar.gz "https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz" \
     && tar -xzf rtk.tar.gz rtk \
@@ -239,14 +247,7 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
     && tar --wildcards -xzf rtk-src.tar.gz 'rtk-*/hooks/claude/rtk-rewrite.sh' \
     && mv rtk-*/hooks/claude/rtk-rewrite.sh /home/${USER}/.claude-shared/hooks/ \
     && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh \
-    && rm -rf rtk-src.tar.gz \
-    # generate local marketplace.json from all installed plugin.json files
-    && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
-    && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
-      name:"local",description:"Local plugins",owner:{name:"local"}, \
-      plugins:[.[]|{name:.name,description:.description,source:("./plugins/"+.name)}]}' \
-        /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/*/.claude-plugin/plugin.json \
-        >/home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin/marketplace.json
+    && rm -rf rtk-src.tar.gz
 
 ##
 # Managed settings and workarounds

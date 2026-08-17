@@ -8,7 +8,7 @@ Run **Claude Code in an isolated Docker container** with multi-profile support, 
 - **Secure sandbox**: Non-root user, all capabilities dropped, hardened seccomp profile, sandboxed Bash tool in nested bubblewrap, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
 - **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
 - **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
-- **Plugins and skills**: SuperClaude, claude-skills, codemap, and 33+ agentic-awesome-skills bundles pre-installed, enabled on demand via `/plugin`.
+- **Plugins and skills**: SuperClaude, claude-skills, codemap, 33+ agentic-awesome-skills bundles, and Anthropic's official marketplace, enabled on demand via `/plugin`.
 - **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding allow executing commands in a remote dev environment.
 - **Minimal and auditable**: ~200 lines of shell + Dockerfile, no dependencies beyond Docker, small enough to read and modify — don't trust us, ask your AI to audit it.
 
@@ -108,11 +108,14 @@ Plugins and skills come pre-installed in the image and managed via Claude Code's
 | `aas-ddd-evented-architecture` | agentic | 8 skills |
 | `aas-oss-maintainer` | agentic | 7 skills |
 | `aas-skill-author` | agentic | 6 skills |
+| `claude-security@claude-plugins-official` | [official marketplace](https://code.claude.com/docs/en/claude-security) | on-demand multi-agent vulnerability scanner |
+| `security-guidance@claude-plugins-official` | [official marketplace](https://code.claude.com/docs/en/security-guidance) | in-session security reminders hook |
 
 Enable plugins at startup with the `ENABLE_PLUGINS` env var (default: `sc codemap`):
 
 ```bash
 ENABLE_PLUGINS="aas-essentials aas-web-wizard" cc1
+ENABLE_PLUGINS="sc codemap claude-security@claude-plugins-official" cc1
 ```
 
 ## Env variables

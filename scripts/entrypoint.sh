@@ -36,10 +36,12 @@ find ~/.claude/plugins/marketplaces -maxdepth 1 -type l ! -exec test -e {} \; -e
 ln -fsr -t ~/.claude ~/.claude-shared/*
 ln -fsr -t ~/.claude/plugins/marketplaces ~/.claude-shared/plugins-marketplaces/*
 
-# Setup local plugins
+# Setup local and official marketplace and enable plugins
 claude plugins marketplace add ~/.claude/plugins/marketplaces/local >/dev/null
+claude plugins marketplace add anthropics/claude-plugins-official >/dev/null
 for plugin in ${ENABLE_PLUGINS:-sc codemap}; do
-  claude plugins enable "${plugin}@local" >/dev/null 2>&1
+  [[ "${plugin}" != *@* ]] && plugin="${plugin}@local"
+  claude plugins enable "${plugin}" >/dev/null 2>&1
 done
 
 # Skip security scans if non-interactive
