@@ -16,6 +16,10 @@ _claude_run() {
   [[ "$(uname)" == "Darwin" ]] && vol_opts=""
 
   # Run container (DOCKER_EXTRA_ARGS for user-controlled extra arguments)
+  #
+  # Trade-off: Rootless with capabilities dropped. Seccomp removes unused
+  # syscalls and only widens syscalls nested bwrap needs (no CAP_SYS_ADMIN).
+  # AppArmor stays unconfined for root-free setup.
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
