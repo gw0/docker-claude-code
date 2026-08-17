@@ -9,12 +9,12 @@ build:
 	docker build --progress=plain -t $(CLAUDE_IMAGE) .
 
 test:
-	# test container
+	echo "Testing container..."; \
 	docker run --rm $(CLAUDE_IMAGE) claude --version
-	# test alias
-	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash -ic ". ./claude-aliases.bashrc && cc1-yolo --version"' /dev/null
-	# test subcommand execiton
-	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash -ic ". ./claude-aliases.bashrc && cc1-yolo -p \"run: git status\""' /dev/null
+	echo "Testing alias..."; \
+	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo --version"' /dev/null
+	echo "Testing subcommand execution..."; \
+	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -p \"run: git status\""' /dev/null
 
 fmt:
 	@errors=0; \

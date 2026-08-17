@@ -65,7 +65,7 @@ jobs:
           CLAUDE_IMAGE: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
         run: |
           docker run --rm $CLAUDE_IMAGE claude --version
-          script -qec 'bash -ic ". ./claude-aliases.bashrc && cc1-yolo --version"' /dev/null
+          script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo --version"' /dev/null
 
       - name: Scan image
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
