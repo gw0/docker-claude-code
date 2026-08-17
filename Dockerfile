@@ -84,7 +84,7 @@ RUN apt-get update -qq \
 ARG CLAUDE_VERSION=2.1.233
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.28.0
+ARG CLAUDE_POWERLINE_VERSION=1.30.1
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
 ARG AGENTSHIELD_VERSION=1.4.0
@@ -124,7 +124,7 @@ ARG SHELLCHECK_VERSION=0.11.0
 ARG YAMLFMT_VERSION=0.21.0
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
-ARG MARKDOWNLINT_VERSION=0.23.1
+ARG MARKDOWNLINT_VERSION=0.23.2
 
 RUN : \
     # install dockerfmt
@@ -176,7 +176,7 @@ RUN userdel -r bun \
 ARG SUPERCLAUDE_VERSION=4.3.0
 # https://github.com/Jeffallan/claude-skills/releases
 # renovate: datasource=github-releases depName=Jeffallan/claude-skills
-ARG CLAUDE_SKILLS_VERSION=0.4.15
+ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
 ARG AAS_VERSION=12.10.0
@@ -185,7 +185,7 @@ ARG AAS_VERSION=12.10.0
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.43.0
+ARG RTK_VERSION=0.45.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
