@@ -36,7 +36,6 @@
   },
   "sandbox": {
     "enabled": true,
-    "enableWeakerNestedSandbox": true,
     "failIfUnavailable": true,
     "allowUnsandboxedCommands": false,
     "autoAllowBashIfSandboxed": false

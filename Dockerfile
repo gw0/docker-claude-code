@@ -248,8 +248,28 @@ RUN curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaud
         /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/*/.claude-plugin/plugin.json \
         >/home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin/marketplace.json
 
+##
+# Managed settings and workarounds
+##
+
 COPY scripts/* /usr/local/bin/
 COPY claude-shared/ /home/${USER}/.claude-shared
+
+RUN : \
+    # workaround for nested procfs mount failures (replaces buggy enableWeakerNestedSandbox)
+    && mv /usr/bin/bwrap /usr/bin/bwrap.real \
+    && ln -fsr /usr/local/bin/bwrap-shim.sh /usr/bin/bwrap
+
+#XXX: experimets with nested podman
+# RUN :\
+#     # force single-UID mapping in nested podman
+#     && rm -rf /etc/subuid /etc/subgid \
+#     # use vfs for nested podman storage ("Error: configure storage: 'overlay' is not supported over overlayfs")
+#     && mkdir -p /etc/containers \
+#     && printf '[storage]\ndriver = "vfs"' >>/etc/containers/storage.conf
+#     #&& printf '[storage]\ndriver = "overlay"\n\n[storage.options]\nignore_chown_errors = "true"\n' >>/etc/containers/storage.conf
+# # use ephemeral runtime dir if under sandboxed Bash tool (nested podman "cannot set user namespace")
+# ENV XDG_RUNTIME_DIR=/home/${USER}/.local
 
 ##
 # Customize shell interface
