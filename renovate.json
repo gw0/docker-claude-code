@@ -2,7 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:best-practices"],
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "dependencyDashboardApproval": true,
   "rebaseWhen": "behind-base-branch",
   "timezone": "UTC",
   "enabledManagers": ["dockerfile", "github-actions", "custom.regex"],
