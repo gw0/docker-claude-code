@@ -58,6 +58,9 @@ RUN apt-get update -qq \
         python3-cbor2 \
         ripgrep \
         xxd \
+        # spellcheck
+        hunspell \
+        hunspell-en-us \
         # system
         bubblewrap \
         libnss-wrapper \

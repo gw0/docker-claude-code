@@ -9,6 +9,11 @@
   "promptSuggestionEnabled": false,
   "respectGitignore": true,
   "showClearContextOnPlanAccept": true,
+  "spellcheck": {
+    "enabled": true,
+    "checker": "hunspell",
+    "language": "en_US"
+  },
   "spinnerTipsEnabled": false,
   "statusLine": {
     "type": "command",
