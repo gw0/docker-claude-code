@@ -5,7 +5,7 @@
 #
 # syntax=docker/dockerfile:1
 
-FROM docker.io/oven/bun:1.3.14-slim@sha256:d56a2534ffd262e92c12fd3249d3924d296d97086da773f821d7d0477435ea04
+FROM docker.io/oven/bun:1.4.0-slim@sha256:e0ee68d16ccb9927bf02aa7dd8fd4bf3369ee6d46da04faa72b05ce8bfd135f6
 
 ##
 # DEB packages
@@ -81,7 +81,7 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.233
+ARG CLAUDE_VERSION=2.1.238
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.30.1
@@ -179,7 +179,7 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=15.14.0
+ARG AAS_VERSION=15.16.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
 ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
