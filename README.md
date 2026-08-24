@@ -181,6 +181,20 @@ git config --global author.email "your@users.noreply.github.com"
 
 Git config and GitHub CLI auth persist in the per-profile persistent dir.
 
+## Shell in a live container
+
+One can get an **ad-hoc user or root shell** to install extra packages in a running container without rebuilding (changes are lost on exit unless added to `Dockerfile`):
+
+```bash
+docker ps --filter ancestor=${CLAUDE_IMAGE:-ghcr.io/gw0/docker-claude-code:main}
+# run user shell:
+docker exec -it <container> bash
+# run root shell:
+docker exec -u 0:0 -it <container> bash
+# install apt packages:
+docker exec -u 0:0 -it <container> bash -c 'apt-get update && apt-get install -y <package>'
+```
+
 ## Remote dev environment
 
 Claude runs locally, edits files in the local workspace, but executes commands in the remote dev environment via Docker socket forwarding.

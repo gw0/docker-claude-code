@@ -69,6 +69,8 @@ RUN apt-get update -qq \
         unattended-upgrades \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
+    # configure apt-get (allow root to run apt-get despite --cap-drop ALL)
+    && echo 'APT::Sandbox::User "root";' >/etc/apt/apt.conf.d/99no-sandbox \
     # configure timezone
     && echo "${TZ}" >/etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
