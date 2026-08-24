@@ -68,10 +68,11 @@ RUN apt-get update -qq \
         podman-docker \
         unattended-upgrades \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    # configure installed
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
+    # configure timezone
     && echo "${TZ}" >/etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    # configure defaults
     && update-alternatives --set editor /usr/bin/vim.basic \
     && rm /usr/lib/python*/EXTERNALLY-MANAGED \
     && echo "" >/etc/tsocks.conf \
@@ -96,16 +97,19 @@ ARG AGENTSHIELD_VERSION=1.4.0
 ARG GIT_DELTA_VERSION=0.19.2
 
 ENV BUN_INSTALL=/usr/local/bun
-RUN bun install -g \
-    # install claude
-    @anthropic-ai/claude-code@${CLAUDE_VERSION} \
-    # install claude-powerline
-    @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
-    # install ecc-agentshield
-    ecc-agentshield@${AGENTSHIELD_VERSION} \
+RUN : \
+    && bun install -g \
+        # install claude
+        @anthropic-ai/claude-code@${CLAUDE_VERSION} \
+        # install claude-powerline
+        @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
+        # install ecc-agentshield
+        ecc-agentshield@${AGENTSHIELD_VERSION} \
+    && rm -rf ${BUN_INSTALL}/install/cache \
     # install git-delta
     && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
     && dpkg -i git-delta.deb \
+    && rm -f git-delta.deb \
     # print versions
     && claude --version \
     && delta --version
@@ -135,7 +139,7 @@ RUN : \
         https://github.com/reteps/dockerfmt/releases/download/v${DOCKERFMT_VERSION}/dockerfmt-v${DOCKERFMT_VERSION}-linux-amd64.tar.gz \
     && tar -xzf dockerfmt.tar.gz dockerfmt \
     && mv dockerfmt /usr/local/bin/ \
-    && rm dockerfmt.tar.gz \
+    && rm -f dockerfmt.tar.gz \
     # install shfmt
     && curl -fsSLo /usr/local/bin/shfmt https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64 \
     && chmod +x /usr/local/bin/shfmt \
@@ -148,9 +152,10 @@ RUN : \
     && curl -fsSLo yamlfmt.tar.gz https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz \
     && tar -xzf yamlfmt.tar.gz yamlfmt \
     && mv yamlfmt /usr/local/bin/ \
-    && rm yamlfmt.tar.gz \
+    && rm -f yamlfmt.tar.gz \
     # install markdownlint-cli2
     && bun install -g markdownlint-cli2@${MARKDOWNLINT_VERSION} \
+    && rm -rf ${BUN_INSTALL}/install/cache \
     # print versions
     && shfmt --version \
     && yamlfmt --version \
@@ -228,7 +233,7 @@ RUN : \
     # bundle codemap (CLI + plugin)
     && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
     && tar -xzf codemap.tar.gz \
-    && pip install "$(ls -d codemap-*/)[languages]" \
+    && pip install --no-cache-dir "$(ls -d codemap-*/)[languages]" \
     && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap \
     && mv codemap-*/plugin/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
     && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
@@ -282,7 +287,6 @@ ENV EDITOR=vim
 ENV HOME=/home/agent
 RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && echo 'source /usr/share/bash-completion/bash_completion' >>/etc/bash.bashrc \
-    && echo 'git config --global --add safe.directory "${PWD}"' >>/etc/bash.bashrc \
     && echo 'alias ll="ls --color=auto -lA"' >>/etc/bash.bashrc \
     && echo 'alias watch="watch "' >>/etc/bash.bashrc \
     && echo 'alias sshx="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"' >>/etc/bash.bashrc \
@@ -297,6 +301,7 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && echo 'set ttymouse=' >>/etc/vim/vimrc.local \
     && echo 'set paste' >>/etc/vim/vimrc.local \
     && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
+    && git config --system --add safe.directory '*' \
     && chmod +x /usr/local/bin/*.sh \
     # setup claude dirs, persistent storage, and symlinks
     && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
