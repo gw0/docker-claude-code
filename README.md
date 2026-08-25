@@ -1,6 +1,10 @@
 # docker-claude-code - Dockerized Claude Code Sandbox
 
-[GitHub](https://github.com/gw0/docker-claude-code) · [GHCR](https://github.com/gw0/docker-claude-code/pkgs/container/docker-claude-code) · [Docker Hub](https://hub.docker.com/r/gw000/docker-claude-code)
+[![GitHub](https://img.shields.io/badge/GitHub-gw0%2Fdocker--claude--code-181717?logo=github)](https://github.com/gw0/docker-claude-code)
+[![GHCR](https://img.shields.io/badge/GHCR-gray?logo=github)](https://github.com/gw0/docker-claude-code/pkgs/container/docker-claude-code)
+[![Docker Hub](https://img.shields.io/docker/pulls/gw000/docker-claude-code?logo=docker&label=Docker%20Hub)](https://hub.docker.com/r/gw000/docker-claude-code)
+[![Code size](https://img.shields.io/github/languages/code-size/gw0/docker-claude-code?label=size)](https://github.com/gw0/docker-claude-code)
+[![CI build](https://img.shields.io/github/actions/workflow/status/gw0/docker-claude-code/docker.yaml)](https://github.com/gw0/docker-claude-code/actions/workflows/docker.yaml)
 
 Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed plugin/skill bundles and remote dev support. Drop-in replacement for `claude` — a simple shell alias is all it takes.
 
