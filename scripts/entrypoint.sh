@@ -87,6 +87,10 @@ echo "# Profile: ${CLAUDE_PROFILE:-(unknown)} | GitHub: ${gh_user:-(none)} | Git
 echo
 
 #XXX: remove auto-generated empty files and dirs in project dir 2s after start (https://github.com/anthropics/claude-code/issues/78072)
-(sleep 2; find . -maxdepth 1 -type f -empty -delete 2>/dev/null; rmdir node_modules/.bin/ node_modules/ 2>/dev/null) &
+(
+  sleep 2
+  find . -maxdepth 1 -type f -empty -delete 2>/dev/null
+  rmdir node_modules/.bin/ node_modules/ 2>/dev/null
+) &
 
 exec "$@"
