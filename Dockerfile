@@ -5,7 +5,7 @@
 #
 # syntax=docker/dockerfile:1
 
-FROM docker.io/oven/bun:1.4.1-slim@sha256:887d0f37f674c69984be4e397fef29ca0d74df1e75155431abbe857258bffde5
+FROM docker.io/oven/bun:1.4.2-slim@sha256:cb3bbbb08e13a4a2ff400f24c7a2a1d5efa83f6ef8544d52d95a519631e2fc61
 
 ##
 # DEB packages
@@ -87,7 +87,7 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.260
+ARG CLAUDE_VERSION=2.1.263
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.30.3
@@ -189,13 +189,13 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=16.7.0
+ARG AAS_VERSION=16.8.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
-ARG CODEMAP_VERSION=120d018d36809371cf328173e9e0da5e16034693
+ARG CODEMAP_VERSION=e0726878d2da0dc279a0f21b11dad0d04f5a2818
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.47.0
+ARG RTK_VERSION=0.48.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
