@@ -54,8 +54,9 @@ RUN apt-get update -qq \
         man-db \
         htop \
         time \
-        python3-pip \
         python3-cbor2 \
+        python3-pip \
+        python3-venv \
         ripgrep \
         xxd \
         # spellcheck
@@ -191,8 +192,8 @@ ARG CLAUDE_SKILLS_VERSION=0.4.16
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
 ARG AAS_VERSION=17.0.0
 # https://github.com/AZidan/codemap
-# renovate: datasource=git-refs packageName=https://github.com/AZidan/codemap
-ARG CODEMAP_VERSION=e0726878d2da0dc279a0f21b11dad0d04f5a2818
+# renovate: datasource=github-releases depName=AZidan/codemap
+ARG CODEMAP_VERSION=1.3.1
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
 ARG RTK_VERSION=0.48.0
@@ -233,7 +234,7 @@ RUN : \
         /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
     && rm -rf aas.tar.gz agentic-awesome-skills-* /tmp/install-aas-bundles.py \
     # bundle codemap (CLI + plugin)
-    && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/${CODEMAP_VERSION}.tar.gz" \
+    && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz" \
     && tar -xzf codemap.tar.gz \
     && pip install --no-cache-dir "$(ls -d codemap-*/)[languages]" \
     && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap \
