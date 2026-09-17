@@ -57,13 +57,31 @@ done
 unset arg
 
 if [[ ! "${DISABLE_SECURITY_SCAN:-}" =~ ^[1YyTt]$ ]]; then
-  # AgentShield security scan (non-blocking)
-  agentshield scan --path ~/.claude/ --format terminal || true
-  if [[ -d ".claude" ]]; then
-    agentshield scan --path .claude/ --format terminal || true
+  # AgentShield user/profile scan (non-blocking), only report baseline comparison
+  if [[ ! -f ~/.claude/agentshield-baseline.json ]]; then
+    # Create baseline for the pre-installed plugin bundles (does not work with symlinks)
+    FORCE_COLOR=1 agentshield baseline write --path ~/.claude/ --output ~/.claude/agentshield-baseline.json --min-severity critical || true
+  fi
+  FORCE_COLOR=1 agentshield scan --path ~/.claude/ --baseline ~/.claude/agentshield-baseline.json --min-severity critical --format terminal |
+    awk '{
+        plain = $0
+        gsub(/\033\[[0-9;]*m/, "", plain)
+        if (plain ~ /^  Recognized Defenses/) { skipRecognized=1; next }
+        if (skipRecognized && plain ~ /^  (Harness Adapters|Skill Health|Summary)$/) { skipRecognized=0 }
+        if (skipRecognized) next
+        if (plain ~ /^  Findings$/) { skipFindings=1; next }
+        if (skipFindings && plain ~ /^  AgentShield/) { skipFindings=0 }
+        if (skipFindings) next
+        print $0
+      }' |
+    grep -v 'AgentShield — Security auditor for AI agent configs' ||
+    true
+  # AgentShield project/repo scan (non-blocking)
+  if [[ -d .claude/ ]]; then
+    FORCE_COLOR=1 agentshield scan --path .claude/ --format terminal | grep -v 'AgentShield — Security auditor for AI agent configs' || true
   fi
   # Suspicious overrides in project .claude/
-  if [[ -d ".claude" ]] && rg -qn 'enableAllProjectMcpServers|ANTHROPIC_BASE_URL|CLAUDE_BASE_URL' .claude/ 2>/dev/null; then
+  if [[ -d .claude/ ]] && rg -qn 'enableAllProjectMcpServers|ANTHROPIC_BASE_URL|CLAUDE_BASE_URL' .claude/ 2>/dev/null; then
     echo "WARNING: Suspicious overrides detected in project .claude/!"
   fi
   # Hidden unicode scan (zero-width, bidi overrides/isolates, soft hyphen, interlinear annotation)
