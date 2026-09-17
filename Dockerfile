@@ -88,13 +88,13 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.266
+ARG CLAUDE_VERSION=2.1.274
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.30.3
+ARG CLAUDE_POWERLINE_VERSION=1.31.0
 # https://github.com/affaan-m/agentshield/releases
 # renovate: datasource=npm depName=ecc-agentshield
-ARG AGENTSHIELD_VERSION=1.4.0
+ARG AGENTSHIELD_VERSION=1.6.0
 # https://github.com/dandavison/delta/releases
 # renovate: datasource=github-releases depName=dandavison/delta
 ARG GIT_DELTA_VERSION=0.19.2
@@ -190,13 +190,13 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=17.0.0
+ARG AAS_VERSION=17.4.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=github-releases depName=AZidan/codemap
 ARG CODEMAP_VERSION=1.3.1
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.48.0
+ARG RTK_VERSION=0.49.0
 
 COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
 
