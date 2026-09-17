@@ -41,7 +41,7 @@ _claude_run() {
     ${CLAUDE_IMAGE} claude "$@"
 }
 
-# Set up per-profile aliases
+# Set up aliases: one per profile/account for each mode/variant
 for profile in ${CLAUDE_PROFILES}; do
   mkdir -vp "${HOME}/.claude-${profile}"
   alias ${profile}="_claude_run ${profile}"
