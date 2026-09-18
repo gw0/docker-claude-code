@@ -12,9 +12,9 @@ test:
 	echo "Testing container..."; \
 	docker run --rm $(CLAUDE_IMAGE) claude --version
 	echo "Testing alias..."; \
-	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo --version"' /dev/null
+	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -- --version"' /dev/null
 	echo "Testing subcommand execution..."; \
-	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -p \"run: git status\""' /dev/null
+	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -- -p \"run: pwd\""' /dev/null
 
 fmt:
 	@errors=0; \

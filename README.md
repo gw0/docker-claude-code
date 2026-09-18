@@ -8,13 +8,15 @@
 
 Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed plugin/skill bundles and remote dev support. Drop-in replacement for `claude` — a simple shell alias is all it takes.
 
-- **Drop-in replacement**: Works exactly like `claude` — same arguments, same workflow, just run `cc1` instead of `claude`, Linux and MacOS support.
+- **Drop-in replacement**: Works like `claude` — same arguments after `--`, same workflow, just run `cc1` instead of `claude`, Linux and MacOS support.
 - **Secure sandbox**: Non-root user and no sudo, all capabilities dropped, hardened seccomp policy, additional nested bubblewrap for sandboxed Bash tool, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
 - **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
 - **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
 - **Plugins and skills**: SuperClaude, claude-skills, codemap, 33+ agentic-awesome-skills bundles, and Anthropic's official marketplace, enabled on demand via `/plugin`.
 - **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding allow executing commands in a remote dev environment.
 - **Minimal and auditable**: ~200 lines of shell + Dockerfile, no dependencies beyond Docker, small enough to read and modify — don't trust us, ask your AI to audit it.
+
+**Change**: With 0.9.0 the advanced syntax changed to support multiple mount dirs, all `claude` arguments must now follow a liteal `--` (e.g. `cc1 -- -p "prompt"`).
 
 ## Build
 
@@ -35,36 +37,41 @@ curl -fsSLo ~/.config/docker-claude-code/claude-aliases.bashrc https://raw.githu
 curl -fsSLo ~/.config/docker-claude-code/claude-seccomp.json https://raw.githubusercontent.com/gw0/docker-claude-code/main/claude-seccomp.json
 
 # Linux (bash):
-echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.bashrc
+echo 'export CLAUDE_PROFILES="cc1 ccpersonal ccapi"' >> ~/.bashrc
 echo 'source ~/.config/docker-claude-code/claude-aliases.bashrc' >> ~/.bashrc
 source ~/.bashrc
 
 # macOS (zsh):
-echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.zshrc
+echo 'export CLAUDE_PROFILES="cc1 ccpersonal ccapi"' >> ~/.zshrc
 echo 'source ~/.config/docker-claude-code/claude-aliases.bashrc' >> ~/.zshrc
 source ~/.zshrc
 ```
 
 ## Usage
 
-Each profile/account supports modes/variants (`<profile>-<mode>`):
+Full syntax: `<profile>-<mode> [<dir>...] [<docker-args>] -- [<claude-args>]`
+
+Each profile/account supports modes (`<profile>-<mode>`):
 
 - `<profile>` — standard interactive mode
 - `<profile>-yolo` — skips tool approval prompts (`--dangerously-skip-permissions`)
 - `<profile>-advisor` — read-only advisory mode, no file writes (`--agent advisor`)
 
-All extra arguments pass through to `claude` directly (e.g. `-p "prompt"`, `--model`).
+Followed by one or more directories to mount (`<dir>...`, default: current directory), extra `docker run` arguments (`<docker-args>`), literal `--`, and arguments passed through to `claude` (`<claude-args>`) (e.g. `-- -p "prompt"`, `-- --model opus`).
 
 ```bash
-# run interactive mode:
+# run interactive mode in the current directory:
 cd ~/my-project
 cc1
+
+# or interactive mode with extra related directories:
+cc1 . ../shared-lib1 ../shared-lib2
 
 # or advisor/no-file-access mode:
 ccpersonal-advisor
 
 # or yolo/dangerously-skip-permissions mode with prompt:
-ccapi-yolo -p "Please review latest changes and fix issues"
+ccapi-yolo -- -p "Please review latest changes and fix issues"
 
 # or manually (expert):
 cd ~/my-project
@@ -158,12 +165,13 @@ ENABLE_PLUGINS="sc codemap claude-security@claude-plugins-official" cc1
 - `ANTHROPIC_API_KEY` — Use Anthropic API key billing, can temporarily override a subscription profile
 - `CLAUDE_CODE_OAUTH_TOKEN` — Use Claude Pro/Max/Team subscription, alternative to persisted login
 - `CLAUDE_IMAGE` — Docker image to use (default: `ghcr.io/gw0/docker-claude-code:main`)
-- `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccapi`)
+- `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccpersonal ccapi`)
 - `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)
 - `FORCE_RESET_SESSIONS` — Set to `1` to wipe sessions/cache on container start
 - `DISABLE_SECURITY_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
 - `DISABLE_RTK` — Set to `1` to disable [RTK](https://github.com/rtk-ai/rtk) token compression
-- `DOCKER_EXTRA_ARGS` — User-controlled extra arguments passed to `docker run` (e.g. `-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host` for remote dev environment)
+- `DOCKER_EXTRA_ARGS` — User-controlled extra arguments passed to `docker run` (e.g. `-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host` for remote dev environment) (same effect as passing `<docker-args>`)
+- `CLAUDE_EXTRA_ARGS` — User-controlled extra arguments passed to `claude` (same effect as passing `<claude-args>`)
 
 ## Git/GitHub integration
 

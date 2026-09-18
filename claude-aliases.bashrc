@@ -2,12 +2,14 @@
 # Bash aliases for docker-claude-code
 #
 # Configure profiles and pin to a version tag:
-#   echo 'export CLAUDE_IMAGE=ghcr.io/gw0/docker-claude-code:v0.5.0' >> ~/.bashrc
-#   echo 'export CLAUDE_PROFILES="cc1 ccpersonal claudeapi"' >> ~/.bashrc
+#   echo 'export CLAUDE_IMAGE=ghcr.io/gw0/docker-claude-code:v0.9.0' >> ~/.bashrc
+#   echo 'export CLAUDE_PROFILES="cc1 ccpersonal ccapi"' >> ~/.bashrc
 #   echo 'source /path/to/claude-aliases.bashrc' >> ~/.bashrc
+#
+# Usage: <profile>-<mode> [<dir>...] [<docker-args>] -- [<claude-args>]
 
 CLAUDE_IMAGE=${CLAUDE_IMAGE:-ghcr.io/gw0/docker-claude-code:main}
-CLAUDE_PROFILES=${CLAUDE_PROFILES:-cc1 cc2 ccapi}
+CLAUDE_PROFILES=${CLAUDE_PROFILES:-cc1 cc2 ccpersonal ccapi}
 
 _claude_run() {
   local profile="$1"; shift
@@ -15,7 +17,34 @@ _claude_run() {
   local vol_opts=":rslave"
   [[ "$(uname)" == "Darwin" ]] && vol_opts=""
 
-  # Run container (DOCKER_EXTRA_ARGS for user-controlled extra arguments)
+  # Split args into dirs, docker-args, and claude-args
+  local dirs=() docker_args=() claude_args=() phase=dirs tok
+  for tok in "$@"; do
+    if [[ "${phase}" == "claude" ]]; then
+      claude_args+=("${tok}")
+    elif [[ "${tok}" == "--" ]]; then
+      phase="claude"
+    elif [[ "${phase}" == "dirs" && "${tok}" != -* ]]; then
+      dirs+=("${tok}")
+    else
+      phase="docker"
+      docker_args+=("${tok}")
+    fi
+  done
+  [[ ${#dirs[@]} -eq 0 ]] && dirs=("${PWD}")
+
+  # Resolve dirs to absolute host paths (mount each at the same path, first dir is the workdir)
+  local dir abs_dir primary_dir="" mount_args=()
+  for dir in "${dirs[@]}"; do
+    abs_dir="$(cd -- "${dir}" 2>/dev/null && pwd -P)" || {
+      echo "error: directory not found: ${dir}" >&2
+      return 1
+    }
+    [[ -z "${primary_dir}" ]] && primary_dir="${abs_dir}"
+    mount_args+=(-v "${abs_dir}:${abs_dir}${vol_opts}")
+  done
+
+  # Run rootless container
   #
   # Trade-off: Rootless with capabilities dropped. Seccomp removes unused
   # syscalls and only widens syscalls nested bwrap needs (no CAP_SYS_ADMIN).
@@ -35,17 +64,18 @@ _claude_run() {
     --security-opt apparmor=unconfined \
     --security-opt seccomp=${script_dir}/claude-seccomp.json \
     -v "${HOME}/.claude-${profile}:/home/agent/.claude" \
-    -v "${PWD}:${PWD}${vol_opts}" \
-    -w "${PWD}" \
+    "${mount_args[@]}" \
+    -w "${primary_dir}" \
     ${DOCKER_EXTRA_ARGS:-} \
-    ${CLAUDE_IMAGE} claude "$@"
+    "${docker_args[@]}" \
+    ${CLAUDE_IMAGE} claude ${CLAUDE_EXTRA_ARGS:-} "${claude_args[@]}"
 }
 
-# Set up aliases: one per profile/account for each mode/variant
+# Set up aliases: one per profile/account for each mode
 for profile in ${CLAUDE_PROFILES}; do
   mkdir -vp "${HOME}/.claude-${profile}"
   alias ${profile}="_claude_run ${profile}"
-  alias ${profile}-yolo="DISABLE_SECURITY_SCAN=1 _claude_run ${profile} --allow-dangerously-skip-permissions"
-  alias ${profile}-advisor="DISABLE_SECURITY_SCAN=1 _claude_run ${profile} --permission-mode default --agent advisor"
+  alias ${profile}-yolo="DISABLE_SECURITY_SCAN=1 CLAUDE_EXTRA_ARGS='--allow-dangerously-skip-permissions' _claude_run ${profile}"
+  alias ${profile}-advisor="DISABLE_SECURITY_SCAN=1 CLAUDE_EXTRA_ARGS='--permission-mode default --agent advisor' _claude_run ${profile}"
 done
 
