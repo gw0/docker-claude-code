@@ -104,11 +104,11 @@ git_committer_email=$(git config --global committer.email 2>/dev/null || git con
 echo "# Profile: ${CLAUDE_PROFILE:-(unknown)} | GitHub: ${gh_user:-(none)} | Git: ${git_author_name:-(none)} <${git_author_email}>${git_committer_name:+, ${git_committer_name} <${git_committer_email}>}"
 echo
 
-#XXX: remove auto-generated empty files and dirs in project dir 2s after start (https://github.com/anthropics/claude-code/issues/78072)
-(
-  sleep 2
-  find . -maxdepth 1 -type f -empty -delete 2>/dev/null
-  rmdir node_modules/.bin/ node_modules/ 2>/dev/null
-) &
+#XXX: clean-up leftover sandbox placeholders 2s after start when CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 (https://github.com/anthropics/claude-code/issues/78072)
+# (
+#   sleep 2
+#   find . -maxdepth 1 -type f -empty -delete 2>/dev/null
+#   rmdir node_modules/.bin/ node_modules/ 2>/dev/null
+# ) &
 
 exec "$@"
