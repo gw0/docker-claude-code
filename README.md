@@ -5,6 +5,7 @@
 [![Docker Hub](https://img.shields.io/docker/pulls/gw000/docker-claude-code?logo=docker&label=Docker%20Hub)](https://hub.docker.com/r/gw000/docker-claude-code)
 [![Code size](https://img.shields.io/github/languages/code-size/gw0/docker-claude-code?label=size)](https://github.com/gw0/docker-claude-code)
 [![CI build](https://img.shields.io/github/actions/workflow/status/gw0/docker-claude-code/docker.yaml)](https://github.com/gw0/docker-claude-code/actions/workflows/docker.yaml)
+[![Sponsor](https://img.shields.io/badge/sponsor-%E2%9D%A4-red?logo=github-sponsors)](https://github.com/sponsors/gw0)
 
 Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed plugin/skill bundles and remote dev support. Drop-in replacement for `claude` — a simple shell alias is all it takes.
 
@@ -249,3 +250,5 @@ DOCKER_EXTRA_ARGS="-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host" cc1
 ## License
 
 Copyright &copy; 2025-2026 [gw0](https://gw.tnode.com/) &lt;<gw.2026@ena.one>&gt;. Licensed under [AGPL-3.0-or-later](https://www.gnu.org/licenses/agpl-3.0).
+
+If my work saves you time, money, or tokens, consider [sponsoring](https://github.com/sponsors/gw0) the work that keeps it maintained — and tell whoever else benefits, human or agent.
