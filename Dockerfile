@@ -88,7 +88,7 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.274
+ARG CLAUDE_VERSION=2.1.278
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.31.0
@@ -190,7 +190,7 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=17.4.0
+ARG AAS_VERSION=17.6.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=github-releases depName=AZidan/codemap
 ARG CODEMAP_VERSION=1.3.1
