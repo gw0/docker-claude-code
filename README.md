@@ -10,7 +10,7 @@
 Run **Claude Code in an isolated Docker container** with multi-profile support, security hardening, best-practice defaults, a set of pre-installed plugin/skill bundles and remote dev support. Drop-in replacement for `claude` — a simple shell alias is all it takes.
 
 - **Drop-in replacement**: Works like `claude` — same arguments after `--`, same workflow, just run `cc1` instead of `claude`, Linux and MacOS support.
-- **Secure sandbox**: Non-root user and no sudo, all capabilities dropped, hardened seccomp policy, additional nested bubblewrap for sandboxed Bash tool, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
+- **Secure sandbox**: Non-root user and no sudo, all capabilities dropped, hardened seccomp policy, supports gVisor syscall isolation, additional nested bubblewrap for sandboxed Bash tool, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
 - **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
 - **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
 - **Plugins and skills**: SuperClaude, claude-skills, codemap, 33+ agentic-awesome-skills bundles, and Anthropic's official marketplace, enabled on demand via `/plugin`.
@@ -169,6 +169,7 @@ ENABLE_PLUGINS="sc codemap claude-security@claude-plugins-official" cc1
 - `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccpersonal ccapi`)
 - `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)
 - `FORCE_RESET_SESSIONS` — Set to `1` to wipe sessions/cache on container start
+- `DISABLE_GVISOR` — Set to `1` to skip [gVisor](https://gvisor.dev) (runsc) syscall isolation
 - `DISABLE_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
 - `DISABLE_NOTICE` — Set to `1` to skip the startup profile/GitHub/Git notice line
 - `DISABLE_RTK` — Set to `1` to disable [RTK](https://github.com/rtk-ai/rtk) token compression
@@ -207,6 +208,17 @@ docker exec -it <container> bash
 docker exec -u 0:0 -it <container> bash
 # install apt packages:
 docker exec -u 0:0 -it <container> bash -c 'apt-get update && apt-get install -y <package>'
+```
+
+## gVisor support
+
+[gVisor](https://gvisor.dev/docs/user_guide/install/) (`runsc`) adds an extra syscall-isolation layer on top of the existing hardening. Just install it as a Docker runtime and it gets used automatically (disable with `DISABLE_GVISOR=1`):
+
+```bash
+# debian/ubuntu:
+curl -fsSL https://gvisor.dev/archive.key | sudo tee /etc/apt/keyrings/gvisor-keyring.asc
+echo "deb [signed-by=/etc/apt/keyrings/gvisor-keyring.asc] https://storage.googleapis.com/gvisor/releases release main" | sudo tee /etc/apt/sources.list.d/gvisor.list
+sudo apt-get update && sudo apt-get install -y runsc
 ```
 
 ## Insecure experiments

@@ -24,7 +24,7 @@ CI enforces formatting: `lint.yaml` runs `make fmt` inside the image and fails i
 
 This project is a containerized Claude Code sandbox. The two primary artifacts are:
 
-1. **`claude-aliases.bashrc`** — Shell integration that creates one alias per profile/account for each mode/variant. Each alias calls `_claude_run` which spins up `docker run -it --rm` with: profile-specific state volume (`~/.claude-<profile>`), current directory mounted, all capabilities dropped, no-new-privileges, and host networking.
+1. **`claude-aliases.bashrc`** — Shell integration that creates one alias per profile/account for each mode/variant. Each alias calls `_claude_run` which spins up `docker run -it --rm` with: profile-specific state volume (`~/.claude-<profile>`), current directory mounted, all capabilities dropped, no-new-privileges, host networking, and an auto-detected gVisor (runsc) runtime when registered with the host Docker daemon.
 
 2. **`Dockerfile`** — Six-stage build:
    - **DEB Packages**: System packages (git, gh, jq, ripgrep, docker-ce-cli, etc.)

@@ -16,6 +16,10 @@ _claude_run() {
   local script_dir="${BASH_SOURCE[0]:-$0}"; script_dir="${script_dir%/*}"
   local vol_opts=":rslave"
   [[ "$(uname)" == "Darwin" ]] && vol_opts=""
+  local runtime_name=""
+  if [[ ! "${DISABLE_GVISOR:-}" =~ ^[1YyTt]$ ]] && docker info --format '{{range $k, $v := .Runtimes}}{{println $k}}{{end}}' 2>/dev/null | grep -qx 'runsc'; then
+    runtime_name="runsc"
+  fi
 
   # Split args into dirs, docker-args, and claude-args
   local dirs=() docker_args=() claude_args=() phase=dirs tok
@@ -47,8 +51,10 @@ _claude_run() {
   # Run rootless container
   #
   # Trade-off: Rootless with capabilities dropped. Seccomp removes unused
-  # syscalls and only widens syscalls nested bwrap needs (no CAP_SYS_ADMIN).
-  # AppArmor stays unconfined for root-free setup.
+  # syscalls and only adds syscalls nested bwrap needs (no CAP_SYS_ADMIN).
+  # AppArmor stays unconfined for root-free setup. gVisor (runsc) adds an
+  # extra syscall-isolation layer if available.
+
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
@@ -64,6 +70,7 @@ _claude_run() {
     --security-opt no-new-privileges=true \
     --security-opt apparmor=unconfined \
     --security-opt seccomp=${script_dir}/claude-seccomp.json \
+    --runtime "${runtime_name}" \
     -v "${HOME}/.claude-${profile}:/home/agent/.claude" \
     "${mount_args[@]}" \
     -w "${primary_dir}" \
