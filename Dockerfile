@@ -62,7 +62,7 @@ RUN apt-get update -qq \
         # spellcheck
         hunspell \
         hunspell-en-us \
-        # system
+        # system utils
         bubblewrap \
         libnss-wrapper \
         unattended-upgrades \
@@ -70,8 +70,10 @@ RUN apt-get update -qq \
     && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list \
     && apt-get update -qq \
     && apt-get install -y --no-install-recommends \
-        # docker cli
+        # infra utils
         docker-ce-cli \
+        kind \
+        kubectl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
     # configure apt-get (allow root to run apt-get despite --cap-drop ALL)

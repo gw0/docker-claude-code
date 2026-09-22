@@ -208,6 +208,14 @@ docker exec -u 0:0 -it <container> bash
 docker exec -u 0:0 -it <container> bash -c 'apt-get update && apt-get install -y <package>'
 ```
 
+## Insecure experiments
+
+Docker or KinD work fastest when using host Docker daemon. To expose the host Docker socket use a restricted Docker socket proxy (limit actions, only allow if prefix matches, deny host mounts, deny host networking...):
+
+```bash
+DOCKER_EXTRA_ARGS="-v /run/docker-restricted.sock:/run/docker.sock --group-add $(stat -c '%g' /run/docker-restricted.sock)" cc1
+```
+
 ## Remote dev environment
 
 Claude runs locally, edits files in the local workspace, but executes commands in the remote dev environment via Docker socket forwarding.
