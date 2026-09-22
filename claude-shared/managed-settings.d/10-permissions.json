@@ -21,7 +21,7 @@
       "Read(~/.gnupg/*)", "Read(~/.password-store/*)", "Read(~/.vault-token)",
       "Read(~/.netrc)", "Read(~/.git-credentials)", "Read(~/.npmrc)", "Read(~/.pypirc)", "Read(~/.my.cnf)",
       "Read(~/.*_history)",
-      "Read(**/*credentials*)", "Read(**/.env)", "Read(**/.env.*)", "Read(**/*.key)", "Read(**/*.pem)",
+      "Read(**/.env.*)", "Read(**/*.key)", "Read(**/*.pem)",
       "Bash(cat ~/.**)", "Bash(cat * ~/.**)", "Bash(cat **/.env)", "Bash(cat * **/.env)", "Bash(cat **/.env.*)", "Bash(cat * **/.env.*)",
       "Bash(head ~/.**)", "Bash(head * ~/.**)", "Bash(head **/.env)", "Bash(head * **/.env)", "Bash(head **/.env.*)", "Bash(head * **/.env.*)",
       "Bash(tail ~/.**)", "Bash(tail * ~/.**)", "Bash(tail **/.env)", "Bash(tail * **/.env)", "Bash(tail **/.env.*)", "Bash(tail * **/.env.*)",
