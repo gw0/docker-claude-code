@@ -58,6 +58,7 @@ _claude_run() {
     -e ENABLE_PLUGINS="${ENABLE_PLUGINS:-}" \
     -e FORCE_RESET_SESSIONS="${FORCE_RESET_SESSIONS:-}" \
     -e DISABLE_SECURITY_SCAN="${DISABLE_SECURITY_SCAN:-}" \
+    -e DISABLE_NOTICE="${DISABLE_NOTICE:-}" \
     -e DISABLE_RTK="${DISABLE_RTK:-}" \
     --cap-drop ALL \
     --security-opt no-new-privileges=true \

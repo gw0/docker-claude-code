@@ -44,11 +44,12 @@ for plugin in ${ENABLE_PLUGINS:-sc codemap}; do
   claude plugins enable "${plugin}" >/dev/null 2>&1
 done
 
-# Skip security scans if non-interactive
+# Skip security scans and startup notice if non-interactive
 for arg in "$@"; do
   case "${arg}" in
   -p | --print | -h | --help | -v | --version | agents | auth | doctor | install | mcp | plugin | plugins | setup-token | update | upgrade)
     DISABLE_SECURITY_SCAN=1
+    DISABLE_NOTICE=1
     break
     ;;
   *) ;;
@@ -94,15 +95,17 @@ if [[ ! "${DISABLE_SECURITY_SCAN:-}" =~ ^[1YyTt]$ ]]; then
   fi
 fi
 
-# Startup notice
-gh_user=$(gh config get -h github.com user 2>/dev/null)
-git_author_name=$(git config --global author.name 2>/dev/null || git config --global user.name 2>/dev/null)
-git_author_email=$(git config --global author.email 2>/dev/null || git config --global user.email 2>/dev/null)
-git_committer_name=$(git config --global committer.name 2>/dev/null || git config --global user.name 2>/dev/null)
-git_committer_email=$(git config --global committer.email 2>/dev/null || git config --global user.email 2>/dev/null)
-[[ "${git_author_name}" == "${git_committer_name}" && "${git_author_email}" == "${git_committer_email}" ]] && unset git_committer_name git_committer_email
-echo "# Profile: ${CLAUDE_PROFILE:-(unknown)} | GitHub: ${gh_user:-(none)} | Git: ${git_author_name:-(none)} <${git_author_email}>${git_committer_name:+, ${git_committer_name} <${git_committer_email}>}"
-echo
+if [[ ! "${DISABLE_NOTICE:-}" =~ ^[1YyTt]$ ]]; then
+  # Startup notice
+  gh_user=$(gh config get -h github.com user 2>/dev/null)
+  git_author_name=$(git config --global author.name 2>/dev/null || git config --global user.name 2>/dev/null)
+  git_author_email=$(git config --global author.email 2>/dev/null || git config --global user.email 2>/dev/null)
+  git_committer_name=$(git config --global committer.name 2>/dev/null || git config --global user.name 2>/dev/null)
+  git_committer_email=$(git config --global committer.email 2>/dev/null || git config --global user.email 2>/dev/null)
+  [[ "${git_author_name}" == "${git_committer_name}" && "${git_author_email}" == "${git_committer_email}" ]] && unset git_committer_name git_committer_email
+  echo "# Profile: ${CLAUDE_PROFILE:-(unknown)} | GitHub: ${gh_user:-(none)} | Git: ${git_author_name:-(none)} <${git_author_email}>${git_committer_name:+, ${git_committer_name} <${git_committer_email}>}"
+  echo
+fi
 
 #XXX: clean-up leftover sandbox placeholders 2s after start when CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 (https://github.com/anthropics/claude-code/issues/78072)
 # (
