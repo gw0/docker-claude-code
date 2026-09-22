@@ -65,9 +65,13 @@ RUN apt-get update -qq \
         # system
         bubblewrap \
         libnss-wrapper \
-        podman \
-        podman-docker \
         unattended-upgrades \
+    && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list \
+    && apt-get update -qq \
+    && apt-get install -y --no-install-recommends \
+        # docker cli
+        docker-ce-cli \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
     # configure apt-get (allow root to run apt-get despite --cap-drop ALL)
@@ -271,17 +275,6 @@ RUN : \
     # workaround for nested procfs mount failures (replaces buggy enableWeakerNestedSandbox)
     && mv /usr/bin/bwrap /usr/bin/bwrap.real \
     && ln -fsr /usr/local/bin/bwrap-shim.sh /usr/bin/bwrap
-
-#XXX: experimets with nested podman
-# RUN :\
-#     # force single-UID mapping in nested podman
-#     && rm -rf /etc/subuid /etc/subgid \
-#     # use vfs for nested podman storage ("Error: configure storage: 'overlay' is not supported over overlayfs")
-#     && mkdir -p /etc/containers \
-#     && printf '[storage]\ndriver = "vfs"' >>/etc/containers/storage.conf
-#     #&& printf '[storage]\ndriver = "overlay"\n\n[storage.options]\nignore_chown_errors = "true"\n' >>/etc/containers/storage.conf
-# # use ephemeral runtime dir if under sandboxed Bash tool (nested podman "cannot set user namespace")
-# ENV XDG_RUNTIME_DIR=/home/${USER}/.local
 
 ##
 # Customize shell interface
