@@ -48,7 +48,7 @@ done
 for arg in "$@"; do
   case "${arg}" in
   -p | --print | -h | --help | -v | --version | agents | auth | doctor | install | mcp | plugin | plugins | setup-token | update | upgrade)
-    DISABLE_SECURITY_SCAN=1
+    DISABLE_SCAN=1
     DISABLE_NOTICE=1
     break
     ;;
@@ -57,7 +57,7 @@ for arg in "$@"; do
 done
 unset arg
 
-if [[ ! "${DISABLE_SECURITY_SCAN:-}" =~ ^[1YyTt]$ ]]; then
+if [[ ! "${DISABLE_SCAN:-}" =~ ^[1YyTt]$ ]]; then
   # AgentShield user/profile scan (non-blocking), only report baseline comparison
   if [[ ! -f ~/.claude/agentshield-baseline.json ]]; then
     # Create baseline for the pre-installed plugin bundles (does not work with symlinks)

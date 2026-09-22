@@ -17,7 +17,7 @@ Run **Claude Code in an isolated Docker container** with multi-profile support, 
 - **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding allow executing commands in a remote dev environment.
 - **Minimal and auditable**: ~200 lines of shell + Dockerfile, no dependencies beyond Docker, small enough to read and modify — don't trust us, ask your AI to audit it.
 
-**Change**: With 0.9.0 the advanced syntax changed to support multiple mount dirs, all `claude` arguments must now follow a liteal `--` (e.g. `cc1 -- -p "prompt"`).
+**Change**: With 0.9.0 the advanced syntax changed to support multiple mount dirs, all `claude` arguments must now follow a liteal `--` (e.g. `cc1 -- -p "prompt"`). We also shortened the `DISABLE_SECURITY_SCAN` env var to `DISABLE_SCAN`. Do not forget to update the shell alias script to take effect.
 
 ## Build
 
@@ -169,7 +169,7 @@ ENABLE_PLUGINS="sc codemap claude-security@claude-plugins-official" cc1
 - `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccpersonal ccapi`)
 - `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)
 - `FORCE_RESET_SESSIONS` — Set to `1` to wipe sessions/cache on container start
-- `DISABLE_SECURITY_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
+- `DISABLE_SCAN` — Set to `1` to skip [AgentShield](https://github.com/affaan-m/agentshield) and unicode scans
 - `DISABLE_NOTICE` — Set to `1` to skip the startup profile/GitHub/Git notice line
 - `DISABLE_RTK` — Set to `1` to disable [RTK](https://github.com/rtk-ai/rtk) token compression
 - `DOCKER_EXTRA_ARGS` — User-controlled extra arguments passed to `docker run` (e.g. `-e DOCKER_HOST=tcp://127.0.0.1:2375 --net host` for remote dev environment) (same effect as passing `<docker-args>`)

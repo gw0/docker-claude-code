@@ -57,7 +57,7 @@ _claude_run() {
     -e CLAUDE_PROFILE="${profile}" \
     -e ENABLE_PLUGINS="${ENABLE_PLUGINS:-}" \
     -e FORCE_RESET_SESSIONS="${FORCE_RESET_SESSIONS:-}" \
-    -e DISABLE_SECURITY_SCAN="${DISABLE_SECURITY_SCAN:-}" \
+    -e DISABLE_SCAN="${DISABLE_SCAN:-${DISABLE_SECURITY_SCAN:-}}" \
     -e DISABLE_NOTICE="${DISABLE_NOTICE:-}" \
     -e DISABLE_RTK="${DISABLE_RTK:-}" \
     --cap-drop ALL \
@@ -76,7 +76,7 @@ _claude_run() {
 for profile in ${CLAUDE_PROFILES}; do
   mkdir -vp "${HOME}/.claude-${profile}"
   alias ${profile}="_claude_run ${profile}"
-  alias ${profile}-yolo="DISABLE_SECURITY_SCAN=1 CLAUDE_EXTRA_ARGS='--allow-dangerously-skip-permissions' _claude_run ${profile}"
-  alias ${profile}-advisor="DISABLE_SECURITY_SCAN=1 CLAUDE_EXTRA_ARGS='--permission-mode default --agent advisor' _claude_run ${profile}"
+  alias ${profile}-yolo="DISABLE_SCAN=1 CLAUDE_EXTRA_ARGS='--allow-dangerously-skip-permissions' _claude_run ${profile}"
+  alias ${profile}-advisor="DISABLE_SCAN=1 CLAUDE_EXTRA_ARGS='--permission-mode default --agent advisor' _claude_run ${profile}"
 done
 
