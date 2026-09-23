@@ -27,8 +27,9 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
 
 1. **`claude-aliases.bashrc`** — Shell integration that creates one alias per profile/account for each mode/variant. Each alias calls `_claude_run` which spins up `docker run -it --rm` with: profile-specific state volume (`~/.claude-<profile>`), current directory mounted, all capabilities dropped, no-new-privileges, host networking, and an auto-detected gVisor (runsc) runtime when registered with the host Docker daemon.
 
-2. **`Dockerfile`** — Six-stage build:
+2. **`Dockerfile`** — Build on `debian:trixie-slim`:
    - **DEB Packages**: System packages (git, gh, jq, ripgrep, docker-ce-cli, etc.)
+   - **Bun**: Bun as JS runtime and package manager (`bunx`, `node` alias)
    - **Claude Tools**: `claude-code`, `claude-powerline`, `agentshield`, `git-delta` via Bun
    - **Lint/Format Tools**: `dockerfmt`, `shfmt`, `shellcheck`, `yamlfmt`, `ruff`, `markdownlint-cli2`
    - **User Setup**: Creates non-root `agent` user (UID 1000)

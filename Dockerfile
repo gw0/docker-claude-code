@@ -1,11 +1,11 @@
+# syntax=docker/dockerfile:1
 # Dockerfile for docker-claude-code
 #
 #   docker build --progress=plain -t docker-claude-code .
 #   docker run -it --rm -v ${HOME}/.claude:/home/agent/.claude -v ${PWD}:${PWD}:rslave -w ${PWD} docker-claude-code claude
 #
-# syntax=docker/dockerfile:1
 
-FROM docker.io/oven/bun:1.4.2-slim@sha256:cb3bbbb08e13a4a2ff400f24c7a2a1d5efa83f6ef8544d52d95a519631e2fc61
+FROM docker.io/library/debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
 
 ##
 # DEB packages
@@ -67,7 +67,7 @@ RUN apt-get update -qq \
         libnss-wrapper \
         unattended-upgrades \
     && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | tee /etc/apt/sources.list.d/docker.list \
+    && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" | tee /etc/apt/sources.list.d/docker.list \
     && apt-get update -qq \
     && apt-get install -y --no-install-recommends \
         # infra utils
@@ -90,6 +90,25 @@ RUN apt-get update -qq \
     && ln -s /tmp /var/tmp
 
 ##
+# Bun
+##
+# https://github.com/oven-sh/bun/releases
+# renovate: datasource=npm depName=bun
+ARG BUN_VERSION=1.4.2
+
+ENV BUN_INSTALL=/usr/local/bun
+ENV BUN_INSTALL_BIN=/usr/local/bin
+RUN : \
+    # install bun (+ bunx, node as bun alias)
+    && curl -fsSLo bun.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64-baseline.zip \
+    && unzip -j bun.zip bun-linux-x64-baseline/bun -d /usr/local/bin/ \
+    && rm -f bun.zip \
+    && ln -s bun /usr/local/bin/bunx \
+    && ln -s bun /usr/local/bin/node \
+    # print versions
+    && bun --version
+
+##
 # Claude tools
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
@@ -105,7 +124,6 @@ ARG AGENTSHIELD_VERSION=1.6.0
 # renovate: datasource=github-releases depName=dandavison/delta
 ARG GIT_DELTA_VERSION=0.19.2
 
-ENV BUN_INSTALL=/usr/local/bun
 RUN : \
     && bun install -g \
         # install claude
@@ -188,7 +206,7 @@ ARG USER=agent
 ARG USER_UID=1000
 ARG USER_GID=1000
 
-RUN userdel -r bun \
+RUN : \
     # create non-root user
     && groupadd -g ${USER_GID} ${USER} \
     && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER}
