@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Split agentic-awesome-skills by editorial bundles.md as per-bundle plugin dirs."""
-import json, os, re, shutil, sys
+
+import json
+import os
+import re
+import shutil
+import sys
 
 
 def slugify(name):
@@ -21,7 +26,7 @@ def parse_bundles(md_path):
                 bundles.setdefault(current, [])
             elif current:
                 # Match: - [`skill-name`](../../skills/skill-name/): description
-                m2 = re.match(r'- \[`(.+?)`\]', line)
+                m2 = re.match(r"- \[`(.+?)`\]", line)
                 if m2:
                     bundles[current].append(m2.group(1))
     return {k: v for k, v in bundles.items() if v}
@@ -47,7 +52,9 @@ def write_plugin(plugin_dir, name, description, skills_src, skill_names):
 
 def main():
     if len(sys.argv) != 4:
-        print("Usage: install-aas-bundles.py <skills_src_dir> <bundles_md> <output_plugins_dir>")
+        print(
+            "Usage: install-aas-bundles.py <skills_src_dir> <bundles_md> <output_plugins_dir>"
+        )
         sys.exit(1)
     skills_src, bundles_md, output_dir = sys.argv[1:]
 
@@ -55,22 +62,13 @@ def main():
     for slug, skill_names in bundles.items():
         label = slug.removeprefix("aas-").replace("-", " ").title()
         write_plugin(
-            os.path.join(output_dir, slug), slug,
+            os.path.join(output_dir, slug),
+            slug,
             f"AAS {label} skills bundle (https://github.com/sickn33/agentic-awesome-skills)",
-            skills_src, skill_names,
+            skills_src,
+            skill_names,
         )
         print(f"  {slug}: {len(skill_names)} skills")
-
-    # aas-full: all skills
-    all_skills = sorted(
-        d for d in os.listdir(skills_src) if os.path.isdir(os.path.join(skills_src, d))
-    )
-    write_plugin(
-        os.path.join(output_dir, "aas-full"), "aas-full",
-        "AAS full skills library (https://github.com/sickn33/agentic-awesome-skills/)",
-        skills_src, all_skills,
-    )
-    print(f"  aas-full: {len(all_skills)} skills")
 
 
 if __name__ == "__main__":

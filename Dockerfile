@@ -238,7 +238,7 @@ RUN : \
     && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
     && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
     && rm -rf claude-skills.tar.gz claude-skills-* \
-    # bundle agentic-awesome-skills (split into editorial bundles)
+    # bundle agentic-awesome-skills (by editorial bundles and plugins)
     && curl -fsSLo aas.tar.gz https://github.com/sickn33/agentic-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
         'agentic-awesome-skills-*/skills/' \

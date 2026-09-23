@@ -13,7 +13,7 @@ Run **Claude Code in an isolated Docker container** with multi-profile support, 
 - **Secure sandbox**: Non-root user and no sudo, all capabilities dropped, hardened seccomp policy, supports gVisor syscall isolation, additional nested bubblewrap for sandboxed Bash tool, startup security scans (AgentShield + unicode), audit log at `~/.claude/audit-log.jsonl`.
 - **Multi-profile support**: Per-profile persistent state in `~/.claude-<profile>` to separate work and personal accounts, mix subscription and API key billing.
 - **Best practices by default**: Start in plan mode, optimized token usage, telemetry disabled, claude-powerline status line, pre-configured tool allowlist and denylist.
-- **Plugins and skills**: SuperClaude, claude-skills, codemap, 33+ agentic-awesome-skills bundles, and Anthropic's official marketplace, enabled on demand via `/plugin`.
+- **Plugins and skills**: SuperClaude, claude-skills, codemap, 58+ agentic-awesome-skills bundles, and Anthropic's official marketplace, enabled on demand via `/plugin`.
 - **Remote dev support**: Mutagen bidirectional sync + Docker socket forwarding allow executing commands in a remote dev environment.
 - **Minimal and auditable**: ~200 lines of shell + Dockerfile, no dependencies beyond Docker, small enough to read and modify — don't trust us, ask your AI to audit it.
 
@@ -92,8 +92,7 @@ Plugins and skills come pre-installed in the image and managed via Claude Code's
 | `sc` | [SuperClaude Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 39 commands, 25 agents, 1 skill |
 | `cs` | [claude-skills](https://github.com/Jeffallan/claude-skills) | ~5 commands, 90 skills |
 | `codemap` | [codemap](https://github.com/AZidan/codemap) | 1 skill (structural codebase indexing, 60-80% token reduction) |
-| `aas-full` | [agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills) | all 1,921 skills |
-| `aas-essentials` | agentic | 5 skills |
+| `aas-essentials` | [agentic-awesome-skills](https://github.com/sickn33/agentic-awesome-skills) | 5 skills |
 | `aas-security-engineer` | agentic | 8 skills |
 | `aas-security-developer` | agentic | 7 skills |
 | `aas-web-wizard` | agentic | 8 skills |
