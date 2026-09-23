@@ -1,5 +1,6 @@
 # CLAUDE.md
 
+- Make sure the result is simple, lean, and consistent, as if written from scratch.
 - Respect `.gitignore` and skip files and dirs prefixed with "_".
 - Use the `codemap` skill when exploring the codebase.
 
@@ -8,7 +9,7 @@
 **Note:** `docker` commands cannot be run directly — ask the user to run them.
 
 ```bash
-# Format and lint all code (shfmt, shellcheck, dockerfmt, yamlfmt, markdownlint-cli2)
+# Format and lint all code (shfmt, shellcheck, dockerfmt, ruff, yamlfmt, markdownlint-cli2)
 make fmt
 
 # Build image (ask user to run)
@@ -29,7 +30,7 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
 2. **`Dockerfile`** — Six-stage build:
    - **DEB Packages**: System packages (git, gh, jq, ripgrep, docker-ce-cli, etc.)
    - **Claude Tools**: `claude-code`, `claude-powerline`, `agentshield`, `git-delta` via Bun
-   - **Lint/Format Tools**: `dockerfmt`, `shfmt`, `shellcheck`, `yamlfmt`, `markdownlint-cli2`
+   - **Lint/Format Tools**: `dockerfmt`, `shfmt`, `shellcheck`, `yamlfmt`, `ruff`, `markdownlint-cli2`
    - **User Setup**: Creates non-root `agent` user (UID 1000)
    - **Claude Plugins**: SuperClaude, claude-skills, codemap, and 58 agentic-awesome-skills bundles installed as local plugin marketplace
    - **Shell Interface**: Bash customization, aliases, readline config

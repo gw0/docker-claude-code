@@ -39,6 +39,12 @@ fmt:
 	git ls-files -- 'Dockerfile*' \
 	    | xargs -r dockerfmt --write || ((errors++)); \
 	\
+	echo "Formatting *.py scripts..."; \
+	git ls-files -- '*.py' \
+	    | xargs -r ruff format || ((errors++)); \
+	git ls-files -- '*.py' \
+	    | xargs -r ruff check --fix || ((errors++)); \
+	\
 	echo "Formatting YAML files..."; \
 	git ls-files -- '*.yml' '*.yaml' \
 	    | xargs -r yamlfmt || ((errors++)); \

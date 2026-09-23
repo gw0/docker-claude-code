@@ -138,6 +138,9 @@ ARG SHELLCHECK_VERSION=0.11.0
 # https://github.com/google/yamlfmt/releases
 # renovate: datasource=github-releases depName=google/yamlfmt
 ARG YAMLFMT_VERSION=0.21.0
+# https://github.com/astral-sh/ruff/releases
+# renovate: datasource=github-releases depName=astral-sh/ruff
+ARG RUFF_VERSION=0.16.8
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
 ARG MARKDOWNLINT_VERSION=0.23.3
@@ -162,6 +165,11 @@ RUN : \
     && tar -xzf yamlfmt.tar.gz yamlfmt \
     && mv yamlfmt /usr/local/bin/ \
     && rm -f yamlfmt.tar.gz \
+    # install ruff
+    && curl -fsSLo ruff.tar.gz https://github.com/astral-sh/ruff/releases/download/${RUFF_VERSION}/ruff-x86_64-unknown-linux-musl.tar.gz \
+    && tar -xzf ruff.tar.gz --strip-components=1 ruff-x86_64-unknown-linux-musl/ruff \
+    && mv ruff /usr/local/bin/ \
+    && rm -f ruff.tar.gz \
     # install markdownlint-cli2
     && bun install -g markdownlint-cli2@${MARKDOWNLINT_VERSION} \
     && rm -rf ${BUN_INSTALL}/install/cache \
@@ -170,6 +178,7 @@ RUN : \
     && yamlfmt --version \
     && dockerfmt version \
     && shellcheck --version \
+    && ruff --version \
     && markdownlint-cli2 .nonexistent
 
 ##
