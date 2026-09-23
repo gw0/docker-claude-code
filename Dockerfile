@@ -94,7 +94,7 @@ RUN apt-get update -qq \
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.278
+ARG CLAUDE_VERSION=2.1.280
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.31.0
@@ -140,7 +140,7 @@ ARG SHELLCHECK_VERSION=0.11.0
 ARG YAMLFMT_VERSION=0.21.0
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
-ARG MARKDOWNLINT_VERSION=0.23.2
+ARG MARKDOWNLINT_VERSION=0.23.3
 
 RUN : \
     # install dockerfmt
@@ -196,7 +196,7 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=18.0.0
+ARG AAS_VERSION=18.2.0
 # https://github.com/AZidan/codemap
 # renovate: datasource=github-releases depName=AZidan/codemap
 ARG CODEMAP_VERSION=1.3.1
