@@ -30,7 +30,7 @@
       "description": "Dockerfile ARG version pins with renovate annotations",
       "managerFilePatterns": ["/^[Dd]ocker[Ff]ile[^/]*$/"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?\\nARG [A-Z_]+=(?<currentValue>\\S+)"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?(?: extractVersion=(?<extractVersion>\\S+))?\\nARG [A-Z_]+=(?<currentValue>\\S+)"
       ]
     },
     {

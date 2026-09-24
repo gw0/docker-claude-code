@@ -93,7 +93,7 @@ RUN apt-get update -qq \
 # Bun
 ##
 # https://github.com/oven-sh/bun/releases
-# renovate: datasource=npm depName=bun
+# renovate: datasource=github-releases depName=oven-sh/bun extractVersion=^bun-v(?<version>.+)$
 ARG BUN_VERSION=1.4.2
 
 ENV BUN_INSTALL=/usr/local/bun
