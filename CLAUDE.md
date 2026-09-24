@@ -27,14 +27,15 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
 
 1. **`claude-aliases.bashrc`** — Shell integration that creates one alias per profile/account for each mode/variant. Each alias calls `_claude_run` which spins up `docker run -it --rm` with: profile-specific state volume (`~/.claude-<profile>`), current directory mounted, all capabilities dropped, no-new-privileges, host networking, and an auto-detected gVisor (runsc) runtime when registered with the host Docker daemon.
 
-2. **`Dockerfile`** — Build on `debian:trixie-slim`:
-   - **DEB Packages**: System packages (git, gh, jq, ripgrep, docker-ce-cli, etc.)
-   - **Bun**: Bun as JS runtime and package manager (`bunx`, `node` alias)
-   - **Claude Tools**: `claude-code`, `claude-powerline`, `agentshield`, `git-delta` via Bun
-   - **Lint/Format Tools**: `dockerfmt`, `shfmt`, `shellcheck`, `yamlfmt`, `ruff`, `markdownlint-cli2`
-   - **User Setup**: Creates non-root `agent` user (UID 1000)
-   - **Claude Plugins**: SuperClaude, claude-skills, codemap, and 58 agentic-awesome-skills bundles installed as local plugin marketplace
-   - **Shell Interface**: Bash customization, aliases, readline config
+2. **`Dockerfile`** — Build on `debian:trixie-slim`, one RUN per section ordered from least to most frequently changed:
+   - **Base system**: System packages (git, gh, jq, ripgrep, docker-ce-cli, etc.) and Bun as JS runtime (`bunx`, `node` alias)
+   - **User and shell**: Non-root user (`USER`/`USER_UID`/`USER_GID`, default `agent`/1000), bash/readline/vim customization, home symlinks into `~/.claude`
+   - **Lint/fmt tools**: `dockerfmt`, `shfmt`, `shellcheck`, `yamlfmt`, `ruff`, `markdownlint-cli2`
+   - **Claude tools**: `claude-powerline`, `agentshield`, `git-delta`
+   - **Claude plugins**: codemap, `rtk` (CLI + hook), SuperClaude, claude-skills, and agentic-awesome-skills bundles installed as local plugin marketplace
+   - **Claude Code**: `claude-code` via Bun (most frequently bumped)
+   - **Managed settings and workarounds**: `scripts/entrypoint.sh`, `claude-shared/` (root-owned, read-only), and bwrap shim via `dpkg-divert`
+   - BuildKit mounts: `type=cache` for apt/bun/pip caches, `type=tmpfs` on `/tmp` for download scratch, `type=bind` for build-only scripts
 
 3. **`scripts/entrypoint.sh`** — Container init chain: maps arbitrary UID/GID via NSS wrapper → initializes `~/.claude` → sets up audit log → symlinks shared config from image → enables plugins (default: `sc codemap`) → runs security scans (AgentShield + unicode detection) → execs `claude` with all arguments.
 
@@ -52,7 +53,7 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
 
 ### Plugin System
 
-Plugins are installed during Docker build into `/claude-shared/plugins-marketplaces/local/` and exposed as a local Claude Code marketplace. At startup, entrypoint enables plugins listed in `ENABLE_PLUGINS` (default: `sc codemap`). `scripts/install-aas-bundles.py` parses `bundles.md` from agentic-awesome-skills and generates per-bundle plugin directories + `plugin.json` metadata files.
+Plugins are installed during Docker build into `~/.claude-shared/plugins-marketplaces/local/` and exposed as a local Claude Code marketplace. At startup, entrypoint enables plugins listed in `ENABLE_PLUGINS` (default: `sc codemap`). `scripts/install-aas-bundles.py` parses `bundles.md` from agentic-awesome-skills and generates per-bundle plugin directories + `plugin.json` metadata files.
 
 ### Dependency Updates
 

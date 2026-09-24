@@ -4,6 +4,8 @@
 #   docker build --progress=plain -t docker-claude-code .
 #   docker run -it --rm -v ${HOME}/.claude:/home/agent/.claude -v ${PWD}:${PWD}:rslave -w ${PWD} docker-claude-code claude
 #
+# Sections are ordered from least to most frequently changed to maximize layer reuse.
+#
 
 FROM docker.io/library/debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
 
@@ -111,45 +113,45 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && kubectl version --client
 
 ##
-# Claude tools
+# User and shell
 ##
-# https://github.com/Owloops/claude-powerline/releases
-# renovate: datasource=npm depName=@owloops/claude-powerline
-ARG CLAUDE_POWERLINE_VERSION=1.31.0
-# https://github.com/affaan-m/agentshield/releases
-# renovate: datasource=npm depName=ecc-agentshield
-ARG AGENTSHIELD_VERSION=1.6.0
-# https://github.com/dandavison/delta/releases
-# renovate: datasource=github-releases depName=dandavison/delta
-ARG GIT_DELTA_VERSION=0.19.2
+ARG USER=agent
+ARG USER_UID=1000
+ARG USER_GID=1000
 
-RUN --mount=type=cache,target=/usr/local/bun/install/cache \
-    --mount=type=tmpfs,target=/tmp \
-    : \
-    && bun install -g \
-        # install claude-powerline
-        @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
-        # install ecc-agentshield
-        ecc-agentshield@${AGENTSHIELD_VERSION} \
-    # install git-delta
-    && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
-    && dpkg -i git-delta.deb \
-    # print versions
-    && delta --version
-
-##
-# Claude Code
-##
-# https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
-# renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.280
-
-RUN --mount=type=cache,target=/usr/local/bun/install/cache \
-    : \
-    # install claude
-    && bun install -g @anthropic-ai/claude-code@${CLAUDE_VERSION} \
-    # print versions
-    && claude --version
+RUN : \
+    # create non-root user
+    && groupadd -g ${USER_GID} ${USER} \
+    && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER} \
+    # customize shell interface
+    && echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
+    && echo 'source /usr/share/bash-completion/bash_completion' >>/etc/bash.bashrc \
+    && echo 'alias ll="ls --color=auto -lA"' >>/etc/bash.bashrc \
+    && echo 'alias watch="watch "' >>/etc/bash.bashrc \
+    && echo 'alias sshx="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"' >>/etc/bash.bashrc \
+    && echo 'alias scpx="scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"' >>/etc/bash.bashrc \
+    && echo '# Enable PgUp/PgDown history search (gw0)' >>/etc/inputrc \
+    && echo '"\e[5~": history-search-backward' >>/etc/inputrc \
+    && echo '"\e[6~": history-search-forward' >>/etc/inputrc \
+    && echo '# Enable scrollwheel (gw0)' >>/etc/screenrc \
+    && echo 'termcapinfo xterm* ti@:te@' >>/etc/screenrc \
+    && echo '" Turn off mouse and auto-indent on paste (gw0)' >>/etc/vim/vimrc.local \
+    && echo 'set mouse=' >>/etc/vim/vimrc.local \
+    && echo 'set ttymouse=' >>/etc/vim/vimrc.local \
+    && echo 'set paste' >>/etc/vim/vimrc.local \
+    && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
+    && git config --system --add safe.directory '*' \
+    # setup claude dirs, persistent storage, and symlinks
+    && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
+    && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
+    && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
+    && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
+    && ln -fsr /home/${USER}/.claude/.bashrc /home/${USER}/.bashrc \
+    && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
+    && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
+    && chown ${USER}:${USER} /home/${USER}/.claude /home/${USER}/.config \
+    # allow to run with any UID/GID as user with writable home
+    && chmod 777 /home/${USER}
 
 ##
 # Lint/fmt tools
@@ -202,20 +204,41 @@ RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     && markdownlint-cli2 .nonexistent
 
 ##
-# User configuration
+# Claude tools
 ##
-ARG USER=agent
-ARG USER_UID=1000
-ARG USER_GID=1000
+# https://github.com/Owloops/claude-powerline/releases
+# renovate: datasource=npm depName=@owloops/claude-powerline
+ARG CLAUDE_POWERLINE_VERSION=1.31.0
+# https://github.com/affaan-m/agentshield/releases
+# renovate: datasource=npm depName=ecc-agentshield
+ARG AGENTSHIELD_VERSION=1.6.0
+# https://github.com/dandavison/delta/releases
+# renovate: datasource=github-releases depName=dandavison/delta
+ARG GIT_DELTA_VERSION=0.19.2
 
-RUN : \
-    # create non-root user
-    && groupadd -g ${USER_GID} ${USER} \
-    && useradd --create-home --shell /bin/bash -u ${USER_UID} -g ${USER_GID} ${USER}
+RUN --mount=type=cache,target=/usr/local/bun/install/cache \
+    --mount=type=tmpfs,target=/tmp \
+    : \
+    && bun install -g \
+        # install claude-powerline
+        @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
+        # install ecc-agentshield
+        ecc-agentshield@${AGENTSHIELD_VERSION} \
+    # install git-delta
+    && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
+    && dpkg -i git-delta.deb \
+    # print versions
+    && delta --version
 
 ##
 # Claude plugins
 ##
+# https://github.com/AZidan/codemap
+# renovate: datasource=github-releases depName=AZidan/codemap
+ARG CODEMAP_VERSION=1.3.1
+# https://github.com/rtk-ai/rtk/releases
+# renovate: datasource=github-releases depName=rtk-ai/rtk
+ARG RTK_VERSION=0.49.0
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 # renovate: datasource=github-releases depName=SuperClaude-Org/SuperClaude_Framework
 ARG SUPERCLAUDE_VERSION=4.3.0
@@ -225,18 +248,26 @@ ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
 ARG AAS_VERSION=18.2.0
-# https://github.com/AZidan/codemap
-# renovate: datasource=github-releases depName=AZidan/codemap
-ARG CODEMAP_VERSION=1.3.1
-# https://github.com/rtk-ai/rtk/releases
-# renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.49.0
 
 RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-aas-bundles.py \
     --mount=type=cache,target=/root/.cache/pip \
     --mount=type=tmpfs,target=/tmp \
     : \
     && marketplace=/home/${USER}/.claude-shared/plugins-marketplaces/local \
+    # bundle codemap (CLI + plugin)
+    && curl -fsSLo codemap.tar.gz https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz \
+    && tar -xzf codemap.tar.gz \
+    && pip install "./$(ls -d codemap-*/)[languages]" \
+    && mkdir -p ${marketplace}/plugins/codemap \
+    && mv codemap-*/plugin/skills/ ${marketplace}/plugins/codemap/ \
+    && mv codemap-*/plugin/.claude-plugin/ ${marketplace}/plugins/codemap/ \
+    # install rtk (CLI + PreToolUse hook)
+    && curl -fsSLo rtk.tar.gz https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz \
+    && tar -xzf rtk.tar.gz -C /usr/local/bin/ rtk \
+    && curl -fsSLo rtk-src.tar.gz https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz \
+    && mkdir -p /home/${USER}/.claude-shared/hooks \
+    && tar --wildcards -xzf rtk-src.tar.gz -C /home/${USER}/.claude-shared/hooks/ --strip-components=3 'rtk-*/hooks/claude/rtk-rewrite.sh' \
+    && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh \
     # bundle superclaude
     && curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
     && tar --wildcards -xzf superclaude.tar.gz \
@@ -266,13 +297,6 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
         agentic-awesome-skills-*/skills/ \
         agentic-awesome-skills-*/docs/users/bundles.md \
         ${marketplace}/plugins/ \
-    # bundle codemap (CLI + plugin)
-    && curl -fsSLo codemap.tar.gz https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz \
-    && tar -xzf codemap.tar.gz \
-    && pip install "./$(ls -d codemap-*/)[languages]" \
-    && mkdir -p ${marketplace}/plugins/codemap \
-    && mv codemap-*/plugin/skills/ ${marketplace}/plugins/codemap/ \
-    && mv codemap-*/plugin/.claude-plugin/ ${marketplace}/plugins/codemap/ \
     # generate local marketplace.json from all bundled plugin.json files
     && mkdir -p ${marketplace}/.claude-plugin \
     && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
@@ -280,17 +304,24 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
       plugins:[.[]|{name:.name,description:.description,source:("./plugins/"+.name)}]}' \
         ${marketplace}/plugins/*/.claude-plugin/plugin.json \
         >${marketplace}/.claude-plugin/marketplace.json \
-    # install rtk (CLI + PreToolUse hook)
-    && curl -fsSLo rtk.tar.gz https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz \
-    && tar -xzf rtk.tar.gz -C /usr/local/bin/ rtk \
-    && curl -fsSLo rtk-src.tar.gz https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz \
-    && mkdir -p /home/${USER}/.claude-shared/hooks \
-    && tar --wildcards -xzf rtk-src.tar.gz -C /home/${USER}/.claude-shared/hooks/ --strip-components=3 'rtk-*/hooks/claude/rtk-rewrite.sh' \
-    && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh \
     # print versions
     && codemap --version \
     && rtk --version \
     && ls -1 ${marketplace}/plugins | wc -l
+
+##
+# Claude Code
+##
+# https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
+# renovate: datasource=npm depName=@anthropic-ai/claude-code
+ARG CLAUDE_VERSION=2.1.280
+
+RUN --mount=type=cache,target=/usr/local/bun/install/cache \
+    : \
+    # install claude
+    && bun install -g @anthropic-ai/claude-code@${CLAUDE_VERSION} \
+    # print versions
+    && claude --version
 
 ##
 # Managed settings and workarounds
@@ -302,40 +333,6 @@ RUN : \
     # nested procfs mount failures (replaces buggy enableWeakerNestedSandbox)
     && dpkg-divert --local --rename --divert /usr/bin/bwrap.real /usr/bin/bwrap \
     && ln -s /usr/local/bin/bwrap-shim.sh /usr/bin/bwrap
-
-##
-# Customize shell interface
-##
-RUN : \
-    # customize shell interface
-    && echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
-    && echo 'source /usr/share/bash-completion/bash_completion' >>/etc/bash.bashrc \
-    && echo 'alias ll="ls --color=auto -lA"' >>/etc/bash.bashrc \
-    && echo 'alias watch="watch "' >>/etc/bash.bashrc \
-    && echo 'alias sshx="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"' >>/etc/bash.bashrc \
-    && echo 'alias scpx="scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"' >>/etc/bash.bashrc \
-    && echo '# Enable PgUp/PgDown history search (gw0)' >>/etc/inputrc \
-    && echo '"\e[5~": history-search-backward' >>/etc/inputrc \
-    && echo '"\e[6~": history-search-forward' >>/etc/inputrc \
-    && echo '# Enable scrollwheel (gw0)' >>/etc/screenrc \
-    && echo 'termcapinfo xterm* ti@:te@' >>/etc/screenrc \
-    && echo '" Turn off mouse and auto-indent on paste (gw0)' >>/etc/vim/vimrc.local \
-    && echo 'set mouse=' >>/etc/vim/vimrc.local \
-    && echo 'set ttymouse=' >>/etc/vim/vimrc.local \
-    && echo 'set paste' >>/etc/vim/vimrc.local \
-    && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
-    && git config --system --add safe.directory '*' \
-    # setup claude dirs, persistent storage, and symlinks
-    && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
-    && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
-    && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
-    && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
-    && ln -fsr /home/${USER}/.claude/.bashrc /home/${USER}/.bashrc \
-    && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
-    && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
-    && chown ${USER}:${USER} /home/${USER}/.claude /home/${USER}/.config \
-    # allow to run with any UID/GID as user with writable home
-    && chmod 777 /home/${USER}
 
 ENV USER=${USER}
 ENV HOME=/home/${USER}
