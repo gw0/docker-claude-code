@@ -14,7 +14,7 @@ test:
 	echo "Testing alias..."; \
 	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -- --version"' /dev/null
 	echo "Testing subcommand execution..."; \
-	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -- -p \"run: pwd\""' /dev/null
+	CLAUDE_IMAGE=$(CLAUDE_IMAGE) script -qec 'bash --rcfile ./claude-aliases.bashrc -ic "cc1-yolo -- -p \"only run: pwd\""' /dev/null
 
 fmt:
 	@errors=0; \
@@ -41,9 +41,9 @@ fmt:
 	\
 	echo "Formatting *.py scripts..."; \
 	git ls-files -- '*.py' \
-	    | xargs -r ruff format || ((errors++)); \
+	    | xargs -r ruff format --no-cache || ((errors++)); \
 	git ls-files -- '*.py' \
-	    | xargs -r ruff check --fix || ((errors++)); \
+	    | xargs -r ruff check --fix --no-cache || ((errors++)); \
 	\
 	echo "Formatting YAML files..."; \
 	git ls-files -- '*.yml' '*.yaml' \
