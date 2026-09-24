@@ -53,7 +53,7 @@ This project is a containerized Claude Code sandbox. The two primary artifacts a
 
 ### Plugin System
 
-Plugins are installed during Docker build into `~/.claude-shared/plugins-marketplaces/local/` and exposed as a local Claude Code marketplace. At startup, entrypoint enables plugins listed in `ENABLE_PLUGINS` (default: `sc codemap`). `scripts/install-aas-bundles.py` parses `bundles.md` from agentic-awesome-skills and generates per-bundle plugin directories + `plugin.json` metadata files.
+Plugins are installed during Docker build into `~/.claude-shared/plugins/marketplaces/local/` and exposed as a local Claude Code marketplace. At startup, entrypoint enables plugins listed in `ENABLE_PLUGINS` (default: `sc codemap`). `scripts/install-aas-bundles.py` parses `bundles.md` from agentic-awesome-skills and generates per-bundle plugin directories + `plugin.json` metadata files.
 
 ### Dependency Updates
 

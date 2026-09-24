@@ -260,7 +260,7 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
     --mount=type=cache,target=/root/.cache/pip \
     --mount=type=tmpfs,target=/tmp \
     : \
-    && marketplace=/home/${USER}/.claude-shared/plugins-marketplaces/local \
+    && marketplace=/home/${USER}/.claude-shared/plugins/marketplaces/local \
     # bundle codemap (CLI + plugin)
     && curl -fsSLo codemap.tar.gz https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz \
     && tar -xzf codemap.tar.gz \

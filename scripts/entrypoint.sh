@@ -15,9 +15,12 @@ fi
 # shellcheck disable=SC1090
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 
+# Migrations (migrate managed-settings.d from old single-symlink layout)
+[[ -L ~/.claude/managed-settings.d ]] && rm -f ~/.claude/managed-settings.d
+
 # Initialize dirs
 export CLAUDE_CONFIG_DIR=~/.claude
-mkdir -p ~/.claude/plugins/marketplaces/ ~/.claude/.gh-config/
+mkdir -p ~/.claude/plugins/marketplaces/ ~/.claude/managed-settings.d/ ~/.claude/.gh-config/
 
 # Initialize audit log (owner write-only to obscure access)
 touch ~/.claude/audit-log.jsonl
@@ -30,11 +33,13 @@ fi
 
 # Remove dangling symlinks in claude dir
 find ~/.claude -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -vf {} \;
+find ~/.claude/managed-settings.d -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -vf {} \;
 find ~/.claude/plugins/marketplaces -maxdepth 1 -type l ! -exec test -e {} \; -exec rm -vf {} \;
 
-# Force recreate symlinks in claude dir
-ln -fsr -t ~/.claude ~/.claude-shared/*
-ln -fsr -t ~/.claude/plugins/marketplaces ~/.claude-shared/plugins-marketplaces/*
+# Recreate symlinks in claude dir (preserve existing customizations)
+ln -sr -t ~/.claude ~/.claude-shared/* 2>/dev/null
+ln -sr -t ~/.claude/managed-settings.d ~/.claude-shared/managed-settings.d/* 2>/dev/null
+ln -sr -t ~/.claude/plugins/marketplaces ~/.claude-shared/plugins/marketplaces/* 2>/dev/null
 
 # Setup local and official marketplace and enable plugins
 claude plugins marketplace add ~/.claude/plugins/marketplaces/local >/dev/null
