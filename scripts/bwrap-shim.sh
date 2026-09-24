@@ -3,8 +3,9 @@
 #
 # Rewrites problematic bwrap args when needed:
 #   --unshare-pid   -> drop, due to [A]
-#   --proc DEST     -> --bind /proc DEST, due to [A]
+#   --proc DEST     -> add --bind /proc DEST, due to [A]
 #   --unshare-net   -> drop if gVisor, due to [B]
+#   all             -> skip bwrap and apply-seccomp for excluded commands, due to [C]
 #
 # [A] Nested procfs mount failures (https://github.com/containers/bubblewrap/issues/284)
 #     Fixes buggy enableWeakerNestedSandbox (https://github.com/anthropics/claude-code/issues/73786)
@@ -15,20 +16,44 @@
 #     Error: "loopback: Failed RTM_NEWADDR"
 #     Activate: preserve_netns only if gVisor is detected.
 #
+# [C] Fixes buggy sandbox.excludedCommands (https://github.com/anthropics/claude-code/issues/95813)
+#     Needs to skip both bwrap and apply-seccomp as both create a new userns.
+#     Workaround for bwrap's userns setup drops all supplementary groups (e.g. docker group)
+#     Error: "permission denied while trying to connect to the docker API at unix:///var/run/docker.sock"
+#     Activate: skip bwrap entirely for commands in excluded_cmds.
+#
 # Trade-off: Nested bwrap sandboxes lose the corresponding namespace isolation
 # (full /proc visibility, shared network), but the container keeps --cap-drop
-# ALL. Alternative is to grant required capabilities, or disable Claude Code's
-# sandbox and env scrubbing.
+# ALL. Excluded commands get zero sandboxing. Alternative is to grant required
+# capabilities, or disable Claude Code's sandboxed Bash tool and env scrubbing.
 set -euo pipefail
 
 real_bwrap=/usr/bin/bwrap.real
+
+excluded_cmds=("docker" "kind")
+argv=("$@")
+for ((i = 0; i < ${#argv[@]}; i++)); do
+  if [[ "${argv[i]}" == "--" ]]; then
+    rest="${argv[*]:i+1}"
+    for cmd in "${excluded_cmds[@]}"; do
+      cmd_regex="eval '(\"')*(rtk )?${cmd} "
+      if [[ "${rest}" =~ ${cmd_regex} ]]; then
+        target=("${argv[@]:i+1}")
+        for ((j = 0; j < ${#target[@]}; j++)); do
+          target[j]="$(sed -E 's|ARGV0=apply-seccomp[[:space:]]+/proc/self/fd/[0-9]+[[:space:]]+||' <<<"${target[j]}")"
+        done
+        exec "${target[@]}"
+      fi
+    done
+    break
+  fi
+done
 
 preserve_procns=1
 preserve_netns=0
 [[ "$(</proc/sys/kernel/osrelease)" == *gvisor* ]] && preserve_netns=1
 
 args=()
-
 while (($#)); do
   case "$1" in
   --unshare-pid)
