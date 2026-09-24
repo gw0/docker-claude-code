@@ -6,7 +6,7 @@
 
 ## Commands
 
-**Note:** `docker` commands cannot be run directly — ask the user to run them.
+**Note:** `docker` commands cannot be run directly — ask the user to run them, unless we are doing an insecure experiment.
 
 ```bash
 # Format and lint all code (shfmt, shellcheck, dockerfmt, ruff, yamlfmt, markdownlint-cli2)

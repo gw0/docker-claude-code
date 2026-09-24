@@ -43,7 +43,8 @@
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": false,
     "allowUnsandboxedCommands": false,
-    "autoAllowBashIfSandboxed": false
+    "excludedCommands": ["docker *"]
   }
 }

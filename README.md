@@ -220,12 +220,12 @@ echo "deb [signed-by=/etc/apt/keyrings/gvisor-keyring.asc] https://storage.googl
 sudo apt-get update && sudo apt-get install -y runsc
 ```
 
-## Insecure experiments
+## Insecure experiments with Docker/KinD
 
-Docker or KinD work fastest when using host Docker daemon. To expose the host Docker socket use a restricted Docker socket proxy (limit actions, only allow if prefix matches, deny host mounts, deny host networking...):
+Docker or KinD work fastest when using the host/sidecar/remote Docker daemon. To expose the Docker socket you need to disable gVisor and consider passing requests through a restricted Docker socket proxy (to limit actions, only allow if prefix matches, deny host mounts, deny host networking...):
 
 ```bash
-DOCKER_EXTRA_ARGS="-v /run/docker-restricted.sock:/run/docker.sock --group-add $(stat -c '%g' /run/docker-restricted.sock)" cc1
+DOCKER_EXTRA_ARGS="-v /run/docker-restricted.sock:/run/docker.sock --group-add $(stat -c '%g' /run/docker-restricted.sock)" DISABLE_GVISOR=1 cc1
 ```
 
 ## Remote dev environment
