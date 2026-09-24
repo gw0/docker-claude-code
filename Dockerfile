@@ -16,24 +16,27 @@ FROM docker.io/library/debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46
 # renovate: datasource=github-releases depName=oven-sh/bun extractVersion=^bun-v(?<version>.+)$
 ARG BUN_VERSION=1.4.2
 
-WORKDIR /tmp
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ENV EDITOR=vim
+# configure global bun packages location
 ENV BUN_INSTALL=/usr/local/bun
 ENV BUN_INSTALL_BIN=/usr/local/bin
+# download into /tmp tmpfs mounts
+WORKDIR /tmp
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
     : \
-    # configure apt (keep cache, allow root to run apt-get despite --cap-drop ALL)
+    # configure apt (keep cache, allow running as root)
     && rm -f /etc/apt/apt.conf.d/docker-clean \
     && echo 'APT::Sandbox::User "root";' >/etc/apt/apt.conf.d/99no-sandbox \
     # upgrade base system
     && apt-get update -qq \
     && apt-get upgrade -y \
+    # install packages
     && apt-get install -y --no-install-recommends \
         # essentials
         ca-certificates \
@@ -42,6 +45,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         unzip \
         # shell utils
         bash-completion \
+        htop \
         jq \
         less \
         nano \
@@ -61,7 +65,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         openssh-client \
         rsync \
         socat \
-        tsocks \
         # dev utils
         binutils \
         file \
@@ -69,12 +72,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         git \
         make \
         man-db \
-        htop \
-        time \
-        python3-cbor2 \
         python3-pip \
         python3-venv \
         ripgrep \
+        time \
         xxd \
         # spellcheck
         hunspell \
@@ -83,25 +84,30 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         bubblewrap \
         libnss-wrapper \
         unattended-upgrades \
+    # add Docker apt repo
     && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
-    && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" | tee /etc/apt/sources.list.d/docker.list \
+    && echo "deb [signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "${VERSION_CODENAME}") stable" >/etc/apt/sources.list.d/docker.list \
     && apt-get update -qq \
     && apt-get install -y --no-install-recommends \
         # infra utils
         docker-ce-cli \
+        docker-buildx-plugin \
+        docker-compose-plugin \
         kind \
         kubectl \
-    # configure timezone
+    # set timezone
     && echo "${TZ}" >/etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
-    # configure defaults
+    # set default editor
     && update-alternatives --set editor /usr/bin/vim.basic \
+    # allow system-wide pip install
     && rm /usr/lib/python*/EXTERNALLY-MANAGED \
-    && echo "" >/etc/tsocks.conf \
-    # use same tmp
+    # trust repos of any owner
+    && git config --system --add safe.directory '*' \
+    # use only one /tmp
     && rm -rf /var/tmp \
     && ln -s /tmp /var/tmp \
-    # install bun (+ bunx, node as bun alias)
+    # install bun, bunx, node
     && curl -fsSLo bun.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64-baseline.zip \
     && unzip -j bun.zip bun-linux-x64-baseline/bun -d /usr/local/bin/ \
     && ln -s bun /usr/local/bin/bunx \
@@ -140,17 +146,17 @@ RUN : \
     && echo 'set ttymouse=' >>/etc/vim/vimrc.local \
     && echo 'set paste' >>/etc/vim/vimrc.local \
     && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
-    && git config --system --add safe.directory '*' \
-    # setup claude dirs, persistent storage, and symlinks
-    && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
+    # persist dotfiles in ~/.claude mount
+    && mkdir -p /home/${USER}/.claude /home/${USER}/.config /etc/claude-code \
     && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
     && ln -fsr /home/${USER}/.claude/.claude.json.backup /home/${USER}/.claude.json.backup \
-    && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
     && ln -fsr /home/${USER}/.claude/.bashrc /home/${USER}/.bashrc \
     && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
     && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
+    # link managed settings via ~/.claude to ~/.claude-shared
+    && ln -fsr /home/${USER}/.claude/managed-settings.d /etc/claude-code/managed-settings.d \
     && chown ${USER}:${USER} /home/${USER}/.claude /home/${USER}/.config \
-    # allow to run with any UID/GID as user with writable home
+    # allow any UID/GID to write into home
     && chmod 777 /home/${USER}
 
 ##
@@ -228,6 +234,7 @@ RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
     && dpkg -i git-delta.deb \
     # print versions
+    && agentshield --version \
     && delta --version
 
 ##
@@ -261,7 +268,7 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
     && mkdir -p ${marketplace}/plugins/codemap \
     && mv codemap-*/plugin/skills/ ${marketplace}/plugins/codemap/ \
     && mv codemap-*/plugin/.claude-plugin/ ${marketplace}/plugins/codemap/ \
-    # install rtk (CLI + PreToolUse hook)
+    # bundle rtk (CLI + PreToolUse hook)
     && curl -fsSLo rtk.tar.gz https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz \
     && tar -xzf rtk.tar.gz -C /usr/local/bin/ rtk \
     && curl -fsSLo rtk-src.tar.gz https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz \
@@ -288,7 +295,7 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
     && echo '{"name":"cs","description":"Claude Skills (https://github.com/Jeffallan/claude-skills)"}' >${marketplace}/plugins/cs/.claude-plugin/plugin.json \
     && mv claude-skills-*/commands/ ${marketplace}/plugins/cs/commands/ \
     && mv claude-skills-*/skills/ ${marketplace}/plugins/cs/skills/ \
-    # bundle agentic-awesome-skills (by editorial bundles and plugins)
+    # bundle agentic-awesome-skills (per editorial bundle and plugin)
     && curl -fsSLo aas.tar.gz https://github.com/sickn33/agentic-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
         'agentic-awesome-skills-*/skills/' \
@@ -330,7 +337,7 @@ COPY --chmod=755 scripts/entrypoint.sh scripts/bwrap-shim.sh /usr/local/bin/
 COPY claude-shared/ /home/${USER}/.claude-shared/
 
 RUN : \
-    # nested procfs mount failures (replaces buggy enableWeakerNestedSandbox)
+    # wrap bwrap to rewrite problematic args in nested/gVisor sandboxes (see bwrap-shim.sh)
     && dpkg-divert --local --rename --divert /usr/bin/bwrap.real /usr/bin/bwrap \
     && ln -s /usr/local/bin/bwrap-shim.sh /usr/bin/bwrap
 
