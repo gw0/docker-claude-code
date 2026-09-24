@@ -15,7 +15,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-RUN apt-get update -qq \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    --mount=type=tmpfs,target=/tmp \
+    : \
+    # keep downloaded packages in cache mount
+    && rm -f /etc/apt/apt.conf.d/docker-clean \
+    && apt-get update -qq \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
         # essentials
@@ -74,8 +80,6 @@ RUN apt-get update -qq \
         docker-ce-cli \
         kind \
         kubectl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
     # configure apt-get (allow root to run apt-get despite --cap-drop ALL)
     && echo 'APT::Sandbox::User "root";' >/etc/apt/apt.conf.d/99no-sandbox \
     # configure timezone
@@ -98,11 +102,11 @@ ARG BUN_VERSION=1.4.2
 
 ENV BUN_INSTALL=/usr/local/bun
 ENV BUN_INSTALL_BIN=/usr/local/bin
-RUN : \
+RUN --mount=type=tmpfs,target=/tmp \
+    : \
     # install bun (+ bunx, node as bun alias)
     && curl -fsSLo bun.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64-baseline.zip \
     && unzip -j bun.zip bun-linux-x64-baseline/bun -d /usr/local/bin/ \
-    && rm -f bun.zip \
     && ln -s bun /usr/local/bin/bunx \
     && ln -s bun /usr/local/bin/node \
     # print versions
@@ -124,7 +128,9 @@ ARG AGENTSHIELD_VERSION=1.6.0
 # renovate: datasource=github-releases depName=dandavison/delta
 ARG GIT_DELTA_VERSION=0.19.2
 
-RUN : \
+RUN --mount=type=cache,target=/usr/local/bun/install/cache \
+    --mount=type=tmpfs,target=/tmp \
+    : \
     && bun install -g \
         # install claude
         @anthropic-ai/claude-code@${CLAUDE_VERSION} \
@@ -132,11 +138,9 @@ RUN : \
         @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
         # install ecc-agentshield
         ecc-agentshield@${AGENTSHIELD_VERSION} \
-    && rm -rf ${BUN_INSTALL}/install/cache \
     # install git-delta
     && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
     && dpkg -i git-delta.deb \
-    && rm -f git-delta.deb \
     # print versions
     && claude --version \
     && delta --version
@@ -163,34 +167,26 @@ ARG RUFF_VERSION=0.16.8
 # renovate: datasource=npm depName=markdownlint-cli2
 ARG MARKDOWNLINT_VERSION=0.23.3
 
-RUN : \
+RUN --mount=type=cache,target=/usr/local/bun/install/cache \
+    --mount=type=tmpfs,target=/tmp \
+    : \
     # install dockerfmt
-    && curl -fsSLo dockerfmt.tar.gz \
-        https://github.com/reteps/dockerfmt/releases/download/v${DOCKERFMT_VERSION}/dockerfmt-v${DOCKERFMT_VERSION}-linux-amd64.tar.gz \
-    && tar -xzf dockerfmt.tar.gz dockerfmt \
-    && mv dockerfmt /usr/local/bin/ \
-    && rm -f dockerfmt.tar.gz \
+    && curl -fsSLo dockerfmt.tar.gz https://github.com/reteps/dockerfmt/releases/download/v${DOCKERFMT_VERSION}/dockerfmt-v${DOCKERFMT_VERSION}-linux-amd64.tar.gz \
+    && tar -xzf dockerfmt.tar.gz -C /usr/local/bin/ dockerfmt \
     # install shfmt
     && curl -fsSLo /usr/local/bin/shfmt https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_amd64 \
     && chmod +x /usr/local/bin/shfmt \
     # install shellcheck
     && curl -fsSLo shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v${SHELLCHECK_VERSION}/shellcheck-v${SHELLCHECK_VERSION}.linux.x86_64.tar.xz \
-    && tar -xf shellcheck.tar.xz shellcheck-v${SHELLCHECK_VERSION}/shellcheck \
-    && mv shellcheck-v${SHELLCHECK_VERSION}/shellcheck /usr/local/bin/ \
-    && rm -rf shellcheck.tar.xz shellcheck-v${SHELLCHECK_VERSION}/ \
+    && tar -xf shellcheck.tar.xz -C /usr/local/bin/ --strip-components=1 shellcheck-v${SHELLCHECK_VERSION}/shellcheck \
     # install yamlfmt
     && curl -fsSLo yamlfmt.tar.gz https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz \
-    && tar -xzf yamlfmt.tar.gz yamlfmt \
-    && mv yamlfmt /usr/local/bin/ \
-    && rm -f yamlfmt.tar.gz \
+    && tar -xzf yamlfmt.tar.gz -C /usr/local/bin/ yamlfmt \
     # install ruff
     && curl -fsSLo ruff.tar.gz https://github.com/astral-sh/ruff/releases/download/${RUFF_VERSION}/ruff-x86_64-unknown-linux-musl.tar.gz \
-    && tar -xzf ruff.tar.gz --strip-components=1 ruff-x86_64-unknown-linux-musl/ruff \
-    && mv ruff /usr/local/bin/ \
-    && rm -f ruff.tar.gz \
+    && tar -xzf ruff.tar.gz -C /usr/local/bin/ --strip-components=1 ruff-x86_64-unknown-linux-musl/ruff \
     # install markdownlint-cli2
     && bun install -g markdownlint-cli2@${MARKDOWNLINT_VERSION} \
-    && rm -rf ${BUN_INSTALL}/install/cache \
     # print versions
     && shfmt --version \
     && yamlfmt --version \
@@ -231,9 +227,10 @@ ARG CODEMAP_VERSION=1.3.1
 # renovate: datasource=github-releases depName=rtk-ai/rtk
 ARG RTK_VERSION=0.49.0
 
-COPY scripts/install-aas-bundles.py /tmp/install-aas-bundles.py
-
-RUN : \
+RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-aas-bundles.py \
+    --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=tmpfs,target=/tmp \
+    : \
     # bundle superclaude
     && curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
     && tar --wildcards -xzf superclaude.tar.gz \
@@ -245,7 +242,6 @@ RUN : \
     && mv SuperClaude_Framework-*/plugins/superclaude/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/commands/ \
     && mv SuperClaude_Framework-*/plugins/superclaude/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/skills/ \
     && mv SuperClaude_Framework-*/plugins/superclaude/agents/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/agents/ \
-    && rm -rf superclaude.tar.gz SuperClaude_Framework-* \
     # bundle claude-skills
     && curl -fsSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
     && tar --wildcards -xzf claude-skills.tar.gz \
@@ -255,25 +251,22 @@ RUN : \
     && echo '{"name":"cs","description":"Claude Skills (https://github.com/Jeffallan/claude-skills)"}' >/home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/.claude-plugin/plugin.json \
     && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
     && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
-    && rm -rf claude-skills.tar.gz claude-skills-* \
     # bundle agentic-awesome-skills (by editorial bundles and plugins)
     && curl -fsSLo aas.tar.gz https://github.com/sickn33/agentic-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
         'agentic-awesome-skills-*/skills/' \
         'agentic-awesome-skills-*/docs/users/bundles.md' \
-    && python3 /tmp/install-aas-bundles.py \
+    && python3 /mnt/install-aas-bundles.py \
         agentic-awesome-skills-*/skills/ \
         agentic-awesome-skills-*/docs/users/bundles.md \
         /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
-    && rm -rf aas.tar.gz agentic-awesome-skills-* /tmp/install-aas-bundles.py \
     # bundle codemap (CLI + plugin)
     && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz" \
     && tar -xzf codemap.tar.gz \
-    && pip install --no-cache-dir "$(ls -d codemap-*/)[languages]" \
+    && pip install "$(ls -d codemap-*/)[languages]" \
     && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap \
     && mv codemap-*/plugin/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
     && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
-    && rm -rf codemap.tar.gz codemap-*/ \
     # generate local marketplace.json from all bundled plugin.json files
     && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
     && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
@@ -283,21 +276,17 @@ RUN : \
         >/home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin/marketplace.json \
     # install rtk (CLI + PreToolUse hook)
     && curl -fsSLo rtk.tar.gz "https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz" \
-    && tar -xzf rtk.tar.gz rtk \
-    && mv rtk /usr/local/bin/ \
-    && rm rtk.tar.gz \
+    && tar -xzf rtk.tar.gz -C /usr/local/bin/ rtk \
     && curl -fsSLo rtk-src.tar.gz "https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz" \
     && mkdir -p /home/${USER}/.claude-shared/hooks \
-    && tar --wildcards -xzf rtk-src.tar.gz 'rtk-*/hooks/claude/rtk-rewrite.sh' \
-    && mv rtk-*/hooks/claude/rtk-rewrite.sh /home/${USER}/.claude-shared/hooks/ \
-    && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh \
-    && rm -rf rtk-src.tar.gz
+    && tar --wildcards -xzf rtk-src.tar.gz -C /home/${USER}/.claude-shared/hooks/ --strip-components=3 'rtk-*/hooks/claude/rtk-rewrite.sh' \
+    && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh
 
 ##
 # Managed settings and workarounds
 ##
 
-COPY scripts/* /usr/local/bin/
+COPY --chmod=755 scripts/* /usr/local/bin/
 COPY claude-shared/ /home/${USER}/.claude-shared
 
 RUN : \
@@ -327,7 +316,6 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && echo 'set paste' >>/etc/vim/vimrc.local \
     && echo 'set pastetoggle=<F2>' >>/etc/vim/vimrc.local \
     && git config --system --add safe.directory '*' \
-    && chmod +x /usr/local/bin/*.sh \
     # setup claude dirs, persistent storage, and symlinks
     && mkdir -p /home/${USER}/.claude /etc/claude-code /home/${USER}/.config \
     && ln -fsr /home/${USER}/.claude/.claude.json /home/${USER}/.claude.json \
