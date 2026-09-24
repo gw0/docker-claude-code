@@ -8,19 +8,28 @@
 FROM docker.io/library/debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a
 
 ##
-# DEB packages
+# Base system
 ##
+# https://github.com/oven-sh/bun/releases
+# renovate: datasource=github-releases depName=oven-sh/bun extractVersion=^bun-v(?<version>.+)$
+ARG BUN_VERSION=1.4.2
+
 WORKDIR /tmp
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
+ENV EDITOR=vim
+ENV BUN_INSTALL=/usr/local/bun
+ENV BUN_INSTALL_BIN=/usr/local/bin
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=tmpfs,target=/tmp \
     : \
-    # keep downloaded packages in cache mount
+    # configure apt (keep cache, allow root to run apt-get despite --cap-drop ALL)
     && rm -f /etc/apt/apt.conf.d/docker-clean \
+    && echo 'APT::Sandbox::User "root";' >/etc/apt/apt.conf.d/99no-sandbox \
+    # upgrade base system
     && apt-get update -qq \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
@@ -80,8 +89,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         docker-ce-cli \
         kind \
         kubectl \
-    # configure apt-get (allow root to run apt-get despite --cap-drop ALL)
-    && echo 'APT::Sandbox::User "root";' >/etc/apt/apt.conf.d/99no-sandbox \
     # configure timezone
     && echo "${TZ}" >/etc/timezone \
     && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
@@ -91,33 +98,21 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && echo "" >/etc/tsocks.conf \
     # use same tmp
     && rm -rf /var/tmp \
-    && ln -s /tmp /var/tmp
-
-##
-# Bun
-##
-# https://github.com/oven-sh/bun/releases
-# renovate: datasource=github-releases depName=oven-sh/bun extractVersion=^bun-v(?<version>.+)$
-ARG BUN_VERSION=1.4.2
-
-ENV BUN_INSTALL=/usr/local/bun
-ENV BUN_INSTALL_BIN=/usr/local/bin
-RUN --mount=type=tmpfs,target=/tmp \
-    : \
+    && ln -s /tmp /var/tmp \
     # install bun (+ bunx, node as bun alias)
     && curl -fsSLo bun.zip https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64-baseline.zip \
     && unzip -j bun.zip bun-linux-x64-baseline/bun -d /usr/local/bin/ \
     && ln -s bun /usr/local/bin/bunx \
     && ln -s bun /usr/local/bin/node \
     # print versions
-    && bun --version
+    && bun --version \
+    && python3 --version \
+    && docker --version \
+    && kubectl version --client
 
 ##
 # Claude tools
 ##
-# https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
-# renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.280
 # https://github.com/Owloops/claude-powerline/releases
 # renovate: datasource=npm depName=@owloops/claude-powerline
 ARG CLAUDE_POWERLINE_VERSION=1.31.0
@@ -132,8 +127,6 @@ RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     --mount=type=tmpfs,target=/tmp \
     : \
     && bun install -g \
-        # install claude
-        @anthropic-ai/claude-code@${CLAUDE_VERSION} \
         # install claude-powerline
         @owloops/claude-powerline@${CLAUDE_POWERLINE_VERSION} \
         # install ecc-agentshield
@@ -142,8 +135,21 @@ RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     && curl -fsSLo git-delta.deb https://github.com/dandavison/delta/releases/download/${GIT_DELTA_VERSION}/git-delta-musl_${GIT_DELTA_VERSION}_amd64.deb \
     && dpkg -i git-delta.deb \
     # print versions
-    && claude --version \
     && delta --version
+
+##
+# Claude Code
+##
+# https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
+# renovate: datasource=npm depName=@anthropic-ai/claude-code
+ARG CLAUDE_VERSION=2.1.280
+
+RUN --mount=type=cache,target=/usr/local/bun/install/cache \
+    : \
+    # install claude
+    && bun install -g @anthropic-ai/claude-code@${CLAUDE_VERSION} \
+    # print versions
+    && claude --version
 
 ##
 # Lint/fmt tools
@@ -188,10 +194,10 @@ RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     # install markdownlint-cli2
     && bun install -g markdownlint-cli2@${MARKDOWNLINT_VERSION} \
     # print versions
-    && shfmt --version \
-    && yamlfmt --version \
     && dockerfmt version \
+    && shfmt --version \
     && shellcheck --version \
+    && yamlfmt --version \
     && ruff --version \
     && markdownlint-cli2 .nonexistent
 
@@ -210,7 +216,6 @@ RUN : \
 ##
 # Claude plugins
 ##
-
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 # renovate: datasource=github-releases depName=SuperClaude-Org/SuperClaude_Framework
 ARG SUPERCLAUDE_VERSION=4.3.0
@@ -231,26 +236,27 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
     --mount=type=cache,target=/root/.cache/pip \
     --mount=type=tmpfs,target=/tmp \
     : \
+    && marketplace=/home/${USER}/.claude-shared/plugins-marketplaces/local \
     # bundle superclaude
     && curl -fsSLo superclaude.tar.gz https://github.com/SuperClaude-Org/SuperClaude_Framework/archive/refs/tags/v${SUPERCLAUDE_VERSION}.tar.gz \
     && tar --wildcards -xzf superclaude.tar.gz \
         'SuperClaude_Framework-*/plugins/superclaude/commands/' \
         'SuperClaude_Framework-*/plugins/superclaude/skills/' \
         'SuperClaude_Framework-*/plugins/superclaude/agents/' \
-    && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/.claude-plugin \
-    && echo '{"name":"sc","description":"SuperClaude Framework (https://github.com/SuperClaude-Org/SuperClaude_Framework)"}' >/home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/.claude-plugin/plugin.json \
-    && mv SuperClaude_Framework-*/plugins/superclaude/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/commands/ \
-    && mv SuperClaude_Framework-*/plugins/superclaude/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/skills/ \
-    && mv SuperClaude_Framework-*/plugins/superclaude/agents/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/sc/agents/ \
+    && mkdir -p ${marketplace}/plugins/sc/.claude-plugin \
+    && echo '{"name":"sc","description":"SuperClaude Framework (https://github.com/SuperClaude-Org/SuperClaude_Framework)"}' >${marketplace}/plugins/sc/.claude-plugin/plugin.json \
+    && mv SuperClaude_Framework-*/plugins/superclaude/commands/ ${marketplace}/plugins/sc/commands/ \
+    && mv SuperClaude_Framework-*/plugins/superclaude/skills/ ${marketplace}/plugins/sc/skills/ \
+    && mv SuperClaude_Framework-*/plugins/superclaude/agents/ ${marketplace}/plugins/sc/agents/ \
     # bundle claude-skills
     && curl -fsSLo claude-skills.tar.gz https://github.com/Jeffallan/claude-skills/archive/refs/tags/v${CLAUDE_SKILLS_VERSION}.tar.gz \
     && tar --wildcards -xzf claude-skills.tar.gz \
-        claude-skills-*/commands/ \
-        claude-skills-*/skills/ \
-    && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/.claude-plugin \
-    && echo '{"name":"cs","description":"Claude Skills (https://github.com/Jeffallan/claude-skills)"}' >/home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/.claude-plugin/plugin.json \
-    && mv claude-skills-*/commands/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/commands/ \
-    && mv claude-skills-*/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/cs/skills/ \
+        'claude-skills-*/commands/' \
+        'claude-skills-*/skills/' \
+    && mkdir -p ${marketplace}/plugins/cs/.claude-plugin \
+    && echo '{"name":"cs","description":"Claude Skills (https://github.com/Jeffallan/claude-skills)"}' >${marketplace}/plugins/cs/.claude-plugin/plugin.json \
+    && mv claude-skills-*/commands/ ${marketplace}/plugins/cs/commands/ \
+    && mv claude-skills-*/skills/ ${marketplace}/plugins/cs/skills/ \
     # bundle agentic-awesome-skills (by editorial bundles and plugins)
     && curl -fsSLo aas.tar.gz https://github.com/sickn33/agentic-awesome-skills/archive/refs/tags/v${AAS_VERSION}.tar.gz \
     && tar --wildcards -xzf aas.tar.gz \
@@ -259,47 +265,50 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
     && python3 /mnt/install-aas-bundles.py \
         agentic-awesome-skills-*/skills/ \
         agentic-awesome-skills-*/docs/users/bundles.md \
-        /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/ \
+        ${marketplace}/plugins/ \
     # bundle codemap (CLI + plugin)
-    && curl -fsSLo codemap.tar.gz "https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz" \
+    && curl -fsSLo codemap.tar.gz https://github.com/AZidan/codemap/archive/refs/tags/v${CODEMAP_VERSION}.tar.gz \
     && tar -xzf codemap.tar.gz \
-    && pip install "$(ls -d codemap-*/)[languages]" \
-    && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap \
-    && mv codemap-*/plugin/skills/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
-    && mv codemap-*/plugin/.claude-plugin/ /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/codemap/ \
+    && pip install "./$(ls -d codemap-*/)[languages]" \
+    && mkdir -p ${marketplace}/plugins/codemap \
+    && mv codemap-*/plugin/skills/ ${marketplace}/plugins/codemap/ \
+    && mv codemap-*/plugin/.claude-plugin/ ${marketplace}/plugins/codemap/ \
     # generate local marketplace.json from all bundled plugin.json files
-    && mkdir -p /home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin \
+    && mkdir -p ${marketplace}/.claude-plugin \
     && jq -s '{"$schema":"https://anthropic.com/claude-code/marketplace.schema.json", \
       name:"local",description:"Local plugins",owner:{name:"local"}, \
       plugins:[.[]|{name:.name,description:.description,source:("./plugins/"+.name)}]}' \
-        /home/${USER}/.claude-shared/plugins-marketplaces/local/plugins/*/.claude-plugin/plugin.json \
-        >/home/${USER}/.claude-shared/plugins-marketplaces/local/.claude-plugin/marketplace.json \
+        ${marketplace}/plugins/*/.claude-plugin/plugin.json \
+        >${marketplace}/.claude-plugin/marketplace.json \
     # install rtk (CLI + PreToolUse hook)
-    && curl -fsSLo rtk.tar.gz "https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz" \
+    && curl -fsSLo rtk.tar.gz https://github.com/rtk-ai/rtk/releases/download/v${RTK_VERSION}/rtk-x86_64-unknown-linux-musl.tar.gz \
     && tar -xzf rtk.tar.gz -C /usr/local/bin/ rtk \
-    && curl -fsSLo rtk-src.tar.gz "https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz" \
+    && curl -fsSLo rtk-src.tar.gz https://github.com/rtk-ai/rtk/archive/refs/tags/v${RTK_VERSION}.tar.gz \
     && mkdir -p /home/${USER}/.claude-shared/hooks \
     && tar --wildcards -xzf rtk-src.tar.gz -C /home/${USER}/.claude-shared/hooks/ --strip-components=3 'rtk-*/hooks/claude/rtk-rewrite.sh' \
-    && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh
+    && chmod +x /home/${USER}/.claude-shared/hooks/rtk-rewrite.sh \
+    # print versions
+    && codemap --version \
+    && rtk --version \
+    && ls -1 ${marketplace}/plugins | wc -l
 
 ##
 # Managed settings and workarounds
 ##
-
-COPY --chmod=755 scripts/* /usr/local/bin/
-COPY claude-shared/ /home/${USER}/.claude-shared
+COPY --chmod=755 scripts/entrypoint.sh scripts/bwrap-shim.sh /usr/local/bin/
+COPY claude-shared/ /home/${USER}/.claude-shared/
 
 RUN : \
-    # workaround for nested procfs mount failures (replaces buggy enableWeakerNestedSandbox)
-    && mv /usr/bin/bwrap /usr/bin/bwrap.real \
-    && ln -fsr /usr/local/bin/bwrap-shim.sh /usr/bin/bwrap
+    # nested procfs mount failures (replaces buggy enableWeakerNestedSandbox)
+    && dpkg-divert --local --rename --divert /usr/bin/bwrap.real /usr/bin/bwrap \
+    && ln -s /usr/local/bin/bwrap-shim.sh /usr/bin/bwrap
 
 ##
 # Customize shell interface
 ##
-ENV EDITOR=vim
-ENV HOME=/home/agent
-RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
+RUN : \
+    # customize shell interface
+    && echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && echo 'source /usr/share/bash-completion/bash_completion' >>/etc/bash.bashrc \
     && echo 'alias ll="ls --color=auto -lA"' >>/etc/bash.bashrc \
     && echo 'alias watch="watch "' >>/etc/bash.bashrc \
@@ -324,10 +333,12 @@ RUN echo '# Shell customization (gw0)' >>/etc/bash.bashrc \
     && ln -fsr /home/${USER}/.claude/.bashrc /home/${USER}/.bashrc \
     && ln -fsr /home/${USER}/.claude/.gitconfig /home/${USER}/.gitconfig \
     && ln -fsr /home/${USER}/.claude/.gh-config /home/${USER}/.config/gh \
-    && chown -R ${USER}:${USER} /home/${USER} \
+    && chown ${USER}:${USER} /home/${USER}/.claude /home/${USER}/.config \
     # allow to run with any UID/GID as user with writable home
     && chmod 777 /home/${USER}
 
-USER ${USER}:${USER}
+ENV USER=${USER}
+ENV HOME=/home/${USER}
+USER ${USER_UID}:${USER_GID}
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/bin/bash"]

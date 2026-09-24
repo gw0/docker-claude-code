@@ -5,8 +5,8 @@
 if ! getent passwd "$(id -u)" &>/dev/null; then
   export NSS_WRAPPER_PASSWD=/tmp/passwd
   export NSS_WRAPPER_GROUP=/tmp/group
-  echo "agent:x:$(id -u):$(id -g):agent:/home/agent:/bin/bash" >"${NSS_WRAPPER_PASSWD}"
-  echo "agent:x:$(id -g):" >"${NSS_WRAPPER_GROUP}"
+  echo "${USER}:x:$(id -u):$(id -g):${USER}:${HOME}:/bin/bash" >"${NSS_WRAPPER_PASSWD}"
+  echo "${USER}:x:$(id -g):" >"${NSS_WRAPPER_GROUP}"
   LD_PRELOAD=$(echo /usr/lib/*/libnss_wrapper.so) # exactly one libnss_wrapper.so installed
   export LD_PRELOAD
 fi
