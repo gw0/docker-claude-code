@@ -112,11 +112,12 @@ if [[ ! "${DISABLE_NOTICE:-}" =~ ^[1YyTt]$ ]]; then
   echo
 fi
 
-# Relay docker.sock over TCP loopback, because bwrap's seccomp filter blocks AF_UNIX sockets outright (https://github.com/anthropics/claude-code/issues/44180)
+# Relay docker.sock over TCP loopback, because apply-seccomp blocks AF_UNIX outright (https://github.com/anthropics/claude-code/issues/44180)
 if [[ -z "${DOCKER_HOST:-}" && -S /run/docker.sock ]]; then
   socat TCP-LISTEN:12375,bind=127.0.0.1,fork,reuseaddr UNIX-CONNECT:/run/docker.sock &
   disown
   export DOCKER_HOST=tcp://127.0.0.1:12375
+  export DISABLE_BWRAP_NETNS=1
 fi
 
 #XXX: clean-up leftover sandbox placeholders 2s after start when CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1 (https://github.com/anthropics/claude-code/issues/78072)

@@ -2,19 +2,21 @@
 # Shim for /usr/bin/bwrap
 #
 # Rewrites problematic bwrap args when needed:
-#   --unshare-pid   -> drop, due to [A]
-#   --proc DEST     -> add --bind /proc DEST, due to [A]
-#   --unshare-net   -> drop if gVisor, due to [B]
-#   all             -> skip bwrap and apply-seccomp for excluded commands, due to [C]
+#   --unshare-pid   -> drop, see [A]
+#   --proc DEST     -> add --bind /proc DEST, see [A]
+#   --unshare-net   -> drop if gVisor, see [B]
+#   all             -> skip bwrap and apply-seccomp for excluded commands, see [C]
 #
 # [A] Nested procfs mount failures (https://github.com/containers/bubblewrap/issues/284)
 #     Fixes buggy enableWeakerNestedSandbox (https://github.com/anthropics/claude-code/issues/73786)
 #     Error: "bwrap: Can't mount proc on /newroot/proc: Operation not permitted"
-#     Activate: preserve_procns always.
+#     Activate: DISABLE_BWRAP_PROCPS=1 always.
 #
 # [B] bwrap's loopback setup fails under gVisor's netstack (https://github.com/containers/bubblewrap/issues/745)
 #     Error: "loopback: Failed RTM_NEWADDR"
-#     Activate: preserve_netns only if gVisor is detected.
+#     Also needed to reach the docker.sock TCP relay (see entrypoint.sh), since
+#     apply-seccomp blocks AF_UNIX outright.
+#     Activate: DISABLE_BWRAP_NETNS=1 if gVisor is detected, or set to 1.
 #
 # [C] Fixes buggy sandbox.excludedCommands (https://github.com/anthropics/claude-code/issues/95813)
 #     General escape hatch that skips both bwrap and apply-seccomp entirely.
@@ -47,19 +49,19 @@ for ((i = 0; i < ${#argv[@]}; i++)); do
   fi
 done
 
-preserve_procns=1
-preserve_netns=0
-[[ "$(</proc/sys/kernel/osrelease)" == *gvisor* ]] && preserve_netns=1
+DISABLE_BWRAP_PROCPS=${DISABLE_BWRAP_PROCPS:-1}
+DISABLE_BWRAP_NETNS=${DISABLE_BWRAP_NETNS:-0}
+[[ "$(</proc/sys/kernel/osrelease)" == *gvisor* ]] && DISABLE_BWRAP_NETNS=1
 
 args=()
 while (($#)); do
   case "$1" in
   --unshare-pid)
-    [[ "${preserve_procns}" == 1 ]] || args+=("$1")
+    [[ "${DISABLE_BWRAP_PROCPS}" =~ ^[1YyTt]$ ]] || args+=("$1")
     shift
     ;;
   --proc)
-    if [[ "${preserve_procns}" == 1 ]]; then
+    if [[ "${DISABLE_BWRAP_PROCPS}" =~ ^[1YyTt]$ ]]; then
       args+=(--bind /proc "$2")
     else
       args+=("$1" "$2")
@@ -67,7 +69,7 @@ while (($#)); do
     shift 2
     ;;
   --unshare-net)
-    [[ "${preserve_netns}" == 1 ]] || args+=("$1")
+    [[ "${DISABLE_BWRAP_NETNS}" =~ ^[1YyTt]$ ]] || args+=("$1")
     shift
     ;;
   *)
