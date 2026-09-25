@@ -17,10 +17,8 @@
 #     Activate: preserve_netns only if gVisor is detected.
 #
 # [C] Fixes buggy sandbox.excludedCommands (https://github.com/anthropics/claude-code/issues/95813)
-#     Needs to skip both bwrap and apply-seccomp as both create a new userns.
-#     Workaround for bwrap's userns setup drops all supplementary groups (e.g. docker group)
-#     Error: "permission denied while trying to connect to the docker API at unix:///var/run/docker.sock"
-#     Activate: skip bwrap entirely for commands in excluded_cmds.
+#     General escape hatch that skips both bwrap and apply-seccomp entirely.
+#     Activate: fully unsandboxed commands if they start with excluded_cmds.
 #
 # Trade-off: Nested bwrap sandboxes lose the corresponding namespace isolation
 # (full /proc visibility, shared network), but the container keeps --cap-drop
@@ -30,7 +28,7 @@ set -euo pipefail
 
 real_bwrap=/usr/bin/bwrap.real
 
-excluded_cmds=("docker" "kind")
+excluded_cmds=()
 argv=("$@")
 for ((i = 0; i < ${#argv[@]}; i++)); do
   if [[ "${argv[i]}" == "--" ]]; then
