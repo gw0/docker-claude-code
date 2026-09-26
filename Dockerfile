@@ -112,6 +112,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && unzip -j bun.zip bun-linux-x64-baseline/bun -d /usr/local/bin/ \
     && ln -s bun /usr/local/bin/bunx \
     && ln -s bun /usr/local/bin/node \
+    && ln -s bun /usr/local/bin/npm \
+    && ln -s bun /usr/local/bin/npx \
+    && ln -s bun /usr/local/bin/yarn \
+    && ln -s bun /usr/local/bin/pnpm \
     # print versions
     && bun --version \
     && python3 --version \
