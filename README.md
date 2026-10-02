@@ -162,8 +162,8 @@ ENABLE_PLUGINS="sc codemap claude-security@claude-plugins-official" cc1
 
 ## Env variables
 
-- `ANTHROPIC_API_KEY` — Use Anthropic API key billing, can temporarily override a subscription profile
-- `CLAUDE_CODE_OAUTH_TOKEN` — Use Claude Pro/Max/Team subscription, alternative to persisted login
+- `ANTHROPIC_API_KEY` — Use Anthropic API key billing, can temporarily override a subscription profile (default: `~/.claude-<profile>/.anthropic_api_key.key` if it exists)
+- `CLAUDE_CODE_OAUTH_TOKEN` — Use Claude Pro/Max/Team subscription, alternative to persisted login (default: `~/.claude-<profile>/.claude_code_oauth_token.key` if it exists)
 - `CLAUDE_IMAGE` — Docker image to use (default: `ghcr.io/gw0/docker-claude-code:main`)
 - `CLAUDE_PROFILES` — Space-separated profile names for alias generation (default: `cc1 cc2 ccpersonal ccapi`)
 - `ENABLE_PLUGINS` — Space-separated plugin names to enable at startup (default: `sc codemap`)

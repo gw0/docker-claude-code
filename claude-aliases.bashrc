@@ -48,6 +48,10 @@ _claude_run() {
     mount_args+=(-v "${abs_dir}:${abs_dir}${vol_opts}")
   done
 
+  # Load credentials from the profile dir unless set explicitly
+  local -x ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-$(cat "${HOME}/.claude-${profile}/.anthropic_api_key.key" 2>/dev/null)}"
+  local -x CLAUDE_CODE_OAUTH_TOKEN="${CLAUDE_CODE_OAUTH_TOKEN:-$(cat "${HOME}/.claude-${profile}/.claude_code_oauth_token.key" 2>/dev/null)}"
+
   # Run rootless container
   #
   # Trade-off: Rootless with capabilities dropped. Seccomp removes unused
@@ -58,8 +62,8 @@ _claude_run() {
   docker run -it --rm \
     -u "$(id -u):$(id -g)" \
     -e HOME=/home/agent \
-    -e ANTHROPIC_API_KEY="${ANTHROPIC_API_KEY:-}" \
-    -e CLAUDE_CODE_OAUTH_TOKEN="${CLAUDE_CODE_OAUTH_TOKEN:-}" \
+    -e ANTHROPIC_API_KEY \
+    -e CLAUDE_CODE_OAUTH_TOKEN \
     -e CLAUDE_PROFILE="${profile}" \
     -e ENABLE_PLUGINS="${ENABLE_PLUGINS:-}" \
     -e FORCE_RESET_SESSIONS="${FORCE_RESET_SESSIONS:-}" \
