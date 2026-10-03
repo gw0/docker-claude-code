@@ -180,7 +180,7 @@ ARG SHELLCHECK_VERSION=0.11.0
 ARG YAMLFMT_VERSION=0.21.0
 # https://github.com/astral-sh/ruff/releases
 # renovate: datasource=github-releases depName=astral-sh/ruff
-ARG RUFF_VERSION=0.16.9
+ARG RUFF_VERSION=0.16.10
 # https://www.npmjs.com/package/markdownlint-cli2
 # renovate: datasource=npm depName=markdownlint-cli2
 ARG MARKDOWNLINT_VERSION=0.23.3
@@ -249,7 +249,7 @@ RUN --mount=type=cache,target=/usr/local/bun/install/cache \
 ARG CODEMAP_VERSION=1.3.1
 # https://github.com/rtk-ai/rtk/releases
 # renovate: datasource=github-releases depName=rtk-ai/rtk
-ARG RTK_VERSION=0.50.0
+ARG RTK_VERSION=0.51.0
 # https://github.com/SuperClaude-Org/SuperClaude_Framework/releases
 # renovate: datasource=github-releases depName=SuperClaude-Org/SuperClaude_Framework
 ARG SUPERCLAUDE_VERSION=4.3.0
@@ -258,7 +258,7 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.16
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=18.11.0
+ARG AAS_VERSION=18.13.0
 
 RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-aas-bundles.py \
     --mount=type=cache,target=/root/.cache/pip \
@@ -325,7 +325,7 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.286
+ARG CLAUDE_VERSION=2.1.288
 
 RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     : \
