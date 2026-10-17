@@ -255,10 +255,10 @@ ARG RTK_VERSION=1.0.1
 ARG SUPERCLAUDE_VERSION=4.3.0
 # https://github.com/Jeffallan/claude-skills/releases
 # renovate: datasource=github-releases depName=Jeffallan/claude-skills
-ARG CLAUDE_SKILLS_VERSION=0.4.19
+ARG CLAUDE_SKILLS_VERSION=0.4.20
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=19.7.0
+ARG AAS_VERSION=19.8.0
 
 RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-aas-bundles.py \
     --mount=type=cache,target=/root/.cache/pip \
@@ -325,7 +325,7 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.301
+ARG CLAUDE_VERSION=2.1.302
 
 RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     : \
