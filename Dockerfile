@@ -7,7 +7,7 @@
 # Sections are ordered from least to most frequently changed to maximize layer reuse.
 #
 
-FROM docker.io/library/debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f
+FROM docker.io/library/debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad
 
 ##
 # Base system
@@ -258,7 +258,7 @@ ARG SUPERCLAUDE_VERSION=4.3.0
 ARG CLAUDE_SKILLS_VERSION=0.4.20
 # https://github.com/sickn33/agentic-awesome-skills/releases
 # renovate: datasource=github-releases depName=sickn33/agentic-awesome-skills
-ARG AAS_VERSION=19.11.0
+ARG AAS_VERSION=19.13.0
 
 RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-aas-bundles.py \
     --mount=type=cache,target=/root/.cache/pip \
@@ -325,7 +325,7 @@ RUN --mount=type=bind,source=scripts/install-aas-bundles.py,target=/mnt/install-
 ##
 # https://www.npmjs.com/package/@anthropic-ai/claude-code/v/latest
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_VERSION=2.1.304
+ARG CLAUDE_VERSION=2.1.306
 
 RUN --mount=type=cache,target=/usr/local/bun/install/cache \
     : \
