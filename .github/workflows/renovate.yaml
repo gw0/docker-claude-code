@@ -9,12 +9,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-
 jobs:
   renovate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      statuses: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -24,5 +26,6 @@ jobs:
         env:
           RENOVATE_GIT_AUTHOR: "gw0-bot <gw0-bot@users.noreply.github.com>"
           RENOVATE_REPOSITORIES: ${{ github.repository }}
+          LOG_LEVEL: debug
         with:
-          token: ${{ secrets.RENOVATE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
